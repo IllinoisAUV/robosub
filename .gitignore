@@ -4,3 +4,6 @@ devel/
 
 # Vim files
 .*.sw*
+
+# Environment files
+.env
