@@ -8,6 +8,12 @@ import rospkg
 import threading
 
 
+class Sub:
+    def __init__(self, name):
+        self.name = name
+
+sub = Sub('Enigma')
+
 # This is needed in order to find templates, config and static directories due
 # to how catkin handles python file installation. Since it will `exec` this 
 # file from a different location, we must use the ROS API's to locate the real
@@ -18,8 +24,9 @@ app = Flask(__name__, instance_path=os.path.join(rp.get_path("webgui"), "src", "
 
 @app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template('index.html', sub=sub)
 
+# Sample callback for ROS to use
 def callback(data):
     print(data.data)
 

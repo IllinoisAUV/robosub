@@ -1,4 +1,37 @@
 <!doctype html>
-<title>Robosub</title>
-<h1>Hello, World!</h1>
+<html>
+<head>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
 
+<title>{{ sub.name }}</title>
+</head>
+<body>
+
+  <!-- Container for the page that will take up the whole view -->
+  <div class="container-fluid" style="height: 100vh; min-height: 100vh;">
+    <div class="row">
+      <h1 class="col-md-12 text-center">{{ sub.name }}</h1>
+    </div>
+
+    <!-- Example of how to create a row on the page -->
+    <div class="row">
+      <div class="col-md-4">
+        <h3 class="text-center">Left Camera</h3>
+      </div>
+      <div class="col-md-4">
+        <h3 class="text-center">Right Camera</h3>
+      </div>
+      <div class="col-md-4">
+        <h3 class="text-center">Bottom Camera</h3>
+      </div>
+    </div>
+
+
+
+  </div>
+
+
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</body>
+</html>
