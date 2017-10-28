@@ -4,5 +4,6 @@ services:
   - docker
 
 script:
-  - docker build -t catkin_builder docker/
-  - ./build.sh
+  - docker build -t ci_builder tools/ci-docker/
+  - docker run -it -v $(pwd):/catkin_ws ci_builder catkin_make
+  - docker run -it -v $(pwd):/catkin_ws ci_builder catkin_make run_tests
