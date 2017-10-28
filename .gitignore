@@ -7,3 +7,6 @@ devel/
 
 # Environment files
 .env
+
+*.pyc
+__pycache__
