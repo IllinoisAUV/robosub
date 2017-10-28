@@ -4,3 +4,9 @@ devel/
 
 # Vim files
 .*.sw*
+
+# Environment files
+.env
+
+*.pyc
+__pycache__
