@@ -25,7 +25,6 @@ def callback(data):
 
 
 def main():
-    print("main")
     if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
         # When running flask with debug=True, rospy has to be set up in this if
         # guard because the flask reloader forks and then calls the server, 
