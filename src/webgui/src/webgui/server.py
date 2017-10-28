@@ -3,7 +3,10 @@
 from flask import Flask, render_template
 import rospy
 from std_msgs.msg import String
-import os, rospkg
+import os
+import sys
+import rospkg
+import threading
 
 
 # This is needed in order to find templates, config and static directories due
@@ -22,10 +25,11 @@ def callback(data):
     print(data.data)
 
 def main():
-    rospy.init_node('webserver')
-
     rospy.Subscriber('testing', String, callback)
+
+    rospy.init_node('webserver', disable_signals=True)
 
     # We do not need to run rospy.spin() here because all rospy.spin does is
     # block until the node is supposed to be killed
     app.run(host="0.0.0.0", debug=True)
+
