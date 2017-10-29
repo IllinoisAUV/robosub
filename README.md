@@ -32,6 +32,11 @@ Source the setup file
 source devel/setup.bash
 ```
 
+IN ANOTHER TERMINAL start roscore
+```
+roscore
+```
+
 Run the code
 ```
 rosrun webgui run_server
