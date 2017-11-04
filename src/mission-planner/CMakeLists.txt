@@ -11,3 +11,8 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+#add dynamic reconfigure api
+generate_dynamic_reconfigure_options(
+  cfg/mission_planner.cfg
+)
+
