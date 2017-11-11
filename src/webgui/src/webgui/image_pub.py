@@ -10,7 +10,7 @@ import time
 
 class image_pub:
 	def __init__(self, args):
-		self.image_pub = rospy.Publisher("image_topic", Image, queue_size=10)
+		self.image_pub = rospy.Publisher(args[2], Image, queue_size=10)
     		self.bridge = CvBridge()
 		self.cam = cv2.VideoCapture(args[1])
 	
@@ -23,10 +23,10 @@ class image_pub:
 			self.image_pub.publish(msg_frame)
 
 def main(args):
-	if (len(args) == 1):
+	if (len(args) < 4):
 		print('No file specified')
 		return
-	rospy.init_node('image_pub')
+	rospy.init_node(args[3])
 	ic = image_pub(args)
 	try:
 		ic.publish_images()
