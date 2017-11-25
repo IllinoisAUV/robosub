@@ -3,16 +3,15 @@ from flask import Flask, render_template, Response
 import rospy
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
-from cv_bridge import CvBridge, CvBridgeError
+from image_handling import video_feed
+
 import os
 import sys
 import rospkg
-import threading
-import cv2
 
-l_cam_topic = 'l_cam_topic'
-r_cam_topic = 'r_cam_topic'
-b_cam_topic = 'b_cam_topic'
+l_cam_topic = rospy.get_param('l_cam_topic', 'l_cam_topic')
+r_cam_topic = rospy.get_param('r_cam_topic', 'r_cam_topic')
+b_cam_topic = rospy.get_param('b_cam_topic', 'b_cam_topic')
 
 class Sub:
     def __init__(self, name):
@@ -43,27 +42,6 @@ def r_camera():
 @app.route('/b_camera')
 def b_camera():
 	return Response(video_feed(b_cam_topic), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-def cvt_imgmsg_to_cv2(data, bridge):
-	try:
-		cv2_img = bridge.imgmsg_to_cv2(data, '8UC3')
-		ret, jpeg = cv2.imencode('.jpg', cv2_img)
-		if jpeg is not None:
-			return (b'--frame\r\n Content-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
-		else:
-			rospy.logerr('Failed to convert img msg to cv2:\n%s', 'Jpeg is none')
-
-
-	except CvBridgeError as re:
-		rospy.logerr('Failed to convert img msg to cv2:\n%s', e)
-	
-def video_feed(topic):
-	"""Video streaming route. Put this in the src attribute of an img tag."""
-	bridge = CvBridge()
-	while True:
-		data = rospy.wait_for_message(topic, Image)
-		jpeg = cvt_imgmsg_to_cv2(data, bridge)
-		yield(jpeg)
 
 def main():
     if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
