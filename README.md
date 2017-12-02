@@ -17,7 +17,13 @@ For now, CI uses its own docker container, though we'd like to eventually merge 
 
 ## Running the web UI
 
-First, install the dependencies
+Get the submodules
+```
+git submodule init
+git submodule update
+```
+
+Install the dependencies
 ```
 pip install -r src/webgui/requirements.txt
 ```
@@ -32,12 +38,7 @@ Source the setup file
 source devel/setup.bash
 ```
 
-IN ANOTHER TERMINAL start roscore
-```
-roscore
-```
-
 Run the code
 ```
-rosrun webgui run_server
+roslaunch webgui webgui.launch
 ```
