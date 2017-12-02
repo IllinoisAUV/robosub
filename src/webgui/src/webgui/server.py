@@ -3,7 +3,7 @@ from flask import Flask, render_template, Response
 import rospy
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
-from image_handling import video_feed
+from .image_handling import video_feed
 
 import os
 import sys
