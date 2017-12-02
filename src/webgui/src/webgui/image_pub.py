@@ -12,19 +12,19 @@ import time
 class image_pub:
 	""" Class for publishing images from video source
 
-    Attributes:
-        pub (rospy.Publisher): Publisher that publishes images to topic.
-        bridge (CvBridge): CvBridge instance that converts cv2 images to imgmsg
-        cam (cv2.VideoCapture): Gets frames from video source
+	Attributes:
+		pub (rospy.Publisher): Publisher that publishes images to topic.
+		bridge (CvBridge): CvBridge instance that converts cv2 images to imgmsg
+		cam (cv2.VideoCapture): Gets frames from video source
 	"""
 	def __init__(self, image_topic, video_source):
 		"""Init method for image_pub
 		
-        Args:
-            image_topic (str): Topic to publish to.
-            video_source (str): Path to video file
+		Args:
+			image_topic (str): Topic to publish to.
+			video_source (str): Path to video file
 
-        """
+		"""
 		self.pub = rospy.Publisher(image_topic, Image, queue_size=10)
 		self.bridge = CvBridge()
 		self.cam = cv2.VideoCapture(video_source)
@@ -39,7 +39,7 @@ class image_pub:
 
 def main(args):
 	# get params from rosparam
-	node_name = rospy.get_param('imgpub/node_name', 'imgpub_node')
+	node_name = 'imgpub'
 	image_topic = rospy.get_param('imgpub/topic', 'l_cam_topic')
 	video_source = rospy.get_param('imgpub/video')
 	
@@ -49,10 +49,10 @@ def main(args):
 		ic.publish_images()
 	except KeyboardInterrupt:
 		print("Shutting down")
- 	cv2.destroyAllWindows()
+	cv2.destroyAllWindows()
 
 	
 
 if __name__ == '__main__':
-    main(sys.argv)
+	main(sys.argv)
 
