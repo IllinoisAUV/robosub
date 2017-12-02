@@ -3,15 +3,10 @@ from flask import Flask, render_template, Response
 import rospy
 from std_msgs.msg import String
 from sensor_msgs.msg import Image
-from .image_handling import video_feed
 
 import os
 import sys
 import rospkg
-
-l_cam_topic = rospy.get_param('l_cam_topic', 'l_cam_topic')
-r_cam_topic = rospy.get_param('r_cam_topic', 'r_cam_topic')
-b_cam_topic = rospy.get_param('b_cam_topic', 'b_cam_topic')
 
 class Sub:
     def __init__(self, name):
@@ -29,20 +24,13 @@ app = Flask(__name__, instance_path=os.path.join(rp.get_path("webgui"), "src", "
 
 @app.route("/")
 def index():
-    return render_template('index.html', sub=sub)
-
-@app.route('/l_camera')
-def l_camera():
-	return Response(video_feed(l_cam_topic), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-@app.route('/r_camera')
-def r_camera():
-	return Response(video_feed(r_cam_topic), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-@app.route('/b_camera')
-def b_camera():
-	return Response(video_feed(b_cam_topic), mimetype='multipart/x-mixed-replace; boundary=frame')
-
+    url = rospy.get_param('/web_video_server/address')
+    port = rospy.get_param('/web_video_server/port')
+    stream_server = ('http://%s:%s' % (url, port))
+    print(rospy.get_param('/camera/bottom'),)
+    return render_template('index.html', sub=sub, stream_server=stream_server, 
+                           bottom_camera=rospy.get_param('/camera/bottom'),
+                           front_camera=rospy.get_param('/camera/front'))
 def main():
     if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
         # When running flask with debug=True, rospy has to be set up in this if

@@ -16,16 +16,12 @@
     <!-- Example of how to create a row on the page -->
     <div class="row">
       <div class="col-md-4">
-        <h3 class="text-center">Left Camera</h3>
-        <img src="l_camera" style="width:100%;">
-      </div>
-      <div class="col-md-4">
-        <h3 class="text-center">Right Camera</h3>
-        <img src="r_camera" style="width:100%;"> 
+        <h3 class="text-center">Front Camera</h3>
+        <img src="{{ stream_server }}/stream?topic={{ front_camera }}" style="width:100%;"> 
       </div>
       <div class="col-md-4">
         <h3 class="text-center">Bottom Camera</h3>
-        <img src="b_camera" style="width:100%;">
+        <img src="{{ stream_server }}/stream?topic={{ bottom_camera }}" style="width:100%;">
       </div>
     </div>
 
