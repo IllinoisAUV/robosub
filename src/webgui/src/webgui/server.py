@@ -1,12 +1,12 @@
 #!/usr/bin/env python
-from flask import Flask, render_template
+from flask import Flask, render_template, Response
 import rospy
 from std_msgs.msg import String
+from sensor_msgs.msg import Image
+
 import os
 import sys
 import rospkg
-import threading
-
 
 class Sub:
     def __init__(self, name):
@@ -24,13 +24,13 @@ app = Flask(__name__, instance_path=os.path.join(rp.get_path("webgui"), "src", "
 
 @app.route("/")
 def index():
-    return render_template('index.html', sub=sub)
-
-# Sample callback for ROS to use
-def callback(data):
-    print(data.data)
-
-
+    url = rospy.get_param('/web_video_server/address')
+    port = rospy.get_param('/web_video_server/port')
+    stream_server = ('http://%s:%s' % (url, port))
+    print(rospy.get_param('/camera/bottom'),)
+    return render_template('index.html', sub=sub, stream_server=stream_server, 
+                           bottom_camera=rospy.get_param('/camera/bottom'),
+                           front_camera=rospy.get_param('/camera/front'))
 def main():
     if os.environ.get('WERKZEUG_RUN_MAIN') == 'true':
         # When running flask with debug=True, rospy has to be set up in this if
@@ -39,8 +39,7 @@ def main():
         # problems with rospy that I haven't been able to debug
         # See https://stackoverflow.com/questions/25504149/why-does-running-the-flask-dev-server-run-itself-twice
         rospy.init_node('webserver', log_level=rospy.DEBUG,  disable_signals=True)
-        rospy.Subscriber('testing', String, callback)
-        rospy.Subscriber("testing2", String, callback)
+        
     # We do not need to run rospy.spin() here because all rospy.spin does is
     # block until the node is supposed to be killed
-    app.run(host="0.0.0.0", debug=True)
+    app.run(host="0.0.0.0", debug=True, threaded=True)
