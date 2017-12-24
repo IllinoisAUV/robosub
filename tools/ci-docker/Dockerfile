@@ -1,6 +1,6 @@
 FROM ros:kinetic
 
-RUN apt-get update && apt-get install -y ros-kinetic-mavros ros-kinetic-mavros-msgs
+RUN apt-get update && apt-get install -y ros-kinetic-mavros ros-kinetic-mavros-msgs ros-kinetic-cv-bridge ros-kinetic-image-transport
 
 RUN mkdir -p /catkin_ws/src 
 
