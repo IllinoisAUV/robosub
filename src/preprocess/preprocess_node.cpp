@@ -6,47 +6,47 @@
 #include <cv_bridge/cv_bridge.h>
 #include <sensor_msgs/image_encodings.h>
 
-#include "whitebalance.h"
-#include "median_subtract.h"
+#include "filters/whitebalance.h"
+#include "filters/median_subtract.h"
+#include "filters/bilateral_filter.h"
+
+#define IMAGE_INPUT_RAW "/camera/image_raw"
+#define IMAGE_OUTPUT_FILTERED "/camera/image_processed"
+
+image_transport::Publisher filter_img_pub;
 
 using namespace cv;
-int main(int argc, char** argv) {
-  ros::init(argc, argv, "image_preprocessor");
-  std::string imageName("");
-  if(argc > 1) {
-    imageName = argv[1];
-  }
+namespace enc = sensor_msgs::image_encodings;
 
-  Mat image;
-  image = imread(imageName.c_str(), IMREAD_COLOR);
+void imageCallback(const sensor_msgs::ImageConstPtr& msg){
+    cv_bridge::CvImageConstPtr cv_ptr;
+    // obatianing the image from the camera topic
+    try{
+        cv_ptr = cv_bridge::toCvShare(msg, enc::BGR8);
+    }
+    catch (cv_bridge::Exception& e){
+        ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
+    }
+    // processing the image using white balancing filter
+    cv::Mat processed_img = cv_ptr->image;
+    processed_img = whiteBalance(processed_img);
 
-  if(image.empty()) {
-    std::cout <<  "Could not open or find the image" << std::endl ;
-    return -1;
-  }
+    // pubslishing the image after converting back to sensor_msgs.image format
+    sensor_msgs::ImagePtr msg_out;
+    msg_out = cv_bridge::CvImage(std_msgs::Header(), "bgr8", processed_img).toImageMsg();
+    filter_img_pub.publish(msg_out);
+}
 
-  Mat whiteBalanced = whiteBalance(image);
-  Mat median = subtractMedian(whiteBalanced);
+int main(int argc, char **argv){
+    ros::init(argc, argv, "image_preprocessor");
+    ros::NodeHandle nh;
+    image_transport::ImageTransport it(nh);
+    // init publisher
+    //@TODO correct of images to be stored in the topic
+    filter_img_pub = it.advertise( IMAGE_OUTPUT_FILTERED, 2);
 
-  namedWindow("Original", WINDOW_AUTOSIZE);
-  imshow("Original", image);
-  namedWindow("Color Balanced", WINDOW_AUTOSIZE);
-  imshow("Color Balanced", whiteBalanced);
-  namedWindow("median subtraction", WINDOW_AUTOSIZE);
-  imshow("median subtraction", median);
-
-  Mat colored;
-  cvtColor(median, colored, CV_BGR2HSV);
-  std::vector<Mat> channels;
-  split(median, channels);
-  namedWindow("B", WINDOW_AUTOSIZE);
-  imshow("B", channels[0]);
-  namedWindow("G", WINDOW_AUTOSIZE);
-  imshow("G", channels[1]);
-  namedWindow("R", WINDOW_AUTOSIZE);
-  imshow("R", channels[2]);
-
-
-  waitKey(0);
-  return 0;
+    // init subscriber
+    image_transport::Subscriber raw_img_sub = it.subscribe(IMAGE_INPUT_RAW, 2, imageCallback);
+    ros::spin();
+    return 0;
 }
