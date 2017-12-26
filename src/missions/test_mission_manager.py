@@ -20,31 +20,16 @@ class TestMissionManager(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def count_runs(self, missions):
-        manager = MissionManager()
-
-        # Capture stdout
-        sys.stdout = stdout = StringIO()
-        sys.stderr = stderr = StringIO()
-        manager.run(missions)
-        sys.stdout = sys.__stdout__
-        sys.stderr = sys.__stderr__
-
-
-        print(stdout.getvalue())
-        return len(re.findall(r'Test node run', stdout.getvalue()))
-
+    # Test to make sure no errors occur
     def test_start_single(self):
         missions = [os.path.join(self.basedir, 'launch/test/test_node.launch')]
-        count = self.count_runs(missions)
-        self.assertEqual(len(missions), count)
-
-
+        manager = MissionManager()
+        manager.run(missions)
 
     def test_start_multiple(self):
         missions = [os.path.join(self.basedir, 'launch/test/test_node.launch')]*5
-        count = self.count_runs(missions)
-        self.assertEqual(len(missions), count)
+        manager = MissionManager()
+        manager.run(missions)
 
 if __name__ == '__main__':
     # Prestart roscore 
