@@ -63,6 +63,7 @@ add_subdirectory(src/helpers)
 add_subdirectory(src/motion)
 
 add_subdirectory(src/preprocess)
+add_subdirectory(src/utilities)
 
 include(cmake/cppcheck.cmake)
 include(cmake/clang-format.cmake)
