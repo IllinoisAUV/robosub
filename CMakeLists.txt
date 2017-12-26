@@ -9,6 +9,13 @@ project(robosub)
 #enable C++ 11 support
 set(CMAKE_CXX_FLAGS "-Wall -Werror -std=c++11 ${CMAKE_CXX_FLAGS}")
 
+catkin_python_setup()
+
+
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+endif()
+
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
@@ -64,6 +71,7 @@ add_subdirectory(src/motion)
 
 add_subdirectory(src/preprocess)
 add_subdirectory(src/utilities)
+add_subdirectory(src/missions)
 
 include(cmake/cppcheck.cmake)
 include(cmake/clang-format.cmake)

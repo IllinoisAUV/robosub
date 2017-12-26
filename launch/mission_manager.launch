@@ -1,0 +1,5 @@
+<launch>
+  <node name="mission_manager" pkg="robosub" type="mission_manager" required="true" output="screen">
+    <param name="missions" type="str" textfile="$(find robosub)/launch/missions.json"/>
+  </node>
+</launch>

@@ -1,0 +1,3 @@
+<launch>
+    <node name="test_node" pkg="robosub" type="test_node.py" />
+</launch>
