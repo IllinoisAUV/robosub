@@ -21,6 +21,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 find_package(OpenCV REQUIRED)
+find_package(cmt_tracking REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS src
@@ -31,6 +32,7 @@ include_directories(
   src
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
+  ${cmt_tracking_INCLUDE_DIRS}
 )
 
 ## Mark executable scripts (Python etc.) for installation
@@ -41,3 +43,4 @@ install(PROGRAMS
 
 
 add_subdirectory(src/preprocess)
+add_subdirectory(src/tracking)
