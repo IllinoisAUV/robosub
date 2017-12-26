@@ -1,0 +1,7 @@
+<launch>
+  <node name="kill_switch" pkg="robosub" type="kill_switch_node">
+    <param name="pin" value="186" type="int" />
+    <param name="topic" value="kill_switch" type="str" />
+  </node>
+
+</launch>
