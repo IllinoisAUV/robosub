@@ -1,0 +1,29 @@
+---
+- hosts: jetson
+  tasks:
+    - name: Disable NetworkManager
+      systemd:
+        name: NetworkManager.service
+        state: stopped
+        enabled: no
+      become: true
+
+    - name: Ensure interface file is correct
+      copy:
+        src: eth0
+        dest: /etc/network/interfaces.d/eth0
+      become: true
+
+    - name: Delete /etc/resolv.conf
+      file:
+        state: absent
+        path: /etc/resolv.conf
+      become: true
+
+    - name: Add Google DNS to the resolv.conf
+      lineinfile:
+        state: present
+        line: "nameserver 8.8.8.8"
+        path: /etc/resolv.conf
+        create: yes
+      become: true

@@ -1,0 +1,2 @@
+[jetson]
+10.0.0.2 ansible_user=ubuntu ansible_become_pass=ubuntu

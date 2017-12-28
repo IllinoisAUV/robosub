@@ -1,0 +1,59 @@
+---
+- hosts: jetson
+  tasks:
+    - name: Install dependencies
+      apt:
+        name: "{{ item }}"
+        state: installed
+      become: true
+      with_items:
+        - git
+        - g++
+        - cmake
+        - pkg-config
+        - libudev-dev
+        - libudev1
+        - libtinyxml-dev
+        - libgstreamer1.0-dev
+        - libgstreamer-plugins-base1.0-dev
+        - libglib2.0-dev
+        - libgirepository1.0-dev
+        - libusb-1.0-0-dev
+        - libzip-dev
+        - uvcdynctrl
+        - python-setuptools
+        - libxml2-dev
+        - libpcap-dev
+        - libaudit-dev
+        - libnotify-dev
+        - autoconf
+        - intltool
+        - gtk-doc-tools
+        - libpcap0.8-dev
+
+    - name: Clone tiscamera
+      git:
+        clone: yes
+        dest: ~/tiscamera
+        repo: https://github.com/TheImagingSource/tiscamera.git
+
+    - name: Create build dir
+      file:
+        path: ~/tiscamera/build
+        state: directory
+
+    - name: Run cmake
+      command: cmake -DBUILD_ARAVIS=OFF -DBUILD_GST_1_0=ON -DBUILD_TOOLS=ON -DBUILD_V4L2=ON -DCMAKE_INSTALL_PREFIX=/usr ../
+      args:
+        chdir: ~/tiscamera/build
+        creates: ~/tiscamera/build/CMakeCache.txt # Only run if CMakeCache doesn't already exist
+
+    - name: make
+      make:
+        chdir: ~/tiscamera/build
+
+    - name: sudo make install
+      make:
+        chdir: "/home/{{ ansible_user_id }}/tiscamera/build"
+        target: install
+      become: true

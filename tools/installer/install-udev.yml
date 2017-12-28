@@ -1,0 +1,16 @@
+---
+- hosts: jetson
+  tasks:
+    - name: Add bottom camera udev rule
+      copy:
+        src: ../udev/99-bottom-cam.rules
+        dest: /etc/udev/rules.d/99-bottom-cam.rules
+      become: true
+
+    - name: Reload udev rules
+      command: udevadm control --reload-rules
+      become: true
+
+    - name: Trigger udev
+      command: udevadm trigger
+      become: true

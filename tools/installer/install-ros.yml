@@ -1,0 +1,48 @@
+---
+- hosts: jetson
+  tasks:
+    - name: Install repository
+      apt_repository:
+        repo: "deb http://packages.ros.org/ros/ubuntu xenial main"
+        state: present
+        filename: ros-kinetic
+      become: true
+    - name: Get key
+      apt_key:
+        id: 421C365BD9FF1F717815A3895523BAEEB01FA116
+        keyserver: hkp://ha.pool.sks-keyservers.net:80
+        state: present
+      become: true
+
+    - name: Update apt and install ros
+      apt:
+        name: ros-kinetic-desktop-full
+        update_cache: yes
+      become: true
+
+    - name: Check if rosdep already initialized
+      stat:
+        path: /etc/ros/rosdep/sources.list.d/20-default.list
+      register: rosdep_sources
+
+    - name: Check if rosdep is updated
+      stat:
+        path: ~/.ros/rosdep/sources.cache
+      register: rosdep_updated
+
+    - name: Initialize rosdep
+      command: rosdep init
+      ignore_errors: yes
+      become: true
+      when: rosdep_sources.stat.exists != True
+
+    - name: Update rosdep
+      command: rosdep update
+      when: rosdep_updated.stat.exists != True
+
+    - name: Source ros setup.bash in bashrc
+      lineinfile:
+        create: yes
+        state: present
+        line: "source /opt/ros/kinetic/setup.bash"
+        path: ~/.bashrc
