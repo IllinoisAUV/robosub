@@ -12,3 +12,6 @@ devel/
 __pycache__
 
 *.log
+
+# Ansible retry files
+*.retry

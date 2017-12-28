@@ -1,0 +1,8 @@
+---
+- hosts: jetson
+  tasks:
+    - name: Create catkin_ws
+      file:
+        state: directory
+        recurse: yes
+        path: /home/ubuntu/catkin_ws/src

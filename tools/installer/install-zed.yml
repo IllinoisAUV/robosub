@@ -1,0 +1,44 @@
+---
+- hosts: jetson
+  tasks:
+    - name: Install zed-ros-wrapper dependencies libpcl1
+      apt:
+        name: libpcl1
+      become: true
+
+    - name: Install zed-ros-wrapper dependencies ros-kinetic-pcl-ros
+      apt:
+        name: ros-kinetic-pcl-ros
+      become: true
+
+    - name: Download sdk
+      get_url:
+        url: 'https://cdn.stereolabs.com/developers/downloads/ZED_SDK_Linux_JTX2_v2.3.0_JP3.1.run'
+        dest: /tmp/ZED_SDK.run
+
+    - name: Make installer executable
+      file:
+        path: /tmp/ZED_SDK.run
+        mode: +x
+
+    - name: Install zed sdk
+      command: /tmp/ZED_SDK.run --quiet -- silent
+      become: true
+
+    - name: Chown zed sdk files
+      file:
+        path: /usr/local/zed
+        owner: "{{ ansible_user_id }}"
+        recurse: yes
+      become: true
+
+    - name: Download ros package
+      git:
+        clone: yes
+        dest: ~/catkin_ws/src/zed-ros-wrapper
+        repo: https://github.com/stereolabs/zed-ros-wrapper
+
+    - name: Build and install zed package
+      shell: catkin_make install
+      args:
+        chdir: ~/catkin_ws
