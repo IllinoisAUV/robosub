@@ -4,7 +4,7 @@
     <include file="sub-header.launch" />
 
     <!-- Start mavlink -->
-    <include file="$(find sub)/launch/ardupilot.launch" />
+    <include file="$(find robosub)/launch/ardupilot.launch" />
 
     <include file="sub-trailer.launch" />
 </launch>

@@ -1,9 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-  <!-- Run the webserver after everything else has been started -->
-  <node name="gui" pkg="webgui" type="run_server" />
-
   <!-- Launch rosbag at the end -->
   <!-- Rosbag always appends the date and time to the bag name -->
-  <node name="record" pkg="rosbag" type="record" args="-a -O $(find sub)/bags/recording.bag" />
+  <node name="record" pkg="rosbag" type="record" args="-a -O $(find robosub)/bags/recording.bag" />
 </launch>

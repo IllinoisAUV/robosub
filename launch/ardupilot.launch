@@ -6,7 +6,7 @@
   <arg name="component_id" default="240"/>
   <arg name="tgt_system" default="1"/>
   <arg name="tgt_component" default="1"/>
-  <arg name="pluginlists_yaml" value="$(find sub)/launch/ardupilot.yaml"/>
+  <arg name="pluginlists_yaml" value="$(find robosub)/launch/ardupilot.yaml"/>
   <arg name="config_yaml" value="$(find mavros)/launch/apm_config.yaml"/>
   <arg name="log_output" default="screen"/>
 

@@ -2,7 +2,7 @@
 
 <launch>
   <!-- From bluerov-ros-pkg -->
-  <param name="robot_description" textfile="$(find sub)/robots/$(arg sub).urdf" />
+  <param name="robot_description" textfile="$(find robosub)/robots/$(arg robosub).urdf" />
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
   <arg name="model" />
   <arg name="gui" default="False" />
