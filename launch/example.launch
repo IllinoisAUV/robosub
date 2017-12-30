@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+  <param name="sub" value="some_sub_name_with_no_spaces" />
+  <include file="sub-header.launch" />
+
+  <!-- Launch whatever you need -->
+
+  <include file="sub-trailer.launch" />
+</launch>
