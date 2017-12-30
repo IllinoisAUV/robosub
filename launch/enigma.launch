@@ -6,5 +6,5 @@
     <!-- Start mavlink -->
     <include file="$(find robosub)/launch/ardupilot.launch" />
 
-    <include file="sub-trailer.launch" />
+    <include file="sub-trailer.launch" pass_all_args="true" />
 </launch>

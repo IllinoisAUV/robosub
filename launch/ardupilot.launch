@@ -6,8 +6,7 @@
   <arg name="component_id" default="240"/>
   <arg name="tgt_system" default="1"/>
   <arg name="tgt_component" default="1"/>
-  <arg name="pluginlists_yaml" value="$(find robosub)/launch/ardupilot.yaml"/>
-  <arg name="config_yaml" value="$(find mavros)/launch/apm_config.yaml"/>
+  <arg name="pluginlists_yaml" value="$(find robosub)/launch/ardupilot_pluginlists.yaml"/>
   <arg name="log_output" default="screen"/>
 
   <node pkg="mavros" type="mavros_node" name="mavros" required="true" clear_params="true" output="$(arg log_output)">
@@ -20,7 +19,6 @@
 
     <!-- load blacklist, config -->
     <rosparam command="load" file="$(arg pluginlists_yaml)"/>
-    <rosparam command="load" file="$(arg config_yaml)"/>
   </node>
 
   <node pkg="rosservice" type="rosservice" name="mavros_set_stream" args="call --wait /mavros/set_stream_rate 0 10 1"/>

@@ -5,5 +5,7 @@ services:
 
 script:
   - docker build -t ci_builder tools/ci-docker/
-  - docker run -it -v $(pwd):/catkin_ws/src/robosub ci_builder catkin_make
-  - docker run -it -v $(pwd):/catkin_ws/src/robosub ci_builder catkin_make run_tests
+  - mkdir -p catkin_ws/src
+  - docker run -it -v $(pwd)/catkin_ws:/catkin_ws -v $(pwd):/catkin_ws/src/robosub ci_builder catkin_make
+  - docker run -it -v $(pwd)/catkin_ws:/catkin_ws -v $(pwd):/catkin_ws/src/robosub ci_builder catkin_make run_tests
+  - docker run -it -v $(pwd)/catkin_ws:/catkin_ws -v $(pwd):/catkin_ws/src/robosub ci_builder bash -c "ls /catkin_ws/src/robosub/*.launch | xargs -n1 roslaunch --nodes "
