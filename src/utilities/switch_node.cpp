@@ -1,5 +1,3 @@
-#include "kill_switch.h"
-
 #include <stddef.h>
 #include <string>
 #include <ros/ros.h>
@@ -31,8 +29,8 @@ int main(int argc, char **argv) {
     ROS_ERROR("Please specify a logic level");
     return 1;
   }
-  ROS_INFO("Starting switch node (%s) on pin %d publishing to %s", num, 
-      topic.c_str(), active_high ? "active high" : "active low");
+  ROS_INFO("Starting switch node (%s) on pin %d publishing to %s", 
+      topic.c_str(), num, active_high ? "active high" : "active low");
 
 
   GPIO pin(num);
