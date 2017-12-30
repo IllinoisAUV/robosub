@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    <param name="sub" value="enigma" />
+    <include file="sub-header.launch" />
+
+    <!-- Start mavlink -->
+    <include file="$(find robosub)/launch/ardupilot.launch" />
+
+    <include file="sub-trailer.launch" pass_all_args="true" />
+</launch>

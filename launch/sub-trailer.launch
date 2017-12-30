@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+  <!-- Launch rosbag at the end -->
+  <!-- Rosbag always appends the date and time to the bag name -->
+  <node name="record" pkg="rosbag" type="record" args="-a -O $(find robosub)/bags/recording.bag" />
+</launch>
