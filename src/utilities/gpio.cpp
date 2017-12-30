@@ -1,5 +1,6 @@
 #include "gpio.h"
 
+#include <ros/ros.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,6 +9,8 @@
 #include <sys/types.h>
 #include <poll.h>
 #include <fcntl.h>
+#include <errno.h>
+#include <string.h>
 
 
 #define GPIO_BASE_DIR "/sys/class/gpio"
@@ -63,23 +66,23 @@ void GPIO::openFiles() {
   snprintf(path, sizeof(path), GPIO_BASE_DIR "/gpio%d", pin_);
   if (stat(path, &sb) != 0) {
       owner_ = true;
-      printf("Owner of %s\n", path);
+      ROS_DEBUG("Owner of %s\n", path);
   } else {
-      printf("Not owner of %s\n", path);
+      ROS_DEBUG("Not owner of %s\n", path);
   }
 
   if(owner_) {
       snprintf(path, sizeof(path), GPIO_BASE_DIR "/export");
       export_fd_ = open(path, O_WRONLY);
       if(export_fd_ < 0) {
-          perror("Failed to open export\n");
+          ROS_ERROR("Failed to open export %s\n", strerror(errno));
           exit(-1);
       }
 
       snprintf(path, sizeof(path), GPIO_BASE_DIR "/unexport");
       unexport_fd_ = open(path, O_WRONLY);
       if(export_fd_ < 0) {
-          perror("Failed to open unexport\n");
+          ROS_ERROR("Failed to open unexport %s\n", strerror(errno));
           exit(-1);
       }
 
@@ -90,7 +93,7 @@ void GPIO::openFiles() {
       int ret;
       ret = write(export_fd_, pin_num, len);
       if(ret < len) {
-          perror("Failed to export pin");
+          ROS_ERROR("Failed to export pin %s\n", strerror(errno));
           exit(-1);
       }
 
@@ -103,28 +106,28 @@ void GPIO::openFiles() {
   sprintf(&path[path_start], "/edge");
   edge_fd_ = open(path, O_RDWR);
   if(edge_fd_ < 0) {
-    perror("Failed to open edge\n");
+    ROS_ERROR("Failed to open edge %s\n", strerror(errno));
     exit(-1);
   }
 
   sprintf(&path[path_start], "/direction");
   direction_fd_ = open(path, O_RDWR);
   if(direction_fd_ < 0) {
-    perror("Failed to open direction\n");
+    ROS_ERROR("Failed to open direction %s\n", strerror(errno));
     exit(-1);
   }
 
   sprintf(&path[path_start], "/value");
   value_fd_ = open(path, O_RDWR);
   if(value_fd_ < 0) {
-    perror("Failed to open value\n");
+    ROS_ERROR("Failed to open value %s\n", strerror(errno));
     exit(-1);
   }
 
   sprintf(&path[path_start], "/active_low");
   active_low_fd_ = open(path, O_RDWR);
   if(active_low_fd_ < 0) {
-    perror("Failed to open active_low\n");
+    ROS_ERROR("Failed to open active_low %s\n", strerror(errno));
     exit(-1);
   }
 }
@@ -142,7 +145,7 @@ void GPIO::SetActiveState(ActiveState state) {
     return;
   }
   if(ret < 0) {
-    perror("Failed to set active state\n");
+    ROS_ERROR("Failed to set active state %s\n", strerror(errno));
     cleanup();
     exit(-1);
   }
@@ -163,7 +166,7 @@ void GPIO::SetDirection(Direction dir) {
   }
 
   if(ret < 0) {
-    perror("Failed to set direction of pin\n");
+    ROS_ERROR("Failed to set direction of pin %s\n", strerror(errno));
     cleanup();
     exit(-1);
   }
@@ -189,7 +192,7 @@ void GPIO::WaitOn(Edge edge, int timeout_ms) {
     return;
   }
   if(ret < 0) {
-    perror("Failed to set edge before waiting\n");
+    ROS_ERROR("Failed to set edge before waiting %s\n", strerror(errno));
     cleanup();
     exit(-1);
   }
@@ -206,7 +209,7 @@ void GPIO::WaitOn(Edge edge, int timeout_ms) {
   ret = poll(&pollfds, 1, timeout_ms);
 
   if(ret == -1) {
-    perror("Poll Failed\n");
+    ROS_ERROR("Poll Failed %s\n", strerror(errno));
     cleanup();
     exit(-1);
   } else if(ret == 0) {
@@ -222,7 +225,7 @@ GPIO::Direction GPIO::GetDirection() {
   char direction[10];
   int ret = read(direction_fd_, direction, sizeof(direction));
   if(ret <= 0) {
-    perror("Failed to read direction\n");
+    ROS_ERROR("Failed to read direction %s\n", strerror(errno));
     cleanup();
     exit(-1);
   }
@@ -232,7 +235,7 @@ GPIO::Direction GPIO::GetDirection() {
   } else if(strcmp(direction, DIR_OUT) == 0) {
     return OUT;
   } else {
-    perror("Unknown direction\n");
+    ROS_ERROR("Unknown direction %s\n", strerror(errno));
     cleanup();
     exit(-1);
   }
@@ -240,7 +243,7 @@ GPIO::Direction GPIO::GetDirection() {
 
 void GPIO::SetValue(LogicLevel val) {
   if(GetDirection() == IN) {
-    perror("Can't set value of an input pin\n");
+    ROS_ERROR("Can't set value of an input pin %s\n", strerror(errno));
     cleanup();
     exit(-1);
   }
@@ -263,14 +266,14 @@ GPIO::LogicLevel GPIO::GetValue() {
 
   ret = lseek(value_fd_, 0, SEEK_SET);
   if(ret < 0) {
-    perror("Failed to lseek() value\n");
+    ROS_ERROR("Failed to lseek() value %s\n", strerror(errno));
     cleanup();
     exit(-1);
   }
 
   ret = read(value_fd_, value, sizeof(value));
   if(ret < 0) {
-    perror("Failed to read value\n");
+    ROS_ERROR("Failed to read value %s\n", strerror(errno));
     cleanup();
     exit(-1);
   }
