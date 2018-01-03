@@ -1,0 +1,8 @@
+<launch>
+  <param name="/angular_position_topic" value="/setpoint/angular/position" type="str" />
+  <param name="/angular_velocity_topic" value="/setpoint/angular/velocity" type="str" />
+  <param name="/linear_position_topic" value="/setpoint/linear/position" type="str" />
+  <param name="/linear_velocity_topic" value="/setpoint/linear/velocity" type="str" />
+  <param name="/arming_topic" value="/arming" type="str" />
+  <node name="motion" pkg="robosub" type="rcmavros_node" />
+</launch>
