@@ -1,10 +1,8 @@
 #ifndef GPIO_H
 #define GPIO_H
 
-
-
 class GPIO {
-public:
+ public:
   typedef enum {
     NONE,
     RISING,
@@ -26,8 +24,6 @@ public:
     LOW,
   } LogicLevel;
 
-
-
   GPIO(unsigned int pin);
   ~GPIO();
 
@@ -42,8 +38,7 @@ public:
   void WaitOn(Edge edge, int timeout_ms);
   void WaitOn(Edge edge);
 
-private:
-
+ private:
   void openFiles();
   void closePinFiles();
   void closeExportFiles();
