@@ -1,6 +1,16 @@
 #ifndef GPIO_H
 #define GPIO_H
 
+// Represents a single sysfs gpio pin. See
+// https://www.kernel.org/doc/Documentation/gpio/sysfs.txt for more details
+// about how sysfs works. Basically, their are some files living in
+// /sys/class/gpio that let you control gpio pins by writing and reading them.
+// All writes are strings that are suffixed by \n. First, you must export the
+// pin by writing the pin number to /sys/class/gpio/export. Then a new folder
+// will show up: /sys/class/gpio/gpioN where N is the exported pin number. Note
+// that these pin numbers do not necessarily line up with the pin names on the
+// board. The gpioN folder contains a few files that can then be used to control
+// the pin. Read the kernel docs for more info about their function
 class GPIO {
  public:
   typedef enum {
@@ -27,16 +37,21 @@ class GPIO {
   GPIO(unsigned int pin);
   ~GPIO();
 
+  // Pin direction getters and setters
   void SetDirection(Direction dir);
   Direction GetDirection();
 
+  // Set the pin to be active high or active low
   void SetActiveState(ActiveState state);
 
+  // Pin value setter and getter
   void SetValue(LogicLevel val);
   LogicLevel GetValue();
 
-  void WaitOn(Edge edge, int timeout_ms);
-  void WaitOn(Edge edge);
+  // Wait for an edge with a timeout. If the correct edge is detected, returns
+  // true. Otherwise if it times out, returns false
+  bool WaitOn(Edge edge, int timeout_ms);
+  bool WaitOn(Edge edge);
 
  private:
   void openFiles();
