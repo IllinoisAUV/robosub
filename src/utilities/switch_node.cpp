@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
     return 1;
   }
   ROS_INFO("Starting switch node (%s) on pin %d publishing to %s",
-           topic.c_str(), num, active_high ? "active high" : "active low");
+           active_high ? "active high" : "active low", num, topic.c_str());
 
   GPIO pin(num);
   pin.SetDirection(GPIO::IN);
