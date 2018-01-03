@@ -59,6 +59,9 @@ install(PROGRAMS
 # Helpers declares libraries that are convenient for building ros messages
 add_subdirectory(src/helpers)
 
+# motion declares some libraries, and must come before any directory that uses it
+add_subdirectory(src/motion)
+
 add_subdirectory(src/preprocess)
 
 include(cmake/cppcheck.cmake)
