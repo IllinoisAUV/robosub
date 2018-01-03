@@ -22,6 +22,23 @@ find_package(catkin REQUIRED COMPONENTS
 
 find_package(OpenCV REQUIRED)
 
+add_message_files(
+  FILES
+  LinearPosition.msg
+  LinearVelocity.msg
+  AngularPosition.msg
+  AngularVelocity.msg
+)
+
+
+
+generate_messages(
+  DEPENDENCIES
+  std_msgs
+  mavros_msgs
+  sensor_msgs
+)
+
 catkin_package(
   INCLUDE_DIRS src
   CATKIN_DEPENDS roscpp rospy std_msgs mavros mavros_msgs cv_bridge image_transport sensor_msgs
@@ -39,6 +56,8 @@ install(PROGRAMS
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+# Helpers declares libraries that are convenient for building ros messages
+add_subdirectory(src/helpers)
 
 add_subdirectory(src/preprocess)
 
