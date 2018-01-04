@@ -4,6 +4,16 @@ services:
   - docker
 
 script:
-  - docker build -t ci_builder tools/ci-docker/
+  - docker build -t ci_builder tools/ci/
+
+  # Check if formatting is required
+  - docker run -it -v $(pwd):/catkin_ws/src/robosub ci_builder catkin_make --make-args clangformat-check
+
+  # Run pylint
+  - docker run -it -v $(pwd):/catkin_ws/src/robosub ci_builder catkin_make --make-args pylint
+
+  # Check if the code builds
   - docker run -it -v $(pwd):/catkin_ws/src/robosub ci_builder catkin_make
+
+  # Run tests
   - docker run -it -v $(pwd):/catkin_ws/src/robosub ci_builder catkin_make run_tests

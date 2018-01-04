@@ -1,27 +1,27 @@
-#include <ros/ros.h>
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <image_transport/image_transport.h>
 #include <cv_bridge/cv_bridge.h>
+#include <image_transport/image_transport.h>
+#include <ros/ros.h>
 #include <sensor_msgs/image_encodings.h>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgcodecs.hpp>
 
-#include "whitebalance.h"
 #include "median_subtract.h"
+#include "whitebalance.h"
 
 using namespace cv;
 int main(int argc, char** argv) {
   ros::init(argc, argv, "image_preprocessor");
   std::string imageName("");
-  if(argc > 1) {
+  if (argc > 1) {
     imageName = argv[1];
   }
 
   Mat image;
   image = imread(imageName.c_str(), IMREAD_COLOR);
 
-  if(image.empty()) {
-    std::cout <<  "Could not open or find the image" << std::endl ;
+  if (image.empty()) {
+    std::cout << "Could not open or find the image" << std::endl;
     return -1;
   }
 
@@ -45,7 +45,6 @@ int main(int argc, char** argv) {
   imshow("G", channels[1]);
   namedWindow("R", WINDOW_AUTOSIZE);
   imshow("R", channels[2]);
-
 
   waitKey(0);
   return 0;

@@ -2,7 +2,6 @@
 
 using namespace cv;
 
-
 Mat subtractMedian(Mat &src) {
   /* std::vector<Mat> channels; */
   /* split(src, channels); */
@@ -13,6 +12,6 @@ Mat subtractMedian(Mat &src) {
   /* Scalar r = mean(channels[2]); */
 
   /* Mat res(src.rows, src.cols, CV_8UC3); */
-  /* res = m; */ 
+  /* res = m; */
   return src - m;
 }
