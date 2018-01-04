@@ -44,3 +44,4 @@ add_subdirectory(src/preprocess)
 
 include(cmake/cppcheck.cmake)
 include(cmake/clang-format.cmake)
+include(cmake/pylint.cmake)
