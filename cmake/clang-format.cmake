@@ -11,4 +11,12 @@ if(CLANGFORMAT)
     -i
     ${ALL_SOURCE_FILES}
   )
+
+  # For use in CI
+  add_custom_target(
+    clangformat-check
+    COMMAND ${CMAKE_CURRENT_LIST_DIR}/../tools/ci/clang-format-check.sh
+    -style=Google
+    ${ALL_SOURCE_FILES}
+  )
 endif()

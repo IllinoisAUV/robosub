@@ -41,10 +41,6 @@ install(PROGRAMS
 
 
 add_subdirectory(src/preprocess)
-<<<<<<< Updated upstream
-=======
-add_subdirectory(src/utilities)
 
 include(cmake/cppcheck.cmake)
 include(cmake/clang-format.cmake)
->>>>>>> Stashed changes
