@@ -42,7 +42,8 @@ MavrosRCController::MavrosRCController() {
   setpoint_dxyz_.dx = setpoint_dxyz_.dy = setpoint_dxyz_.dz = 0.0;
 
   // Start the control timer
-  timer_ = nh_.createTimer(ros::Duration(0.1), &MavrosRCController::callback, this);
+  timer_ =
+      nh_.createTimer(ros::Duration(0.1), &MavrosRCController::callback, this);
 }
 
 void MavrosRCController::SetRPY(const AngularPosition rpy) {
