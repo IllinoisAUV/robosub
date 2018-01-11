@@ -1,6 +1,7 @@
 #!/usr/bin/env python2
-
-from missions import MissionManager
+'''
+Executable for mission manager code
+'''
 import json
 import subprocess
 import os
@@ -10,6 +11,8 @@ import sys
 
 import rospy
 import rospkg
+
+from missions import MissionManager
 
 MISSION_PARAM = '~missions'
 

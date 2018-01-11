@@ -63,6 +63,8 @@ install(PROGRAMS
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+set(PYTHON_MODULES "")
+
 # Helpers declares libraries that are convenient for building ros messages
 add_subdirectory(src/helpers)
 
