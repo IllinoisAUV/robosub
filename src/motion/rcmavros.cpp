@@ -21,6 +21,7 @@ const std::string kModeStabilize = "STABILIZE";
 MavrosRCController::MavrosRCController() {
   rc_pub_ = nh_.advertise<OverrideRCIn>("/mavros/rc/override", 10);
 
+  // Service clients for arming and changing the mode of the sub
   arming_client_ = nh_.serviceClient<CommandBool>("/mavros/cmd/arming");
   mode_client_ = nh_.serviceClient<SetMode>("mavros/set_mode");
 
@@ -64,6 +65,7 @@ void MavrosRCController::SetdXYZ(const LinearVelocity dxyz) {
   setpoint_dxyz_ = dxyz;
 }
 
+// Send a message to mavros to arm or disarm the sub
 void MavrosRCController::arming(const Bool arm) {
   mavros_msgs::CommandBool srv;
   srv.request.value = arm.data;
@@ -73,12 +75,14 @@ void MavrosRCController::arming(const Bool arm) {
   }
 }
 
+// Converts angles in radians to RC signal
 uint16_t MavrosRCController::angleToPpm(double angle) {
   // Map [-pi, pi] -> [1000, 2000]
   uint16_t ppm = (angle - (-M_PI)) / (M_PI - (-M_PI)) * (1000) + 1000;
   return ppm;
 }
 
+// Convert a linear speed (0.0-1.0) to RC signal
 uint16_t MavrosRCController::speedToPpm(double speed) {
   if (speed > 1.0 || speed < -1.0) {
     ROS_ERROR("Invalid speed requested: %f", speed);
@@ -87,6 +91,7 @@ uint16_t MavrosRCController::speedToPpm(double speed) {
   return 1500 + speed * 500.0;
 }
 
+// Control callback
 void MavrosRCController::callback(const ros::TimerEvent &e) {
   OverrideRCIn msg;
   msg.channels[1] = angleToPpm(setpoint_rpy_.roll);
