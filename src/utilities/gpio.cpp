@@ -47,7 +47,11 @@ void GPIO::closePinFiles() {
 void GPIO::unexport() {
   char pin[10];
   snprintf(pin, sizeof(pin), "%d", pin_);
-  write(unexport_fd_, pin, strlen(pin));
+  // Dont check error here
+  ssize_t err = write(unexport_fd_, pin, strlen(pin));
+  if ( err == -1){
+    throw ros::Exception("Failed to write pin to the file");
+  }
 }
 
 void GPIO::closeExportFiles() {
@@ -196,8 +200,10 @@ bool GPIO::WaitOn(Edge edge, int timeout_ms) {
 
   // Preread the value file to remove any pending interrupts
   char dummy;
-  read(value_fd_, &dummy, 1);
-
+  ssize_t err = read(value_fd_, &dummy, 1);
+  if ( err == -1){
+    throw ros::Exception("Failed to read from the value file");
+  }
   // Poll the value file for changes. Only pins with interrupt capabilities
   // available can be polled on. For many processors, any pin will be usable
   struct pollfd pollfds;
