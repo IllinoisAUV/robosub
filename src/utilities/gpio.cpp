@@ -10,6 +10,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <sstream>
 
 #define GPIO_BASE_DIR "/sys/class/gpio"
 #define DIR_IN "in\n"
@@ -49,8 +50,10 @@ void GPIO::unexport() {
   snprintf(pin, sizeof(pin), "%d", pin_);
   // Dont check error here
   ssize_t err = write(unexport_fd_, pin, strlen(pin));
-  if ( err == -1){
-    throw ros::Exception("Failed to write pin to the file");
+  if (err == -1) {
+    std::stringstream err_s;
+    err_s << "Failed to write pin to the file: " << strerror(errno);
+    throw ros::Exception(err_s.str());
   }
 }
 
@@ -201,8 +204,10 @@ bool GPIO::WaitOn(Edge edge, int timeout_ms) {
   // Preread the value file to remove any pending interrupts
   char dummy;
   ssize_t err = read(value_fd_, &dummy, 1);
-  if ( err == -1){
-    throw ros::Exception("Failed to read from the value file");
+  if (err == -1) {
+    std::stringstream err_s;
+    err_s << "Failed to read from the value file: " << strerror(errno);
+    throw ros::Exception(err_s.str());
   }
   // Poll the value file for changes. Only pins with interrupt capabilities
   // available can be polled on. For many processors, any pin will be usable
