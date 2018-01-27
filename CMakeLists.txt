@@ -9,6 +9,13 @@ project(robosub)
 #enable C++ 11 support
 set(CMAKE_CXX_FLAGS "-Wall -Werror -std=c++11 ${CMAKE_CXX_FLAGS}")
 
+catkin_python_setup()
+
+
+if(CATKIN_ENABLE_TESTING)
+  find_package(rostest REQUIRED)
+endif()
+
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
@@ -56,6 +63,8 @@ install(PROGRAMS
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+set(PYTHON_MODULES "")
+
 # Helpers declares libraries that are convenient for building ros messages
 add_subdirectory(src/helpers)
 
@@ -64,6 +73,7 @@ add_subdirectory(src/motion)
 
 add_subdirectory(src/preprocess)
 add_subdirectory(src/utilities)
+add_subdirectory(src/missions)
 
 include(cmake/cppcheck.cmake)
 include(cmake/clang-format.cmake)
