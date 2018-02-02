@@ -18,6 +18,8 @@ const std::string kModeDepthHold = "ALT_HOLD";
 const std::string kModeManual = "MANUAL";
 const std::string kModeStabilize = "STABILIZE";
 
+constexpr float kPeriod = 0.1;
+
 MavrosRCController::MavrosRCController() {
   rc_pub_ = nh_.advertise<OverrideRCIn>("/mavros/rc/override", 10);
 
@@ -44,7 +46,7 @@ MavrosRCController::MavrosRCController() {
 
   // Start the control timer
   timer_ =
-      nh_.createTimer(ros::Duration(0.1), &MavrosRCController::callback, this);
+      nh_.createTimer(ros::Duration(kPeriod), &MavrosRCController::callback, this);
 }
 
 void MavrosRCController::SetRPY(const AngularPosition rpy) {
@@ -94,9 +96,14 @@ uint16_t MavrosRCController::speedToPpm(double speed) {
 // Control callback
 void MavrosRCController::callback(const ros::TimerEvent &e) {
   OverrideRCIn msg;
+
+  // Account for velocity setpoints
+  setpoint_rpy_.roll += setpoint_drpy_.droll * kPeriod;
+  setpoint_rpy_.pitch += setpoint_drpy_.dpitch * kPeriod;
+
   msg.channels[1] = angleToPpm(setpoint_rpy_.roll);
   msg.channels[0] = angleToPpm(setpoint_rpy_.pitch);
-  msg.channels[3] = speedToPpm(setpoint_rpy_.yaw);
+  msg.channels[3] = speedToPpm(setpoint_rpy_.dyaw);
 
   msg.channels[5] = speedToPpm(setpoint_dxyz_.dx);
   msg.channels[6] = speedToPpm(setpoint_dxyz_.dy);
