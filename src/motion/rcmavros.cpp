@@ -103,7 +103,7 @@ void MavrosRCController::callback(const ros::TimerEvent &e) {
 
   msg.channels[1] = angleToPpm(setpoint_rpy_.roll);
   msg.channels[0] = angleToPpm(setpoint_rpy_.pitch);
-  msg.channels[3] = speedToPpm(setpoint_rpy_.dyaw);
+  msg.channels[3] = speedToPpm(setpoint_drpy_.dyaw);
 
   msg.channels[5] = speedToPpm(setpoint_dxyz_.dx);
   msg.channels[6] = speedToPpm(setpoint_dxyz_.dy);
