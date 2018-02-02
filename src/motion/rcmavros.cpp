@@ -21,21 +21,23 @@ const std::string kModeStabilize = "STABILIZE";
 constexpr float kPeriod = 0.1;
 
 MavrosRCController::MavrosRCController() {
+  // Wait for the mavros node to come up
+  while(!ros::service::exists("/mavros/set_mode", true)) {
+    ros::Duration(0.5).sleep();
+  }
+
   rc_pub_ = nh_.advertise<OverrideRCIn>("/mavros/rc/override", 10);
 
   // Service clients for arming and changing the mode of the sub
   arming_client_ = nh_.serviceClient<CommandBool>("/mavros/cmd/arming");
-  mode_client_ = nh_.serviceClient<SetMode>("mavros/set_mode");
+  mode_client_ = nh_.serviceClient<SetMode>("/mavros/set_mode");
 
   SetMode mode_cmd;
   mode_cmd.request.base_mode = 0;
   mode_cmd.request.custom_mode = kModeDepthHold;
 
-  if (mode_client_.call(mode_cmd)) {
-    ROS_INFO("Mode changed");
-  } else {
+  while (!mode_client_.call(mode_cmd)) {
     ROS_ERROR("Failed to set mavros mode");
-    // TODO: Handle error
   }
 
   // Zero all of the setpoints
