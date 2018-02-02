@@ -10,6 +10,9 @@
   <arg name="pluginlists_yaml" value="$(find robosub)/launch/mavros_pluginlists.yaml"/>
   <arg name="config_yaml" value="$(find mavros)/launch/apm_config.yaml"/>
 
+  <!-- Launch heartbeat node to kill the sub on connection loss -->
+  <node pkg="heartbeat" type="heartbeat.sh" name="heartbeat" required="true" output="screen" />
+
   <node pkg="mavros" type="mavros_node" name="mavros" required="true" clear_params="true" output="$(arg log_output)">
     <param name="fcu_url" value="$(arg fcu_url)"/>
     <param name="gcs_url" value="$(arg gcs_url)"/>

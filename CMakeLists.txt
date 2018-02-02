@@ -56,7 +56,7 @@ include_directories(
 
 ## Mark executable scripts (Python etc.) for installation
 install(PROGRAMS
-  tools/heartbeat.sh
+  bin/heartbeat.sh
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
