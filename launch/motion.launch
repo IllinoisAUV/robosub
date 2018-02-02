@@ -1,4 +1,7 @@
 <launch>
+  <!-- Launch the mavros connection -->
+  <include file="$(find robosub)/launch/mavros.launch" />
+
   <param name="/angular_position_topic" value="/setpoint/angular/position" type="str" />
   <param name="/angular_velocity_topic" value="/setpoint/angular/velocity" type="str" />
   <param name="/linear_position_topic" value="/setpoint/linear/position" type="str" />
