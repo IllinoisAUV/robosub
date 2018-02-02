@@ -18,7 +18,11 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   image_transport
   sensor_msgs
+  roslaunch
 )
+
+# Check all files in the launch folder for common mistakes
+roslaunch_add_file_check(launch)
 
 find_package(OpenCV REQUIRED)
 
