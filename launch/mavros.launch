@@ -9,10 +9,10 @@
   <arg name="tgt_component" default="1"/>
   <arg name="pluginlists_yaml" value="$(find robosub)/launch/mavros_pluginlists.yaml"/>
   <arg name="config_yaml" value="$(find mavros)/launch/apm_config.yaml"/>
-  <arg name="log_output" default="screen"/>
+  <arg name="log_output" default="log"/>
 
   <!-- Launch heartbeat node to kill the sub on connection loss -->
-  <node pkg="robosub" type="heartbeat.sh" name="heartbeat" required="true" output="screen" />
+  <node pkg="robosub" type="heartbeat.sh" name="heartbeat" required="true" output="$(arg log_output)" />
 
   <node pkg="mavros" type="mavros_node" name="mavros" required="true" clear_params="true" output="$(arg log_output)">
     <param name="fcu_url" value="$(arg fcu_url)"/>
