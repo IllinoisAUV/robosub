@@ -10,21 +10,46 @@
 
 class MotionController {
  public:
+  MotionController();
   virtual ~MotionController() {}
 
+  void Start();
+
   // Set roll, pitch and yaw
-  virtual void SetRPY(const robosub::AngularPosition rpy) = 0;
+  void SetRPY(const robosub::AngularPosition rpy);
 
   // Set roll, pitch and yaw velocity
-  virtual void SetdRPY(const robosub::AngularVelocity drpy) = 0;
+  void SetdRPY(const robosub::AngularVelocity drpy);
 
   // Set XYZ position
-  virtual void SetXYZ(const robosub::LinearPosition xyz) = 0;
+  void SetXYZ(const robosub::LinearPosition xyz);
 
   // Set XYZ velocity in body frame
-  virtual void SetdXYZ(const robosub::LinearVelocity dxyz) = 0;
+  void SetdXYZ(const robosub::LinearVelocity dxyz);
 
-  virtual void arming(const std_msgs::Bool arm) = 0;
+  // Arm or disarm the sub
+  void Arming(const std_msgs::Bool arm);
+
+  // Run an iteration of the motion controller
+  void Update(const ros::TimerEvent &event);
+
+ protected:
+  virtual void DoUpdate() = 0;
+  virtual void DoArming(bool arm) = 0;
+
+  // Period with which Update() is called
+  constexpr static float kPeriod = 0.1;
+
+  // Velocity timeouts
+  void VelocityTimeout(const ros::TimerEvent &event);
+
+  robosub::AngularPosition setpoint_rpy_;
+  robosub::AngularVelocity setpoint_drpy_;
+  robosub::LinearPosition setpoint_xyz_;
+  robosub::LinearVelocity setpoint_dxyz_;
+
+  ros::Timer timer_;
+  ros::NodeHandle nh_;
 };
 
 #endif  // MOTION_CONTROLLER_H

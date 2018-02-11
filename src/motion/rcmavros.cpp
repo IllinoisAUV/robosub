@@ -4,10 +4,6 @@
 #include <mavros_msgs/SetMode.h>
 #include <string>
 
-using robosub::AngularPosition;
-using robosub::AngularVelocity;
-using robosub::LinearPosition;
-using robosub::LinearVelocity;
 using std_msgs::Bool;
 
 using mavros_msgs::CommandBool;
@@ -18,15 +14,13 @@ const std::string kModeDepthHold = "ALT_HOLD";
 const std::string kModeManual = "MANUAL";
 const std::string kModeStabilize = "STABILIZE";
 
-constexpr float kPeriod = 0.1;
-
 MavrosRCController::MavrosRCController() {
   // Wait for the mavros node to come up
   while(!ros::service::exists("/mavros/set_mode", true)) {
     ros::Duration(0.5).sleep();
   }
 
-  rc_pub_ = nh_.advertise<OverrideRCIn>("/mavros/rc/override", 10);
+  rc_pub_ = nh_.advertise<OverrideRCIn>("/mavros/rc/override", 1);
 
   // Service clients for arming and changing the mode of the sub
   arming_client_ = nh_.serviceClient<CommandBool>("/mavros/cmd/arming");
@@ -39,40 +33,12 @@ MavrosRCController::MavrosRCController() {
   while (!mode_client_.call(mode_cmd)) {
     ROS_ERROR("Failed to set mavros mode");
   }
-
-  // Zero all of the setpoints
-  setpoint_rpy_.roll = setpoint_rpy_.pitch = setpoint_rpy_.yaw = 0.0;
-  setpoint_drpy_.droll = setpoint_drpy_.dpitch = setpoint_drpy_.dyaw = 0.0;
-  setpoint_xyz_.x = setpoint_xyz_.y = setpoint_xyz_.z = 0.0;
-  setpoint_dxyz_.dx = setpoint_dxyz_.dy = setpoint_dxyz_.dz = 0.0;
-
-  // Start the control timer
-  timer_ =
-      nh_.createTimer(ros::Duration(kPeriod), &MavrosRCController::callback, this);
-}
-
-void MavrosRCController::SetRPY(const AngularPosition rpy) {
-  // Is actually a no-op due to lack of position control
-  setpoint_rpy_ = rpy;
-}
-
-void MavrosRCController::SetdRPY(const AngularVelocity drpy) {
-  setpoint_drpy_ = drpy;
-}
-
-void MavrosRCController::SetXYZ(const LinearPosition xyz) {
-  // Is actually a no-op due to lack of position control
-  setpoint_xyz_ = xyz;
-}
-
-void MavrosRCController::SetdXYZ(const LinearVelocity dxyz) {
-  setpoint_dxyz_ = dxyz;
 }
 
 // Send a message to mavros to arm or disarm the sub
-void MavrosRCController::arming(const Bool arm) {
+void MavrosRCController::DoArming(bool arm) {
   mavros_msgs::CommandBool srv;
-  srv.request.value = arm.data;
+  srv.request.value = arm;
   if (!arming_client_.call(srv)) {
     ROS_INFO("Failed to disarm");
     return;
@@ -96,7 +62,7 @@ uint16_t MavrosRCController::speedToPpm(double speed) {
 }
 
 // Control callback
-void MavrosRCController::callback(const ros::TimerEvent &e) {
+void MavrosRCController::DoUpdate() {
   OverrideRCIn msg;
 
   // Account for velocity setpoints
