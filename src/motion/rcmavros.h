@@ -14,7 +14,7 @@ class MavrosRCController : public MotionController {
  private:
   // Timer callback from MotionController
   virtual void DoUpdate() override;
-  virtual void DoArming (bool arm) override;
+  virtual void DoArming(bool arm) override;
   ros::Publisher rc_pub_;
 
   ros::ServiceClient arming_client_;
