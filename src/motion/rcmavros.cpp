@@ -16,7 +16,7 @@ const std::string kModeStabilize = "STABILIZE";
 
 MavrosRCController::MavrosRCController() {
   // Wait for the mavros node to come up
-  while(!ros::service::exists("/mavros/set_mode", true)) {
+  while (!ros::service::exists("/mavros/set_mode", true)) {
     ros::Duration(0.5).sleep();
   }
 

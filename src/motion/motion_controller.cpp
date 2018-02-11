@@ -24,7 +24,7 @@ void MotionController::Start() {
   ros::Subscriber drpy_sub = nh_.subscribe("/setpoint/angular/velocity", 1,
                                            &MotionController::SetdRPY, this);
   ros::Subscriber xyz_sub = nh_.subscribe("/setpoint/linear/position", 1,
-                                         &MotionController::SetXYZ, this);
+                                          &MotionController::SetXYZ, this);
   ros::Subscriber dxyz_sub = nh_.subscribe("/setpoint/linear/velocity", 1,
                                            &MotionController::SetdXYZ, this);
   ros::Subscriber kill_sub =
