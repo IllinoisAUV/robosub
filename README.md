@@ -21,3 +21,6 @@ We use clang-format to enforce style in the C++ files. You can format all of you
 
 # Building with Docker
 If you have the docker daemon running, you can just run `./build.sh host`. This will build your code into `build/host`
+
+# Building for the Jetson
+If you have the docker daemon running, you can just run `./build.sh jetson`. This will build your code into `build/jetson`
