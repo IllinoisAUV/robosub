@@ -25,5 +25,8 @@
     <!-- load blacklist, config -->
     <rosparam command="load" file="$(arg pluginlists_yaml)"/>
     <rosparam command="load" file="$(arg config_yaml)"/>
+
+    <remap from="/mavros/local_position/pose" to="/pose" />
+    <remap from="/mavros/local_position/velocity" to="/velocity" />
   </node>
 </launch>
