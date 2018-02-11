@@ -10,3 +10,5 @@ devel/
 
 *.pyc
 __pycache__
+
+*.log

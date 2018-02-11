@@ -1,10 +1,12 @@
 #additional target to perform cppcheck run, requires cppcheck
-find_program(PYLINT pylint)
+find_program(PYLINT pylint PATHS /usr/bin/pylint)
 # get all python project files
 file(GLOB_RECURSE ALL_SOURCE_FILES *.py)
-MESSAGE( STATUS "${ALL_SOURCE_FILES}")
+
 add_custom_target(
   pylint
-  COMMAND ${PYLINT}
+  COMMAND env PYLINTHOME=${CMAKE_CURRENT_SOURCE_DIR} 
+  ${PYLINT}
+  --rcfile ${CMAKE_CURRENT_SOURCE_DIR}/.pylintrc
   ${ALL_SOURCE_FILES}
 )

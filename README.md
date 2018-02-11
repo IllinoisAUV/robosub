@@ -18,29 +18,6 @@ CI will check that the code builds and the tests pass. In addition, it will run 
 ## Style
 We use clang-format to enforce style in the C++ files. You can format all of your code using `catkin_make --make-args clangformat`. It will automatically format all of your .cpp and .h files.
 
-## Running the web UI
 
-First, install the dependencies
-```
-pip install -r src/webgui/requirements.txt
-```
-
-Next, build the repository
-```
-catkin_make
-```
-
-Source the setup file
-```
-source devel/setup.bash
-```
-
-IN ANOTHER TERMINAL start roscore
-```
-roscore
-```
-
-Run the code
-```
-rosrun webgui run_server
-```
+# Building with Docker
+If you have the docker daemon running, you can just run `./build.sh host`. This will build your code into `build/host`
