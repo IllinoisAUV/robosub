@@ -60,6 +60,10 @@ install(PROGRAMS
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
+
+# Macros for declaring ros nodes and libraries 
+include(cmake/ros-node.cmake)
+
 # Helpers declares libraries that are convenient for building ros messages
 add_subdirectory(src/helpers)
 

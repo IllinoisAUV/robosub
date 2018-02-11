@@ -1,2 +1,5 @@
-add_executable(switch_node switch_node.cpp gpio.cpp)
-target_link_libraries(switch_node ${catkin_LIBRARIES})
+# Sysfs GPIO pin library
+library(gpio gpio.cpp)
+
+# Node for a switch
+node(switch_node switch_node.cpp gpio)
