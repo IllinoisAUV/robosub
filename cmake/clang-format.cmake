@@ -14,7 +14,7 @@ add_custom_target(
 # For use in CI
 add_custom_target(
   clangformat-check
-  COMMAND ${CMAKE_CURRENT_LIST_DIR}/../tools/ci/clang-format-check.sh
-  -style=Google
-  ${ALL_SOURCE_FILES}
+  COMMAND bash 
+  -c 
+  "clang-format -output-replacements-xml -style=Google ${ALL_SOURCE_FILES} | grep "<replacement " > /dev/null && exit 1 || exit 0"
 )
