@@ -32,5 +32,7 @@
   <run_depend>image_transport</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>zed-ros-wrapper</run_depend>
+  <run_depend>gscam</run_depend>
+  <run_depend>image_proc</run_depend>
 
 </package>
