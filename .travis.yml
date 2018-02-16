@@ -10,8 +10,6 @@ script:
   # Run pylint
   - ./build.sh host --make-args pylint
 
-  # Check if the code builds
-  - docker run -it -v $(pwd):/catkin_ws/src/robosub ci_builder catkin_make
-
-  # Run tests
-  - docker run -it -v $(pwd):/catkin_ws/src/robosub ci_builder catkin_make run_tests
+  # Check if the code builds using both toolchains
+  - ./build.sh host
+  - ./build.sh jetson
