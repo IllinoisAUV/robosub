@@ -5,7 +5,7 @@ services:
 
 script:
   # Check if formatting is required
-  - ./build.sh host catkin_make --make-args clangformat-check
+  - ./build.sh host --make-args clangformat-check
 
   # Run pylint
   - ./build.sh host --make-args pylint

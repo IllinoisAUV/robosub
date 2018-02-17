@@ -14,7 +14,5 @@ add_custom_target(
 # For use in CI
 add_custom_target(
   clangformat-check
-  COMMAND bash 
-  -c 
-  "clang-format -output-replacements-xml -style=Google ${ALL_SOURCE_FILES} | grep "<replacement " > /dev/null && exit 1 || exit 0"
+  COMMAND clang-format -output-replacements-xml -style=Google ${ALL_SOURCE_FILES} | grep \"<replacement \" > /dev/null && exit 1 || exit 0
 )
