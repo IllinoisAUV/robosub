@@ -8,19 +8,24 @@ Run `catkin_make` in the repository root directory
 ## Running the tests
 Run `catkin_make run_tests` in the repository root directory
 
-## CI
-
-Continuous integration is run on [Travis CI](https://travis-ci.org), through the free open source plan. Since Travis does not support Ubuntu 16.04, we have to rely on docker containers for installing kinetic. This also gives us a way to control the environment and what is installed.
-
-CI will check that the code builds and the tests pass. In addition, it will run linters on the code.
-
 
 ## Style
-We use clang-format to enforce style in the C++ files. You can format all of your code using `catkin_make --make-args clangformat`. It will automatically format all of your .cpp and .h files.
+We use clang-format to enforce style in the C++ files. You can format all of
+your code using `catkin_make --make-args clangformat`. It will automatically
+format all of your .cpp and .h files.
 
 
 # Building with Docker
-If you have the docker daemon running, you can just run `./build.sh host`. This will build your code into `build/host`
+If you have the docker daemon running, you can just run `./build.sh <target>`,
+where target is either `host` or `jetson`. It will build your code in
+`build/<target>`.  Docker is a useful tool that lets you run "containers" on any
+computer. If you are on Mac or Linux, and have the docker daemon running,
+`build.sh` will build your code correctly. `build.sh` has a few other commands,
+which are documented in its --help option.
 
-# Building for the Jetson
-If you have the docker daemon running, you can just run `./build.sh jetson`. This will build your code into `build/jetson`
+## CI
+
+Continuous integration is run on [Travis CI](https://travis-ci.org), through the
+free open source plan. CI will check that the code builds and the tests pass. In
+addition, it will run linters on the code.
+
