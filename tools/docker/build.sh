@@ -1,4 +1,7 @@
 #!/bin/bash
+
+# This file builds a specified container. You probably should be looking at the
+# repository root's build.sh
 set -e
 
 SCRIPT_DIR=$(dirname $(readlink -f $0))
