@@ -1,8 +1,11 @@
 ---
 - hosts: jetson
   tasks:
-    - name: Install mavros
+    - name: Install packages
       apt:
-        name: ros-kinetic-mavros
-        update_cache: yes
+        name: "{{ item }}"
+        state: installed
       become: true
+      with_items:
+        - ros-kinetic-mavros
+        - ros-kinetic-gscam
