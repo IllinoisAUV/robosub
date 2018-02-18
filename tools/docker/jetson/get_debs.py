@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-# This file determines all of the dependencies of a package and outputs the to 
-# stdout with for installation. Running ./get-debs.py <pkg1> <pkg2> ... will 
+# This file determines all of the dependencies of a package and outputs the to
+# stdout with for installation. Running ./get-debs.py <pkg1> <pkg2> ... will
 # output a list of packages that should be install
 from __future__ import print_function
 
