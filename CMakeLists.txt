@@ -32,6 +32,7 @@ add_message_files(
   LinearVelocity.msg
   AngularPosition.msg
   AngularVelocity.msg
+  VisualTarget.msg
 )
 
 

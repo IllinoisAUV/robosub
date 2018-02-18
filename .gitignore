@@ -15,3 +15,5 @@ __pycache__
 
 # Ansible retry files
 *.retry
+# MacOS Files
+.DS_Store

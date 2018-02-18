@@ -11,8 +11,7 @@ constexpr float kAlt = 0.01;
 // Forward velocity of the sub
 constexpr float kSpeed = 0.1;
 
-BasicTargetFollower::BasicTargetFollower(uint32_t width, uint32_t height)
-    : x_center_(width / 2.0), y_center_(height / 2.0) {
+BasicTargetFollower::BasicTargetFollower() {
   std::string angular_vel_topic;
   std::string linear_vel_topic;
   if (!ros::param::get("angular_velocity_topic", angular_vel_topic)) {
@@ -27,10 +26,10 @@ BasicTargetFollower::BasicTargetFollower(uint32_t width, uint32_t height)
   linear_vel_pub_ = nh_.advertise<robosub::LinearVelocity>(linear_vel_topic, 1);
 }
 
-void BasicTargetFollower::update(uint32_t x, uint32_t y) {
+void BasicTargetFollower::update(const robosub::VisualTarget::ConstPtr& msg) {
   // Center the values around the middle of the image
-  float x_err = x - x_center_;
-  float y_err = y - y_center_;
+  float x_err = msg->x;
+  float y_err = msg->y;
 
   // Adjust the yaw to point at the target
   float dyaw = x_err * kYaw;

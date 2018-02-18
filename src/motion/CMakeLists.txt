@@ -1,6 +1,8 @@
 library(motion_controller motion_controller.cpp)
 library(rcmavros rcmavros.cpp)
 
-library(basic_target_follower basic_target_follower.cpp)
 
 node(motion_controller_node motion_controller_node.cpp motion_controller rcmavros ctors)
+
+library(basic_target_follower basic_target_follower.cpp)
+node(basic_target_follower_node basic_target_follower_node.cpp basic_target_follower ctors)
