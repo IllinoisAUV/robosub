@@ -7,11 +7,11 @@ dpkg -i /tmp/cuda-repo-ubuntu1604_8.0.61-1_amd64.deb
 
 
 set +e
-apt-get update
+apt-get -qq update
 set -e
 
-# Install cuda 9.1
-apt install -y cuda-toolkit-8-0
+# Install cuda 8.0
+apt-get -qq install -y cuda-toolkit-8-0
 
 
 echo 'export PATH=/usr/local/cuda/bin:$PATH' >> /root/.bashrc

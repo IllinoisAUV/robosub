@@ -7,13 +7,13 @@ dpkg -i /tmp/cuda-repo-ubuntu1604_8.0.61-1_amd64.deb
 
 
 set +e
-apt-get update
+apt-get -qq update
 set -e
 
 
 
 # Install cuda 9.1
-apt-get install -y cuda-cross-aarch64-8-0
+apt-get -qq install -y cuda-cross-aarch64-8-0
 
 
 ln -sf /usr/local/cuda-8.0/targets/aarch64-linux/lib /usr/local/cuda-8.0/lib64
