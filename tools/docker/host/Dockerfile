@@ -1,6 +1,6 @@
 FROM ros:kinetic
 
-RUN apt-get update && apt-get install -qq -y \
+RUN apt-get update && apt-get install -y \
     ros-kinetic-mavros \
     ros-kinetic-cv-bridge \
     ros-kinetic-image-transport \
