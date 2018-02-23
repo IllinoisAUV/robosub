@@ -13,7 +13,7 @@
 
     - name: Download sdk
       get_url:
-        url: 'https://cdn.stereolabs.com/developers/downloads/ZED_SDK_Linux_JTX2_v2.3.0_JP3.1.run'
+        url: 'https://download.stereolabs.com/zedsdk/2.3/tegrax2_jp31'
         dest: /tmp/ZED_SDK.run
 
     - name: Make installer executable
