@@ -3,9 +3,9 @@
   vars: 
     pub_key: "{{ lookup('file', 'id_rsa_jetson.pub') }}"
   tasks:
-    name: Add key to authorized keys
-    lineinfile:
-      path: /home/ubuntu/.ssh/authorized_keys
-      line: "{{ pub_key }}"
-      state: present
-      create: yes
+    - name: Add key to authorized keys
+      lineinfile:
+        path: /home/ubuntu/.ssh/authorized_keys
+        line: "{{ pub_key }}"
+        state: present
+        create: yes
