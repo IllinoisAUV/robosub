@@ -23,7 +23,6 @@
 
     - name: Install zed sdk
       command: /tmp/ZED_SDK.run --quiet -- silent
-      become: true
 
     - name: Chown zed sdk files
       file:
