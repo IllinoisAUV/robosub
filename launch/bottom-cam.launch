@@ -15,8 +15,8 @@
   <!--       ns="$(arg cam_name)" /> -->
 
   <!-- View the raw and rectified output -->
-  <node pkg="image_view" type="image_view" name="creative_view" >
-    <remap from="image" to="/$(arg cam_name)/image_raw" />
-  </node>
+  <!-- <node pkg="image_view" type="image_view" name="creative_view" > -->
+  <!--   <remap from="image" to="/$(arg cam_name)/image_raw" /> -->
+  <!-- </node> -->
     
 </launch>
