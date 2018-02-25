@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
-ROOT_DIR=$(dirname $(readlink -f $0))
+
+realpath() {
+    [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+}
+
+SCRIPT_PATH=$(realpath $0)
+ROOT_DIR=$(dirname $SCRIPT_PATH)
 
 
 function help() {

@@ -4,7 +4,12 @@
 # repository root's build.sh
 set -e
 
-SCRIPT_DIR=$(dirname $(readlink -f $0))
+realpath() {
+    [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+}
+
+SCRIPT_PATH=$(realpath $0)
+SCRIPT_DIR=$(dirname $SCRIPT_PATH)
 
 case $1 in 
     host)
