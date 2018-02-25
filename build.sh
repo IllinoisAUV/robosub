@@ -15,7 +15,7 @@ function help() {
     echo "  -h                          Print this help message"
     echo ""
     echo "Targets:"
-    echo "  host                        Builds code to be run on host into build/host/"
+    echo "  host (Default)              Builds code to be run on host into build/host/"
     echo "  jetson                      Builds code to be run on jetson into build/jetson/"
     echo "  clean                       Cleans build folders in build/"
     echo ""
@@ -24,12 +24,15 @@ function help() {
     echo "  --make-args=pylint          Runs pylint on all python code"
 }
 
+
 if [ "$1" == "-h" ]; then
     help
     exit 0
 fi
 
-TARGET=$1
+TARGET=${1:-host}
+
+# TARGET=$1
 case $TARGET in
     host);;
     jetson);;
