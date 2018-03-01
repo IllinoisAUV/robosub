@@ -20,8 +20,8 @@ function help() {
     echo "  clean                       Cleans build folders in build/"
     echo ""
     echo "Args:"
-    echo "  --make-args=clangformat     Formats all c++ using clang-format"
-    echo "  --make-args=pylint          Runs pylint on all python code"
+    echo "  --make-args=clang-format-check  Checks if all C++ is clang-format compliant"
+    echo "  --make-args=pylint              Runs pylint on all python code"
 }
 
 
