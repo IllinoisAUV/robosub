@@ -23,6 +23,7 @@ cache = apt.Cache()
 
 final = []
 for package in packages:
+    print(package, file=sys.stderr)
     if package.strip() == '':
         continue
     if cache.is_virtual_package(package):
