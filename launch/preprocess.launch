@@ -1,8 +1,20 @@
 <launch>
+  <arg name="view" default="false" />
   <arg name="input" default="/camera/image_raw" />
   <arg name="output" default="/camera/image_processed" />
   <node name="preprocess" pkg="robosub" type="preprocess_node">
     <remap from="input" to="$(arg input)"/>
     <remap from="output" to="$(arg output)"/>
   </node>
+
+
+  <node name="viewer" package="image_view" type="image_view" if="$(arg view)">
+    <remap from="image" to="$(arg output)" />
+  </node>
+
+  <node name="usb_camera" package="usb_cam" type="usb_cam_node" if="$(arg view)">
+    <param name="video_device" value="/dev/video0" />
+  </node>
+
+
 </launch>
