@@ -30,9 +30,14 @@ if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     exit 0
 fi
 
-TARGET=${1:-host}
 
-# TARGET=$1
+DOWNLOAD=
+TARGET=${1:-host}
+if [ "$TARGET" == "download" ]; then
+    DOWNLOAD=Y
+    TARGET=jetson
+fi
+
 case $TARGET in
     host);;
     jetson);;
@@ -62,3 +67,8 @@ rsync -r --delete --update --exclude=.git --exclude=build . build/$TARGET/src/$(
 pushd build/$TARGET
 $ROOT_DIR/tools/docker/$TARGET/run.sh ${@:2}
 popd
+
+
+if [ ! -z "$DOWNLOAD" ]; then
+    rsync -r --delete --update $ROOT_DIR/build/jetson/ ubuntu@10.0.0.2:~/catkin_ws/
+fi
