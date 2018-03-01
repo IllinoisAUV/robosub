@@ -3,7 +3,8 @@
   <arg name="cam_name" value="bottom_camera" />
 
   <!-- Start the GSCAM node -->
-  <env name="GSCAM_CONFIG" value="tcambin ! video/x-raw,format=BGRx,width=1920,height=1080,framerate=30/1 ! videoconvert ! video/x-raw,format=RGB ,width=1920,height=1080,framerate=30/1 ! videoconvert" />
+  <arg name="fps" value="30" />
+  <env name="GSCAM_CONFIG" value="tcambin ! video/x-raw,format=BGRx,width=1920,height=1080,framerate=$(arg fps)/1 ! videoconvert ! video/x-raw,format=RGB ,width=1920,height=1080,framerate=$(arg fps)/1 ! videoconvert" />
   <node pkg="gscam" type="gscam" name="$(arg cam_name)">
     <param name="camera_name" value="$(arg cam_name)" />
     <param name="camera_info_url" value="file://$(find robosub)/param/bottom_camera.yaml" />
