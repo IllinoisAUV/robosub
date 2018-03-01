@@ -1,0 +1,5 @@
+<launch>
+  <node name="target_follower" pkg="robosub" type="basic_target_follower_node">
+    <param name="target_topic" value="/target" />
+  </node>
+</launch>
