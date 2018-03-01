@@ -6,8 +6,8 @@
 //
 using namespace cv;
 
-Mat whiteBalance(Mat &src) {
-  Mat img = src.clone();
+void whiteBalance(Mat &img) {
+  /* Mat img = src.clone(); */
   /* auto balancer = xphoto::createGrayworldWB(); */
   /* balancer->balanceWhite(img, result); */
   std::vector<Mat> channels;
@@ -28,5 +28,4 @@ Mat whiteBalance(Mat &src) {
   normalize(channels[2], channels[2], 0, 255, NORM_MINMAX);
   merge(channels, img);
   cvtColor(img, img, CV_HSV2BGR);
-  return img;
 }

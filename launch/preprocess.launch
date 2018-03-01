@@ -1,0 +1,8 @@
+<launch>
+  <arg name="input" default="/camera/image_raw" />
+  <arg name="output" default="/camera/image_processed" />
+  <node name="preprocess" pkg="robosub" type="preprocess_node">
+    <remap from="input" to="$(arg input)"/>
+    <remap from="output" to="$(arg output)"/>
+  </node>
+</launch>

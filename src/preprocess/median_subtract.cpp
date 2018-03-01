@@ -2,7 +2,7 @@
 
 using namespace cv;
 
-Mat subtractMedian(Mat &src) {
+void subtractMedian(Mat &src) {
   /* std::vector<Mat> channels; */
   /* split(src, channels); */
 
@@ -13,5 +13,5 @@ Mat subtractMedian(Mat &src) {
 
   /* Mat res(src.rows, src.cols, CV_8UC3); */
   /* res = m; */
-  return src - m;
+  src -= m;
 }
