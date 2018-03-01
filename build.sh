@@ -12,20 +12,20 @@ ROOT_DIR=$(dirname $SCRIPT_PATH)
 function help() {
     echo "Usage: $(basename "$0") [options] [target] [args]"
     echo "Options:"
-    echo "  -h                          Print this help message"
+    echo "  -h, --help                      Print this help message"
     echo ""
     echo "Targets:"
-    echo "  host (Default)              Builds code to be run on host into build/host/"
-    echo "  jetson                      Builds code to be run on jetson into build/jetson/"
-    echo "  clean                       Cleans build folders in build/"
+    echo "  host (Default)                  Builds code to be run on host into build/host/"
+    echo "  jetson                          Builds code to be run on jetson into build/jetson/"
+    echo "  clean                           Cleans build folders in build/"
+    echo "  clang-format                    Runs clang format on all C++ code"
     echo ""
     echo "Args:"
     echo "  --make-args=clang-format-check  Checks if all C++ is clang-format compliant"
     echo "  --make-args=pylint              Runs pylint on all python code"
 }
 
-
-if [ "$1" == "-h" ]; then
+if [ "$1" == "-h" ] || [ "$1" == "--help" ]; then
     help
     exit 0
 fi
@@ -36,6 +36,10 @@ TARGET=${1:-host}
 case $TARGET in
     host);;
     jetson);;
+    clang-format)
+        docker run -it -v $(pwd):/catkin_ws/src/robosub -w /catkin_ws/ robosub:host catkin_make --make-args clang-format
+        exit 0;
+        ;;
     clean)
         rm -rf build/*
         exit 0
