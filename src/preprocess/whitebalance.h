@@ -1,4 +1,4 @@
 #pragma once
 #include <opencv/cv.h>
 
-cv::Mat whiteBalance(cv::Mat &img);
+void whiteBalance(cv::Mat &img);
