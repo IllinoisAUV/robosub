@@ -3,7 +3,7 @@
 
 
 ## Building the code to run locallly
-Run `catkin_make` in the repository root directory
+Run `catkin_make` in the catkin workspace
 
 ## Running the tests
 Run `catkin_make run_tests` in the repository root directory
@@ -11,8 +11,9 @@ Run `catkin_make run_tests` in the repository root directory
 
 ## Style
 We use clang-format to enforce style in the C++ files. You can format all of
-your code using `catkin_make --make-args clangformat`. It will automatically
-format all of your .cpp and .h files.
+your code using `catkin_make --make-args clang-format` in the catkin workspace 
+or `./build.sh clang-format`. It will automatically format all of your .cpp and
+.h files.
 
 
 # Building with Docker
@@ -21,7 +22,7 @@ where target is either `host` or `jetson`. It will build your code in
 `build/<target>`.  Docker is a useful tool that lets you run "containers" on any
 computer. If you are on Mac or Linux, and have the docker daemon running,
 `build.sh` will build your code correctly. `build.sh` has a few other commands,
-which are documented in its --help option.
+which are documented in its `-h` option.
 
 ## CI
 
