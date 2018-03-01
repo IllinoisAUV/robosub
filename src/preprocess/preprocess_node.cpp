@@ -1,8 +1,8 @@
-#include <ros/ros.h>
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
-#include <sensor_msgs/image_encodings.h>
+#include <ros/ros.h>
 #include <sensor_msgs/Image.h>
+#include <sensor_msgs/image_encodings.h>
 
 #include "median_subtract.h"
 #include "whitebalance.h"
@@ -11,7 +11,6 @@ using cv::Mat;
 
 image_transport::Publisher pub;
 image_transport::Subscriber sub;
-
 
 void process(Mat &img) {
   // img is in BGR
@@ -31,12 +30,12 @@ void callback(const sensor_msgs::ImageConstPtr &msg) {
     ROS_ERROR("cv_bridge exception: %s", e.what());
     return;
   }
-  
+
   process(cv_ptr->image);
   pub.publish(cv_ptr->toImageMsg());
 }
 
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   ros::init(argc, argv, "image_preprocessor");
 
   ros::NodeHandle nh;
