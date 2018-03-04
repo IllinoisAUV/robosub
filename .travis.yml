@@ -11,8 +11,8 @@ script:
   # Check if formatting is required
   - ./build.sh host --make-args clang-format-check
 
-  # Run pylint
-  - ./build.sh host --make-args pylint
+  # Run pylint - Don't do this. It's a real hassle because we import other peoples code
+  # - ./build.sh host --make-args pylint
 
   # Check if the code builds using both toolchains
   - ./build.sh host
