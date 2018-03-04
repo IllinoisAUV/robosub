@@ -32,6 +32,8 @@
 #
 ############################################################################
 
+# From https://github.com/bluerobotics/companion/
+
 #
 # Serial firmware uploader for the PX4FMU bootloader
 #
