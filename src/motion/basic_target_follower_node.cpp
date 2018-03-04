@@ -2,6 +2,8 @@
 #include <ros/ros.h>
 #include <string>
 
+// Node to wrap basic_target_follower. Messages are received on the target_topic
+// (specified by parameter) and published to the motion controller.
 int main(int argc, char **argv) {
   ros::init(argc, argv, "targetfollower");
   std::string target_topic;
