@@ -38,6 +38,6 @@
         repo: https://github.com/stereolabs/zed-ros-wrapper
 
     - name: Build and install zed package
-      shell: catkin_make install
+      shell: bash -ic "catkin_make install"
       args:
         chdir: ~/catkin_ws
