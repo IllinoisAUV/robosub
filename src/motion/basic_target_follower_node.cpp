@@ -11,7 +11,6 @@ int main(int argc, char **argv) {
     throw ros::Exception("Must specify target_topic parameter");
   }
 
-
   float kSpeed = 0.0;
   if (!ros::param::get("kSpeed", kSpeed)) {
     throw ros::Exception("Must specify kSpeed parameter");
@@ -29,8 +28,8 @@ int main(int argc, char **argv) {
   ros::NodeHandle nh;
   BasicTargetFollower tgtfollower(kSpeed, kAlt, kYaw);
 
-  ros::Subscriber sub =
-      nh.subscribe(target_topic, 10, &BasicTargetFollower::update, &tgtfollower);
+  ros::Subscriber sub = nh.subscribe(
+      target_topic, 10, &BasicTargetFollower::update, &tgtfollower);
   ros::spin();
 
   return 0;
