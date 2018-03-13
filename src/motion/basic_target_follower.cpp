@@ -6,12 +6,8 @@
 #include "helpers/AngularVelocity.h"
 #include "helpers/LinearVelocity.h"
 
-constexpr float kYaw = 0.01;
-constexpr float kAlt = 0.01;
-// Forward velocity of the sub
-constexpr float kSpeed = 0.1;
-
-BasicTargetFollower::BasicTargetFollower() {
+BasicTargetFollower::BasicTargetFollower(float kSpeed, float kAlt, float kYaw)
+    : kSpeed_(kSpeed), kAlt_(kAlt), kYaw_(kYaw) {
   std::string angular_vel_topic;
   std::string linear_vel_topic;
   if (!ros::param::get("angular_velocity_topic", angular_vel_topic)) {
@@ -32,12 +28,12 @@ void BasicTargetFollower::update(const robosub::VisualTarget::ConstPtr& msg) {
   float y_err = msg->y;
 
   // Adjust the yaw to point at the target
-  float dyaw = x_err * kYaw;
+  float dyaw = x_err * kYaw_;
   robosub::AngularVelocity angular = AngularVelocity(0, 0, dyaw);
 
   // Line up altitude
-  float dalt = y_err * kAlt;
-  robosub::LinearVelocity linear = LinearVelocity(kSpeed, 0, dalt);
+  float dalt = y_err * kAlt_;
+  robosub::LinearVelocity linear = LinearVelocity(kSpeed_, 0, dalt);
 
   angular_vel_pub_.publish(angular);
   linear_vel_pub_.publish(linear);

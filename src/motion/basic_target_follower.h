@@ -10,7 +10,7 @@
 // currently being used allow angular and linear velocity control
 class BasicTargetFollower {
  public:
-  BasicTargetFollower();
+  BasicTargetFollower(float kSpeed, float kAlt, float kYaw);
 
   // Method to generate motion commands based on the position on the screen.
   // Must be called around 1 Hz. Assumes that camera is centered on the sub
@@ -19,10 +19,25 @@ class BasicTargetFollower {
   //  msg->y position of the target on the screen, relative to the center.
   void update(const robosub::VisualTarget::ConstPtr& msg);
 
+  void setkAlt(float kAlt) {
+    kAlt_ = kAlt;
+  }
+
+  void setkYaw(float kYaw) {
+    kYaw_ = kYaw;
+  }
+  void setkSpeed(float kSpeed) {
+    kSpeed_ = kSpeed;
+  }
+
  private:
   ros::NodeHandle nh_;
   ros::Publisher angular_vel_pub_;
   ros::Publisher linear_vel_pub_;
+
+  float kSpeed_;
+  float kAlt_;
+  float kYaw_;
 };
 
 #endif  // TARGET_FOLLOWER_H
