@@ -1,12 +1,25 @@
 ---
 - hosts: jetson
   tasks:
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+      become: true
+
+    - name: Enable all repositories
+      replace:
+        path: /etc/apt/sources.list
+        regexp: '# deb'
+        replace: 'deb'
+      become: true
+
     - name: Install repository
       apt_repository:
         repo: "deb http://packages.ros.org/ros/ubuntu xenial main"
         state: present
         filename: ros-kinetic
       become: true
+
     - name: Get key
       apt_key:
         id: 421C365BD9FF1F717815A3895523BAEEB01FA116

@@ -1,0 +1,28 @@
+---
+- hosts: jetson
+  tasks:
+    - name: Check if CUDA 8 is installed
+      stat:
+        path: /usr/local/cuda
+      register: cuda
+
+    - name: Download CUDA 8 repo deb
+      get_url:
+        url: 'http://developer.download.nvidia.com/devzone/devcenter/mobile/jetpack_l4t/006/linux-x64/cuda-repo-l4t-8-0-local_8.0.34-1_arm64.deb'
+        dest: /tmp/cuda8.deb
+      when: not cuda.stat.exists
+
+    - name: Install CUDA 8 repo deb
+      apt: deb=/tmp/cuda8.deb
+      become: true
+      when: not cuda.stat.exists
+
+    - name: Install CUDA 8
+      apt:
+        name: cuda-toolkit-8-0
+        state: latest
+        update_cache: yes
+      become: true
+      when: not cuda.stat.exists
+
+

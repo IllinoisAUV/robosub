@@ -12,8 +12,10 @@
 
 - import_playbook: install-key.yml
 - import_playbook: install-networking.yml
+- import_playbook: install-cuda.yml
 - import_playbook: install-ros.yml
 - import_playbook: install-packages.yml
 - import_playbook: install-udev.yml
 - import_playbook: install-tiscamera.yml
 - import_playbook: setup-catkin.yml
+- import_playbook: install-zed.yml
