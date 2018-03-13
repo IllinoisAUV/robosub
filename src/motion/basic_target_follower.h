@@ -19,16 +19,10 @@ class BasicTargetFollower {
   //  msg->y position of the target on the screen, relative to the center.
   void update(const robosub::VisualTarget::ConstPtr& msg);
 
-  void setkAlt(float kAlt) {
-    kAlt_ = kAlt;
-  }
+  void setkAlt(float kAlt) { kAlt_ = kAlt; }
 
-  void setkYaw(float kYaw) {
-    kYaw_ = kYaw;
-  }
-  void setkSpeed(float kSpeed) {
-    kSpeed_ = kSpeed;
-  }
+  void setkYaw(float kYaw) { kYaw_ = kYaw; }
+  void setkSpeed(float kSpeed) { kSpeed_ = kSpeed; }
 
  private:
   ros::NodeHandle nh_;
