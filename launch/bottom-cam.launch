@@ -3,12 +3,15 @@
   <arg name="cam_name" value="bottom_camera" />
 
   <!-- Start the GSCAM node -->
-  <arg name="fps" value="30" />
-  <env name="GSCAM_CONFIG" value="tcambin ! video/x-raw,format=BGRx,width=1920,height=1080,framerate=$(arg fps)/1 ! videoconvert ! video/x-raw,format=RGB ,width=1920,height=1080,framerate=$(arg fps)/1 ! videoconvert" />
+  <!-- See `tcam-ctrl -c <serial number>` for available frame rates and resolutions -->
+  <arg name="fps" default="30" />
+  <arg name="width" default="640" />
+  <arg name="height" default="480" />
+  <env name="GSCAM_CONFIG" value="tcambin ! video/x-raw,format=BGRx,width=$(arg width),height=$(arg height),framerate=$(arg fps)/1 ! videoconvert ! video/x-raw,format=RGB,width=$(arg width),height=$(arg height),framerate=$(arg fps)/1 ! videoconvert" />
   <node pkg="gscam" type="gscam" name="$(arg cam_name)">
     <param name="camera_name" value="$(arg cam_name)" />
     <param name="camera_info_url" value="file://$(find robosub)/param/bottom_camera.yaml" />
-    <remap from="camera/image_raw" to="$(arg cam_name)/image_raw" />
+    <remap from="/camera/image_raw" to="/$(arg cam_name)/image_raw" />
   </node>
 
   <!-- Provide rectification -->
