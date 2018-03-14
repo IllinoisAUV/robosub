@@ -9,7 +9,7 @@
       become: true
 
 
-
+- import_playbook: install-general.yml
 - import_playbook: install-key.yml
 - import_playbook: install-networking.yml
 - import_playbook: install-cuda.yml

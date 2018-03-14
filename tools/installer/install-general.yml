@@ -1,0 +1,9 @@
+---
+- hosts: jetson
+  tasks:
+    - name: Disable apt-daily.service
+      systemd:
+        name: apt-daily.service
+        state: stopped
+        enabled: no
+      become: true
