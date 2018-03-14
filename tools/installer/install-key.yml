@@ -3,6 +3,7 @@
   vars: 
     pub_key: "{{ lookup('file', 'id_rsa_jetson.pub') }}"
   tasks:
+    # Theoretically redundant with how we jetpack the Jetsons
     - name: Add key to authorized keys
       lineinfile:
         path: /home/ubuntu/.ssh/authorized_keys
