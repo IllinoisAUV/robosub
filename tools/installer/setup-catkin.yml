@@ -6,3 +6,10 @@
         state: directory
         recurse: yes
         path: /home/ubuntu/catkin_ws/src
+
+    - name: Source devel/setup.bash in bashrc
+      lineinfile:
+        create: yes
+        state: present
+        line: "source ~/catkin_ws/devel/setup.bash"
+        path: ~/.bashrc
