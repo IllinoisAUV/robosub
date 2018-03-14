@@ -17,6 +17,7 @@ function help() {
     echo "Targets:"
     echo "  host (Default)                  Builds code to be run on host into build/host/"
     echo "  jetson                          Builds code to be run on jetson into build/jetson/"
+    echo "  download                        Builds code to be run on the jetson and uploads the code to the jetson"
     echo "  clean                           Cleans build folders in build/"
     echo "  clang-format                    Runs clang format on all C++ code"
     echo ""
