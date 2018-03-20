@@ -11,3 +11,7 @@
         - ros-kinetic-gscam
         - gstreamer1.0-plugins-base
         - gstreamer1.0-plugins-bad
+
+    - name: Install geographiclib database
+      shell: /opt/ros/kinetic/lib/mavros/install_geographiclib_datasets.sh
+      become: true
