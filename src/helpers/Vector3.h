@@ -1,7 +1,14 @@
-#ifndef VECTOR3_H
-#define VECTOR3_H
-
+#pragma once
 #include <geometry_msgs/Vector3.h>
-geometry_msgs::Vector3 Bool(double x, double y, double z);
 
-#endif  // VECTOR3_H
+inline geometry_msgs::Vector3 Vector3(double x, double y, double z) {
+  geometry_msgs::Vector3 val;
+  val.x = x;
+  val.y = y;
+  val.z = z;
+  return val;
+}
+
+inline geometry_msgs::Vector3 Vector3() {
+  return Vector3(0,0,0);
+}

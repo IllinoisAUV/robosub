@@ -2,7 +2,11 @@
 #include <mavros_msgs/CommandBool.h>
 #include <mavros_msgs/OverrideRCIn.h>
 #include <mavros_msgs/SetMode.h>
+#include <tf/tf.h>
 #include <string>
+
+#include "helpers/Vector3.h"
+#include "helpers/Quaternion.h"
 
 using std_msgs::Bool;
 
@@ -65,17 +69,27 @@ uint16_t MavrosRCController::speedToPpm(double speed) {
 void MavrosRCController::DoUpdate() {
   OverrideRCIn msg;
 
-  // Account for velocity setpoints
-  setpoint_rpy_.roll += setpoint_drpy_.droll * kPeriod;
-  setpoint_rpy_.pitch += setpoint_drpy_.dpitch * kPeriod;
+  // Turn velocity setpoints into pose setpoints
+  tf::Quaternion quat(
+      setpoint_pos_.pose.orientation.x, setpoint_pos_.pose.orientation.y,
+      setpoint_pos_.pose.orientation.z, setpoint_pos_.pose.orientation.w);
+  tf::Matrix3x3 mat(quat);
+  double roll, pitch, yaw;
+  mat.getRPY(roll, pitch, yaw);
 
-  msg.channels[1] = angleToPpm(setpoint_rpy_.roll);
-  msg.channels[0] = angleToPpm(setpoint_rpy_.pitch);
-  msg.channels[3] = speedToPpm(setpoint_drpy_.dyaw);
+  roll += roll + setpoint_vel_.twist.angular.x * kPeriod;
+  pitch += pitch + setpoint_vel_.twist.angular.y * kPeriod;
 
-  msg.channels[5] = speedToPpm(setpoint_dxyz_.dx);
-  msg.channels[6] = speedToPpm(setpoint_dxyz_.dy);
-  msg.channels[2] = speedToPpm(setpoint_dxyz_.dz);
+  setpoint_pos_.pose.orientation = Quaternion(roll, pitch, yaw);
+
+  // Send target message to ArduPilot
+  msg.channels[1] = angleToPpm(roll);
+  msg.channels[0] = angleToPpm(pitch);
+  msg.channels[3] = speedToPpm(setpoint_vel_.twist.angular.z);
+
+  msg.channels[5] = speedToPpm(setpoint_vel_.twist.linear.x);
+  msg.channels[6] = speedToPpm(setpoint_vel_.twist.linear.y);
+  msg.channels[2] = speedToPpm(setpoint_vel_.twist.linear.z);
 
   msg.channels[4] = 1500;
   rc_pub_.publish(msg);

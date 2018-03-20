@@ -2,11 +2,9 @@
 #define MOTION_CONTROLLER_H
 #include <ros/ros.h>
 #include <std_msgs/Bool.h>
+#include <geometry_msgs/PoseStamped.h>
+#include <geometry_msgs/TwistStamped.h>
 
-#include "robosub/AngularPosition.h"
-#include "robosub/AngularVelocity.h"
-#include "robosub/LinearPosition.h"
-#include "robosub/LinearVelocity.h"
 
 class MotionController {
  public:
@@ -15,17 +13,11 @@ class MotionController {
 
   void Start();
 
-  // Set roll, pitch and yaw
-  void SetRPY(const robosub::AngularPosition rpy);
+  // Set pose target
+  void SetPos(const geometry_msgs::PoseStamped pose);
 
-  // Set roll, pitch and yaw velocity
-  void SetdRPY(const robosub::AngularVelocity drpy);
-
-  // Set XYZ position
-  void SetXYZ(const robosub::LinearPosition xyz);
-
-  // Set XYZ velocity in body frame
-  void SetdXYZ(const robosub::LinearVelocity dxyz);
+  // Set velocity target
+  void SetVel(const geometry_msgs::TwistStamped vel);
 
   // Arm or disarm the sub
   void Arming(const std_msgs::Bool arm);
@@ -43,10 +35,8 @@ class MotionController {
   // Velocity timeouts
   void VelocityTimeout(const ros::TimerEvent &event);
 
-  robosub::AngularPosition setpoint_rpy_;
-  robosub::AngularVelocity setpoint_drpy_;
-  robosub::LinearPosition setpoint_xyz_;
-  robosub::LinearVelocity setpoint_dxyz_;
+  geometry_msgs::PoseStamped setpoint_pos_;
+  geometry_msgs::TwistStamped setpoint_vel_;
 
   ros::Timer timer_;
   ros::NodeHandle nh_;

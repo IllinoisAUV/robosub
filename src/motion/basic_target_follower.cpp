@@ -3,23 +3,17 @@
 #include <ros/exception.h>
 #include <string>
 
-#include "helpers/AngularVelocity.h"
-#include "helpers/LinearVelocity.h"
+#include "helpers/TwistStamped.h"
+#include "helpers/Vector3.h"
 
 BasicTargetFollower::BasicTargetFollower(float kSpeed, float kAlt, float kYaw)
     : kSpeed_(kSpeed), kAlt_(kAlt), kYaw_(kYaw) {
-  std::string angular_vel_topic;
-  std::string linear_vel_topic;
-  if (!ros::param::get("angular_velocity_topic", angular_vel_topic)) {
-    throw ros::Exception("Must specify angular_position_topic parameter");
-  }
-  if (!ros::param::get("linear_velocity_topic", linear_vel_topic)) {
+  std::string velocity_topic;
+  if (!ros::param::get("velocity_topic", velocity_topic)) {
     throw ros::Exception("Must specify angular_position_topic parameter");
   }
 
-  angular_vel_pub_ =
-      nh_.advertise<robosub::AngularVelocity>(angular_vel_topic, 1);
-  linear_vel_pub_ = nh_.advertise<robosub::LinearVelocity>(linear_vel_topic, 1);
+  vel_pub_ = nh_.advertise<geometry_msgs::TwistStamped>(velocity_topic, 1);
 }
 
 void BasicTargetFollower::update(const robosub::VisualTarget::ConstPtr& msg) {
@@ -29,12 +23,9 @@ void BasicTargetFollower::update(const robosub::VisualTarget::ConstPtr& msg) {
 
   // Adjust the yaw to point at the target
   float dyaw = x_err * kYaw_;
-  robosub::AngularVelocity angular = AngularVelocity(0, 0, dyaw);
-
-  // Line up altitude
   float dalt = y_err * kAlt_;
-  robosub::LinearVelocity linear = LinearVelocity(kSpeed_, 0, dalt);
+  geometry_msgs::TwistStamped vel = TwistStamped(
+      std_msgs::Header(), Twist(Vector3(0, 0, dalt), Vector3(0, 0, dyaw)));
 
-  angular_vel_pub_.publish(angular);
-  linear_vel_pub_.publish(linear);
+  vel_pub_.publish(vel);
 }

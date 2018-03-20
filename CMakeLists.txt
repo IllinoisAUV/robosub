@@ -28,10 +28,6 @@ find_package(OpenCV REQUIRED)
 
 add_message_files(
   FILES
-  LinearPosition.msg
-  LinearVelocity.msg
-  AngularPosition.msg
-  AngularVelocity.msg
   VisualTarget.msg
 )
 

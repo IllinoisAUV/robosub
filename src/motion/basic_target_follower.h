@@ -2,6 +2,7 @@
 #define TARGET_FOLLOWER_H
 #include <ros/ros.h>
 #include <cstdint>
+
 #include "robosub/VisualTarget.h"
 
 // Library that provides a basic target follower. Using the position of the
@@ -26,8 +27,7 @@ class BasicTargetFollower {
 
  private:
   ros::NodeHandle nh_;
-  ros::Publisher angular_vel_pub_;
-  ros::Publisher linear_vel_pub_;
+  ros::Publisher vel_pub_;
 
   float kSpeed_;
   float kAlt_;

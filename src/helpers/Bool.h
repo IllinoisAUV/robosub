@@ -1,7 +1,13 @@
-#ifndef BOOL_H
-#define BOOL_H
-
+#pragma once
 #include <std_msgs/Bool.h>
-std_msgs::Bool Bool(bool data);
 
-#endif  // BOOL_H
+inline std_msgs::Bool Bool(bool data) {
+  std_msgs::Bool val;
+  val.data = data;
+  return val;
+}
+
+
+inline std_msgs::Bool Bool() {
+  return Bool(false);
+}
