@@ -6,10 +6,8 @@
     <arg name="sitl" value="$(arg sitl)" />
   </include>
 
-  <param name="/angular_position_topic" value="/setpoint/angular/position" type="str" />
-  <param name="/angular_velocity_topic" value="/setpoint/angular/velocity" type="str" />
-  <param name="/linear_position_topic" value="/setpoint/linear/position" type="str" />
-  <param name="/linear_velocity_topic" value="/setpoint/linear/velocity" type="str" />
+  <param name="/position_topic" value="/cmd_pos" type="str" />
+  <param name="/velocity_topic" value="/cmd_vel" type="str" />
   <param name="/arming_topic" value="/arming" type="str" />
   <node name="motion" pkg="robosub" type="motion_controller_node" required="true" output="screen" />
 </launch>
