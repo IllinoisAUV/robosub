@@ -2,32 +2,34 @@
 #include <ros/ros.h>
 #include <cmath>
 #include <string>
-#include "helpers/AngularVelocity.h"
+
+#include "helpers/TwistStamped.h"
 
 class BarrelRoll {
   float droll;
-  ros::Publisher angular_vel_pub_;
+  ros::Publisher vel_pub_;
   ros::NodeHandle nh_;
 
  public:
   BarrelRoll(float droll_) {
     droll = droll_;
-    std::string angular_vel_topic;
-    if (!ros::param::get("angular_velocity_topic", angular_vel_topic)) {
-      throw ros::Exception("Must specify angular_position_topic parameter");
+    std::string vel_topic;
+    if (!ros::param::get("velocity_topic", vel_topic)) {
+      throw ros::Exception("Must specify velocity_topic parameter");
     }
-    angular_vel_pub_ =
-        nh_.advertise<robosub::AngularVelocity>(angular_vel_topic, 1);
+    vel_pub_ = nh_.advertise<geometry_msgs::TwistStamped>(vel_topic, 1);
   }
   void update() {
-    robosub::AngularVelocity angular = AngularVelocity(droll, 0, 0);
+    geometry_msgs::TwistStamped msg = TwistStamped(
+        std_msgs::Header(), Twist(Vector3(), Vector3(droll, 0, 0)));
 
-    angular_vel_pub_.publish(angular);
+    vel_pub_.publish(msg);
   }
 
   void zeroVelocity() {
-    robosub::AngularVelocity angul = AngularVelocity(0, 0, 0);
-    angular_vel_pub_.publish(angul);
+    // Send a zero message
+    geometry_msgs::TwistStamped msg = TwistStamped();
+    vel_pub_.publish(msg);
   }
 };
 int main() {
