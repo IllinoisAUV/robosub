@@ -24,6 +24,8 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib_msgs
 )
 
+catkin_python_setup()
+
 # Check all files in the launch folder for common mistakes
 roslaunch_add_file_check(launch)
 
@@ -82,6 +84,9 @@ add_subdirectory(src/experimental)
 
 # actions defines a set of action servers that can be used executed by the sub
 add_subdirectory(src/actions)
+
+# transform defines a set of nodes that convert one message type to another 
+add_subdirectory(src/transform)
 
 include(cmake/cppcheck.cmake)
 include(cmake/clang-format.cmake)
