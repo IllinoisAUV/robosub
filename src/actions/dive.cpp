@@ -6,6 +6,8 @@
 #include <cmath>
 #include <string>
 
+#include "helpers/Bool.h"
+
 constexpr double kTolerance = 1.0;
 
 // See
@@ -27,9 +29,13 @@ class DiveAction {
     depth_sub_ = nh_.subscribe("/pose", 1, &DiveAction::poseCallback, this);
 
     // Node namespace makes this $(arg ns)/setpoint instead
-    depth_pub_ = nh_.advertise<std_msgs::Float64>("/setpoint", 1);
+    depth_pub_ = nh_.advertise<std_msgs::Float64>("setpoint", 1);
+    enable_pub_ = nh_.advertise<std_msgs::Bool>("pid_enable", 1);
+
+    enable_pub_.publish(Bool(false));
 
     server_.start();
+    ROS_INFO("%s: Started", action_name_.c_str());
   }
 
   ~DiveAction() {}
@@ -37,10 +43,12 @@ class DiveAction {
   void goalCallback() {
     depth_ = server_.acceptNewGoal()->depth;
     ROS_INFO("%s: Received new depth goal %f", action_name_.c_str(), depth_);
+    enable_pub_.publish(Bool(true));
   }
 
   void preemptCallback() {
     ROS_INFO("%s: Preempted", action_name_.c_str());
+    enable_pub_.publish(Bool(false));
     server_.setPreempted();
   }
 
@@ -54,6 +62,7 @@ class DiveAction {
       ROS_INFO("%s: Succeeded", action_name_.c_str());
       robosub::DiveResult result;
       result.depth = depth;
+      enable_pub_.publish(Bool(false));
       server_.setSucceeded(result);
     } else {
       // Do PID control here by sending a setpoint to the PID node
@@ -70,12 +79,13 @@ class DiveAction {
   std::string action_name_;
   ros::Subscriber depth_sub_;
   ros::Publisher depth_pub_;
+  ros::Publisher enable_pub_;
 };
 
 int main(int argc, char** argv) {
-  ros::init(argc, argv, "dive_server");
+  ros::init(argc, argv, "dive_action");
 
-  DiveAction(ros::this_node::getName());
+  DiveAction action(ros::this_node::getName());
 
   ros::spin();
   return 0;
