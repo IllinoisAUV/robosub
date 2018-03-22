@@ -2,11 +2,11 @@
 
 #include <std_msgs/Header.h>
 
-#include "helpers/Point.h"
-#include "helpers/PoseStamped.h"
-#include "helpers/Quaternion.h"
-#include "helpers/TwistStamped.h"
-#include "helpers/Vector3.h"
+#include "constructors/Point.h"
+#include "constructors/PoseStamped.h"
+#include "constructors/Quaternion.h"
+#include "constructors/TwistStamped.h"
+#include "constructors/Vector3.h"
 
 MotionController::MotionController() {
   // Zero all setpoints initially

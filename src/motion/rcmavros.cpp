@@ -5,8 +5,8 @@
 #include <tf/tf.h>
 #include <string>
 
-#include "helpers/Quaternion.h"
-#include "helpers/Vector3.h"
+#include "constructors/Quaternion.h"
+#include "constructors/Vector3.h"
 
 using std_msgs::Bool;
 
