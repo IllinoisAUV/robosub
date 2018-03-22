@@ -15,6 +15,4 @@ inline std_msgs::Header Header(uint32_t seq, ros::Time timestamp,
 }
 
 // Zero constructor
-inline std_msgs::Header Header() {
-  return Header(0, ros::Time(), "");
-}
+inline std_msgs::Header Header() { return Header(0, ros::Time(), ""); }

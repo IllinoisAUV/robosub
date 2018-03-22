@@ -7,7 +7,4 @@ inline std_msgs::Bool Bool(bool data) {
   return val;
 }
 
-
-inline std_msgs::Bool Bool() {
-  return Bool(false);
-}
+inline std_msgs::Bool Bool() { return Bool(false); }

@@ -9,6 +9,4 @@ inline geometry_msgs::Vector3 Vector3(double x, double y, double z) {
   return val;
 }
 
-inline geometry_msgs::Vector3 Vector3() {
-  return Vector3(0,0,0);
-}
+inline geometry_msgs::Vector3 Vector3() { return Vector3(0, 0, 0); }

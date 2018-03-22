@@ -6,7 +6,8 @@
 #include "helpers/Header.h"
 #include "helpers/Twist.h"
 
-inline geometry_msgs::TwistStamped TwistStamped(std_msgs::Header header, geometry_msgs::Twist twist) {
+inline geometry_msgs::TwistStamped TwistStamped(std_msgs::Header header,
+                                                geometry_msgs::Twist twist) {
   geometry_msgs::TwistStamped msg;
   msg.header = header;
   msg.twist = twist;
@@ -16,4 +17,3 @@ inline geometry_msgs::TwistStamped TwistStamped(std_msgs::Header header, geometr
 inline geometry_msgs::TwistStamped TwistStamped() {
   return TwistStamped(Header(), Twist());
 }
-

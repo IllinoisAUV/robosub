@@ -1,10 +1,9 @@
 #ifndef MOTION_CONTROLLER_H
 #define MOTION_CONTROLLER_H
-#include <ros/ros.h>
-#include <std_msgs/Bool.h>
 #include <geometry_msgs/PoseStamped.h>
 #include <geometry_msgs/TwistStamped.h>
-
+#include <ros/ros.h>
+#include <std_msgs/Bool.h>
 
 class MotionController {
  public:
