@@ -1,8 +1,8 @@
 #pragma once
 #include <geometry_msgs/Pose.h>
 
-#include "helpers/Point.h"
-#include "helpers/Quaternion.h"
+#include "constructors/Point.h"
+#include "constructors/Quaternion.h"
 
 inline geometry_msgs::Pose Pose(geometry_msgs::Point position,
                                 geometry_msgs::Quaternion orientation) {

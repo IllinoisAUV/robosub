@@ -61,8 +61,8 @@ install(PROGRAMS
 # Macros for declaring ros nodes and libraries 
 include(cmake/ros-node.cmake)
 
-# Helpers declares libraries that are convenient for building ros messages
-add_subdirectory(src/helpers)
+# Constructors declares libraries that are convenient for building ros messages
+add_subdirectory(src/constructors)
 
 # motion declares some libraries, and must come before any directory that uses it
 add_subdirectory(src/motion)

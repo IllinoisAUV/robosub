@@ -3,8 +3,8 @@
 #include <ros/exception.h>
 #include <string>
 
-#include "helpers/TwistStamped.h"
-#include "helpers/Vector3.h"
+#include "constructors/TwistStamped.h"
+#include "constructors/Vector3.h"
 
 BasicTargetFollower::BasicTargetFollower(float kSpeed, float kAlt, float kYaw)
     : kSpeed_(kSpeed), kAlt_(kAlt), kYaw_(kYaw) {
