@@ -80,6 +80,9 @@ add_subdirectory(src/preprocess)
 add_subdirectory(src/utilities)
 add_subdirectory(src/experimental)
 
+# actions defines a set of action servers that can be used executed by the sub
+add_subdirectory(src/actions)
+
 include(cmake/cppcheck.cmake)
 include(cmake/clang-format.cmake)
 include(cmake/pylint.cmake)
