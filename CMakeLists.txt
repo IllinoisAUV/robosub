@@ -20,6 +20,8 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   roslaunch
   tf
+  actionlib
+  actionlib_msgs
 )
 
 # Check all files in the launch folder for common mistakes
@@ -32,6 +34,11 @@ add_message_files(
   VisualTarget.msg
 )
 
+add_action_files(
+  DIRECTORY action
+  FILES
+  Dive.action
+)
 
 
 generate_messages(
@@ -39,11 +46,12 @@ generate_messages(
   std_msgs
   mavros_msgs
   sensor_msgs
+  actionlib_msgs
 )
 
 catkin_package(
   INCLUDE_DIRS src
-  CATKIN_DEPENDS roscpp rospy std_msgs mavros mavros_msgs cv_bridge image_transport sensor_msgs tf
+  CATKIN_DEPENDS roscpp rospy std_msgs mavros mavros_msgs cv_bridge image_transport sensor_msgs tf actionlib actionlib_msgs
 )
 
 include_directories(
