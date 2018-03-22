@@ -2,6 +2,7 @@
 #include <geometry_msgs/Pose.h>
 #include <robosub/DiveAction.h>
 #include <ros/ros.h>
+#include <std_msgs/Float64.h>
 #include <cmath>
 #include <string>
 
@@ -25,17 +26,20 @@ class DiveAction {
 
     depth_sub_ = nh_.subscribe("/pose", 1, &DiveAction::poseCallback, this);
 
+    // Node namespace makes this $(arg ns)/setpoint instead
+    depth_pub_ = nh_.advertise<std_msgs::Float64>("/setpoint", 1);
+
     server_.start();
   }
 
   ~DiveAction() {}
 
-  void goalCallback() { 
+  void goalCallback() {
     depth_ = server_.acceptNewGoal()->depth;
     ROS_INFO("%s: Received new depth goal %f", action_name_.c_str(), depth_);
   }
 
-  void preemptCallback() { 
+  void preemptCallback() {
     ROS_INFO("%s: Preempted", action_name_.c_str());
     server_.setPreempted();
   }
@@ -47,12 +51,15 @@ class DiveAction {
     server_.publishFeedback(feedback);
 
     if (::fabs(depth_ - depth) < kTolerance) {
-      ROS_INFO("%s: Succeeded", action_name_.c_str(),);
+      ROS_INFO("%s: Succeeded", action_name_.c_str());
       robosub::DiveResult result;
       result.depth = depth;
       server_.setSucceeded(result);
     } else {
-      // Do PID control here
+      // Do PID control here by sending a setpoint to the PID node
+      std_msgs::Float64 setpoint;
+      setpoint.data = depth_;
+      depth_pub_.publish(setpoint);
     }
   }
 
@@ -62,6 +69,7 @@ class DiveAction {
   Server server_;
   std::string action_name_;
   ros::Subscriber depth_sub_;
+  ros::Publisher depth_pub_;
 };
 
 int main(int argc, char** argv) {

@@ -34,7 +34,7 @@ ADD install-package-sysroot.sh /install-package-sysroot.sh
 
 # Add install necessary packages
 RUN /install-package-sysroot.sh ros-kinetic-desktop-full
-RUN apt-get update && /install-package-sysroot.sh ros-kinetic-mavros
+RUN apt-get update && /install-package-sysroot.sh ros-kinetic-mavros ros-kinetic-pid
 
 
 # Fix absolute symlinks in the sysroot to point to the correct files inside the sysroot
