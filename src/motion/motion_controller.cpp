@@ -2,11 +2,11 @@
 
 #include <std_msgs/Header.h>
 
-#include "helpers/TwistStamped.h"
-#include "helpers/PoseStamped.h"
-#include "helpers/Vector3.h"
 #include "helpers/Point.h"
+#include "helpers/PoseStamped.h"
 #include "helpers/Quaternion.h"
+#include "helpers/TwistStamped.h"
+#include "helpers/Vector3.h"
 
 MotionController::MotionController() {
   // Zero all setpoints initially
@@ -20,10 +20,10 @@ void MotionController::Start() {
       nh_.createTimer(ros::Duration(kPeriod), &MotionController::Update, this);
 
   // Start subscribers
-  ros::Subscriber pose_sub = nh_.subscribe("/cmd_pos", 1,
-                                          &MotionController::SetPos, this);
-  ros::Subscriber twist_sub = nh_.subscribe("/cmd_vel", 1,
-                                           &MotionController::SetVel, this);
+  ros::Subscriber pose_sub =
+      nh_.subscribe("/cmd_pos", 1, &MotionController::SetPos, this);
+  ros::Subscriber twist_sub =
+      nh_.subscribe("/cmd_vel", 1, &MotionController::SetVel, this);
   ros::Subscriber kill_sub =
       nh_.subscribe("/arming", 1, &MotionController::Arming, this);
 }
@@ -41,7 +41,7 @@ void MotionController::SetVel(const geometry_msgs::TwistStamped vel) {
 
   // Set a timeout for 1 second
   timer = nh_.createTimer(ros::Duration(1.0),
-      &MotionController::VelocityTimeout, this, true);
+                          &MotionController::VelocityTimeout, this, true);
 }
 
 void MotionController::Arming(const std_msgs::Bool arm) { DoArming(arm.data); }
