@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   image_transport
   sensor_msgs
   roslaunch
+  tf
 )
 
 # Check all files in the launch folder for common mistakes
@@ -42,7 +43,7 @@ generate_messages(
 
 catkin_package(
   INCLUDE_DIRS src
-  CATKIN_DEPENDS roscpp rospy std_msgs mavros mavros_msgs cv_bridge image_transport sensor_msgs
+  CATKIN_DEPENDS roscpp rospy std_msgs mavros mavros_msgs cv_bridge image_transport sensor_msgs tf
 )
 
 include_directories(
