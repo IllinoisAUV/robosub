@@ -15,32 +15,35 @@ MotionController::MotionController() {
 }
 
 void MotionController::Start() {
+  node_name_ = ros::this_node::getName();
+
   // Start the control timer
   timer_ =
       nh_.createTimer(ros::Duration(kPeriod), &MotionController::Update, this);
 
   // Start subscribers
-  ros::Subscriber pose_sub =
+  pose_sub_ =
       nh_.subscribe("/cmd_pos", 1, &MotionController::SetPos, this);
-  ros::Subscriber twist_sub =
+  twist_sub_ =
       nh_.subscribe("/cmd_vel", 1, &MotionController::SetVel, this);
-  ros::Subscriber kill_sub =
+  kill_sub_ =
       nh_.subscribe("/arming", 1, &MotionController::Arming, this);
 }
 
 void MotionController::SetPos(const geometry_msgs::PoseStamped pos) {
+  ROS_INFO("%s: Received new pose setpoint", node_name_.c_str());
   setpoint_pos_ = pos;
 }
 
 void MotionController::SetVel(const geometry_msgs::TwistStamped vel) {
-  static ros::Timer timer;
+  ROS_INFO("%s: Received new twist setpoint", node_name_.c_str());
   // Cancel previous timeout
-  timer.stop();
+  vel_timer_.stop();
 
   setpoint_vel_ = vel;
 
   // Set a timeout for 1 second
-  timer = nh_.createTimer(ros::Duration(1.0),
+  vel_timer_ = nh_.createTimer(ros::Duration(1.0),
                           &MotionController::VelocityTimeout, this, true);
 }
 
@@ -50,5 +53,7 @@ void MotionController::Update(const ros::TimerEvent &event) { DoUpdate(); }
 
 // Set velocity to zero
 void MotionController::VelocityTimeout(const ros::TimerEvent &event) {
+  ROS_ERROR("Velocity setpoint timed out");
   setpoint_vel_ = TwistStamped(Header(), Twist());
+  vel_timer_.stop();
 }
