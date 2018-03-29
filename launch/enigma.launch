@@ -1,0 +1,9 @@
+<launch>
+  <arg name="sitl" default="false" />
+
+  <include file="$(find robosub)/launch/motion.launch">
+    <arg name="sitl" value="$(arg sitl)" />
+  </include>
+
+  <include file="$(find robosub)/launch/kill_switch.launch" unless="$(arg sitl)">
+</launch>
