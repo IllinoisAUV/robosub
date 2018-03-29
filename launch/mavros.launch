@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 
 <launch>
+  <arg name="sitl" default="false" />
+
   <arg name="fcu_url" default="/dev/ttyTHS2:115200"/>
   <arg name="gcs_url" default="udp://@10.0.0.1:14550"/>
   <arg name="system_id" default="255"/>
@@ -14,7 +16,16 @@
   <!-- Launch heartbeat node to kill the sub on connection loss -->
   <node pkg="robosub" type="heartbeat.sh" name="heartbeat" required="true" output="$(arg log_output)" />
 
-  <node pkg="mavros" type="mavros_node" name="mavros" required="true" clear_params="true" output="$(arg log_output)">
+  <!-- Launch mavros with SITL -->
+  <include file="$(find bluerov_ros_playground)/launch/gazebo_sitl.launch" if="$(arg sitl)" >
+    <arg name="fcu_url" value="udp://0.0.0.0:14550@" />
+    <arg name="gui" value="false" />
+    <arg name="pluginlists_yaml" value="$(find robosub)/launch/mavros_pluginlists.yaml"/>
+    <arg name="log_output" value="screen" />
+  </include>
+
+  <!-- Launch real mavros with SITL -->
+  <node pkg="mavros" type="mavros_node" name="mavros" required="true" clear_params="true" output="$(arg log_output)" unless="$(arg sitl)">
     <param name="fcu_url" value="$(arg fcu_url)"/>
     <param name="gcs_url" value="$(arg gcs_url)"/>
     <param name="system_id" value="$(arg system_id)"/>
