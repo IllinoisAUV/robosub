@@ -4,6 +4,7 @@
 #include <geometry_msgs/TwistStamped.h>
 #include <ros/ros.h>
 #include <std_msgs/Bool.h>
+#include <string>
 
 class MotionController {
  public:
@@ -37,8 +38,16 @@ class MotionController {
   geometry_msgs::PoseStamped setpoint_pos_;
   geometry_msgs::TwistStamped setpoint_vel_;
 
+  ros::Subscriber pose_sub_;
+  ros::Subscriber twist_sub_;
+  ros::Subscriber kill_sub_;
+
   ros::Timer timer_;
   ros::NodeHandle nh_;
+
+  ros::Timer vel_timer_;
+
+  std::string node_name_;
 };
 
 #endif  // MOTION_CONTROLLER_H

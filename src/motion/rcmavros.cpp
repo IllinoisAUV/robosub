@@ -18,33 +18,41 @@ const std::string kModeDepthHold = "ALT_HOLD";
 const std::string kModeManual = "MANUAL";
 const std::string kModeStabilize = "STABILIZE";
 
+const std::string kModeService = "/mavros/set_mode";
+const std::string kArmingService = "/mavros/cmd/arming";
+
 MavrosRCController::MavrosRCController() {
   // Wait for the mavros node to come up
-  while (!ros::service::exists("/mavros/set_mode", true)) {
-    ros::Duration(0.5).sleep();
+  if(!ros::service::waitForService(kModeService)) {
+    throw ros::Exception("Failed to wait for /mavros/set_mode to become available");
+  }
+
+  if(!ros::service::waitForService(kArmingService)) {
+    throw ros::Exception("Failed to wait for /mavros/cmd/arming to become available");
   }
 
   rc_pub_ = nh_.advertise<OverrideRCIn>("/mavros/rc/override", 1);
 
   // Service clients for arming and changing the mode of the sub
-  arming_client_ = nh_.serviceClient<CommandBool>("/mavros/cmd/arming");
-  mode_client_ = nh_.serviceClient<SetMode>("/mavros/set_mode");
+  arming_client_ = nh_.serviceClient<CommandBool>(kArmingService);
+  mode_client_ = nh_.serviceClient<SetMode>(kModeService);
 
   SetMode mode_cmd;
   mode_cmd.request.base_mode = 0;
   mode_cmd.request.custom_mode = kModeDepthHold;
 
-  while (!mode_client_.call(mode_cmd)) {
+  if(!mode_client_.call(mode_cmd)) {
     ROS_ERROR("Failed to set mavros mode");
   }
 }
 
 // Send a message to mavros to arm or disarm the sub
 void MavrosRCController::DoArming(bool arm) {
+  ROS_INFO(arm ? "Arming" : "Disarming");
   mavros_msgs::CommandBool srv;
   srv.request.value = arm;
   if (!arming_client_.call(srv)) {
-    ROS_INFO("Failed to disarm");
+    ROS_ERROR("Failed to %s", (arm ? "arm" : "disarm"));
     return;
   }
 }
