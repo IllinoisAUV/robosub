@@ -1,14 +1,22 @@
 FROM ros:kinetic
 
+ADD install-cuda.sh /install-cuda.sh 
+RUN /install-cuda.sh
+
 RUN apt-get update && apt-get install -y \
     ros-kinetic-mavros \
     ros-kinetic-cv-bridge \
     ros-kinetic-image-transport \
+    ros-kinetic-tf \
+    ros-kinetic-sophus* \
+    ros-kinetic-rqt-gui* \
+    ros-kinetic-xacro \
+    ros-kinetic-gazebo* \
+    ros-kinetic-video-stream-opencv \
     clang-format \
     pylint
 
-ADD install-cuda.sh /install-cuda.sh 
-RUN /install-cuda.sh
+RUN /opt/ros/kinetic/lib/mavros/install_geographiclib_datasets.sh
 
 VOLUME catkin_ws
 WORKDIR /catkin_ws
