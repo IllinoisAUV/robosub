@@ -14,7 +14,7 @@
   <arg name="log_output" default="log"/>
 
   <!-- Launch heartbeat node to kill the sub on connection loss -->
-  <node pkg="robosub" type="heartbeat.sh" name="heartbeat" required="true" output="$(arg log_output)" />
+  <node pkg="robosub" type="heartbeat.sh" name="heartbeat" required="true" output="$(arg log_output)" unless="$(arg sitl)"/>
 
   <!-- Launch mavros with SITL -->
   <include file="$(find bluerov_ros_playground)/launch/gazebo_sitl.launch" if="$(arg sitl)" >
@@ -36,8 +36,5 @@
     <!-- load blacklist, config -->
     <rosparam command="load" file="$(arg pluginlists_yaml)"/>
     <rosparam command="load" file="$(arg config_yaml)"/>
-
-    <remap from="/mavros/local_position/pose" to="/pose" />
-    <remap from="/mavros/local_position/velocity" to="/velocity" />
   </node>
 </launch>
