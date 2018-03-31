@@ -23,19 +23,19 @@ void MotionController::Start() {
 
   // Start subscribers
   pose_sub_ =
-      nh_.subscribe("/cmd_pos", 1, &MotionController::SetPos, this);
+      nh_.subscribe("/cmd_pos", 1, &MotionController::SetPose, this);
   twist_sub_ =
-      nh_.subscribe("/cmd_vel", 1, &MotionController::SetVel, this);
+      nh_.subscribe("/cmd_vel", 1, &MotionController::SetTwist, this);
   kill_sub_ =
       nh_.subscribe("/arming", 1, &MotionController::Arming, this);
 }
 
-void MotionController::SetPos(const geometry_msgs::PoseStamped pos) {
+void MotionController::SetPose(const geometry_msgs::PoseStamped pos) {
   ROS_INFO("%s: Received new pose setpoint", node_name_.c_str());
   setpoint_pos_ = pos;
 }
 
-void MotionController::SetVel(const geometry_msgs::TwistStamped vel) {
+void MotionController::SetTwist(const geometry_msgs::TwistStamped vel) {
   ROS_INFO("%s: Received new twist setpoint", node_name_.c_str());
   // Cancel previous timeout
   vel_timer_.stop();
