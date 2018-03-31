@@ -4,9 +4,9 @@ services:
   - docker
 
 script:
-  # Build containers separately
-  - ./tools/docker/build.sh host
-  - ./tools/docker/build.sh jetson
+  # Build containers separately. Don't timeout if no output is given
+  - travis_wait 30 ./tools/docker/build.sh host
+  - travis_wait 30 ./tools/docker/build.sh jetson
 
   # Check if formatting is required
   - ./build.sh host --make-args clang-format-check
