@@ -14,10 +14,10 @@ class MotionController {
   void Start();
 
   // Set pose target
-  void SetPos(const geometry_msgs::PoseStamped pose);
+  void SetPose(const geometry_msgs::PoseStamped pose);
 
   // Set velocity target
-  void SetVel(const geometry_msgs::TwistStamped vel);
+  void SetTwist(const geometry_msgs::TwistStamped vel);
 
   // Arm or disarm the sub
   void Arming(const std_msgs::Bool arm);
