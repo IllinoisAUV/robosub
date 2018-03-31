@@ -88,7 +88,7 @@ void MavrosRCController::DoUpdate() {
   roll += roll + setpoint_vel_.twist.angular.x * kPeriod;
   pitch += pitch + setpoint_vel_.twist.angular.y * kPeriod;
 
-  setpoint_pos_.pose.orientation = Quaternion(roll, pitch, yaw);
+  setpoint_pos_.pose.orientation = QuaternionRPY(roll, pitch, yaw);
 
   // Send target message to ArduPilot
   msg.channels[1] = angleToPpm(roll);
