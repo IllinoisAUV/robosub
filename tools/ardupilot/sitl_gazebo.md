@@ -19,7 +19,7 @@ git checkout -b ArduSub-stable
 Next, download the needed ROS packages
 ```sh
 cd ~/catkin_ws/src
-git clone https://github.com/patrickelectric/bluerov_ros_playground
+git clone https://github.com/illinoisauv/bluerov_ros_playground
 git clone https://github.com/freefloating-gazebo/freefloating_gazebo
 git clone https://github.com/freefloating-gazebo/freefloating_gazebo_demo
 ```
@@ -41,4 +41,9 @@ cd Ardupilot/ArduSub
 Now you can roslaunch motion and tell it that it is running in simulation
 ```
 roslaunch robosub motion.launch sitl:=true
+```
+
+Remember to arm the sub before sending it any commands
+```
+rostopic pub /arming std_msgs/Bool "data: true"
 ```
