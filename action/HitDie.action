@@ -1,0 +1,8 @@
+# Goal
+uint8 pips # The number of pips on the die to hit
+---
+# Result
+bool success # Whether the die was successfully sent
+---
+# Feedback - Sent at a specified frequency
+bool detected # Whether the die has been detected
