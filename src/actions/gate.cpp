@@ -1,20 +1,17 @@
 #include <actionlib/server/simple_action_server.h>
-#include <robosub/GateAction.h>
 #include <geometry_msgs/Twist.h>
-
+#include <robosub/GateAction.h>
 
 typedef actionlib::SimpleActionServer<robosub::GateAction> Server;
 
 class Gate {
  public:
-  Gate(std::string name)
-      : server_(nh_, name, false), action_name_(name) {
+  Gate(std::string name) : server_(nh_, name, false), action_name_(name) {
     // Register callback for when a new goal is received
     server_.registerGoalCallback(boost::bind(&Gate::goalCallback, this));
 
     // Register callback for when the current goal is cancelled
-    server_.registerPreemptCallback(
-        boost::bind(&Gate::preemptCallback, this));
+    server_.registerPreemptCallback(boost::bind(&Gate::preemptCallback, this));
 
     // Node namespace makes this $(arg ns)/setpoint instead
     motion_pub_ = nh_.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
@@ -27,7 +24,8 @@ class Gate {
 
   void goalCallback() {
     red_ = server_.acceptNewGoal()->red;
-    ROS_INFO("%s: Received new die pips goal %s", action_name_.c_str(), red_ ? "red" : "black");
+    ROS_INFO("%s: Received new die pips goal %s", action_name_.c_str(),
+             red_ ? "red" : "black");
   }
 
   void preemptCallback() {

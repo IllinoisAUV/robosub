@@ -1,14 +1,12 @@
 #include <actionlib/server/simple_action_server.h>
-#include <robosub/PingerAction.h>
 #include <geometry_msgs/Twist.h>
-
+#include <robosub/PingerAction.h>
 
 typedef actionlib::SimpleActionServer<robosub::PingerAction> Server;
 
 class Pinger {
  public:
-  Pinger(std::string name)
-      : server_(nh_, name, false), action_name_(name) {
+  Pinger(std::string name) : server_(nh_, name, false), action_name_(name) {
     // Register callback for when a new goal is received
     server_.registerGoalCallback(boost::bind(&Pinger::goalCallback, this));
 
