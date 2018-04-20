@@ -1,5 +1,6 @@
 node(dive dive.cpp ctors)
-
 node(hitdie_action hitdie.cpp)
-
 node(gate_action gate.cpp)
+node(path_action path.cpp)
+node(qual_action qual.cpp)
+node(roulette_action roulette.cpp)

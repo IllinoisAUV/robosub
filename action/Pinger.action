@@ -1,0 +1,8 @@
+# Goal
+uint32 frequency # The frequency of the pinger to go to
+---
+# Result
+bool success # Whether the pinger was reached successfully 
+---
+# Feedback - Sent at a specified frequency
+bool detected # Whether the pinger has been detected

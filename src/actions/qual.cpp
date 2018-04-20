@@ -1,20 +1,20 @@
 #include <actionlib/server/simple_action_server.h>
-#include <robosub/HitDieAction.h>
+#include <robosub/BaseVisionAction.h>
 #include <geometry_msgs/Twist.h>
 
 
-typedef actionlib::SimpleActionServer<robosub::HitDieAction> Server;
+typedef actionlib::SimpleActionServer<robosub::BaseVisionAction> Server;
 
-class HitDie {
+class Qual {
  public:
-  HitDie(std::string name)
+  Qual(std::string name)
       : server_(nh_, name, false), action_name_(name) {
     // Register callback for when a new goal is received
-    server_.registerGoalCallback(boost::bind(&HitDie::goalCallback, this));
+    server_.registerGoalCallback(boost::bind(&Qual::goalCallback, this));
 
     // Register callback for when the current goal is cancelled
     server_.registerPreemptCallback(
-        boost::bind(&HitDie::preemptCallback, this));
+        boost::bind(&Qual::preemptCallback, this));
 
     // Node namespace makes this $(arg ns)/setpoint instead
     motion_pub_ = nh_.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
@@ -23,11 +23,11 @@ class HitDie {
     ROS_INFO("%s: Started", action_name_.c_str());
   }
 
-  ~HitDie() {}
+  ~Qual() {}
 
   void goalCallback() {
-    pips_ = server_.acceptNewGoal()->pips;
-    ROS_INFO("%s: Received new die pips goal %d", action_name_.c_str(), pips_);
+    server_.acceptNewGoal();
+    ROS_INFO("%s: Received new goal", action_name_.c_str());
   }
 
   void preemptCallback() {
@@ -36,7 +36,6 @@ class HitDie {
   }
 
  private:
-  uint8_t pips_;
   ros::NodeHandle nh_;
   Server server_;
   std::string action_name_;
@@ -44,9 +43,9 @@ class HitDie {
 };
 
 int main(int argc, char** argv) {
-  ros::init(argc, argv, "hitdie_action");
+  ros::init(argc, argv, "qual_action");
 
-  HitDie action(ros::this_node::getName());
+  Qual action(ros::this_node::getName());
 
   ros::spin();
   return 0;
