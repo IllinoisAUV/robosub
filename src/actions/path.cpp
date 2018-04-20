@@ -1,20 +1,17 @@
 #include <actionlib/server/simple_action_server.h>
-#include <robosub/BaseVisionAction.h>
 #include <geometry_msgs/Twist.h>
-
+#include <robosub/BaseVisionAction.h>
 
 typedef actionlib::SimpleActionServer<robosub::BaseVisionAction> Server;
 
 class Path {
  public:
-  Path(std::string name)
-      : server_(nh_, name, false), action_name_(name) {
+  Path(std::string name) : server_(nh_, name, false), action_name_(name) {
     // Register callback for when a new goal is received
     server_.registerGoalCallback(boost::bind(&Path::goalCallback, this));
 
     // Register callback for when the current goal is cancelled
-    server_.registerPreemptCallback(
-        boost::bind(&Path::preemptCallback, this));
+    server_.registerPreemptCallback(boost::bind(&Path::preemptCallback, this));
 
     // Node namespace makes this $(arg ns)/setpoint instead
     motion_pub_ = nh_.advertise<geometry_msgs::Twist>("/cmd_vel", 1);

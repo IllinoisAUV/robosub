@@ -1,14 +1,12 @@
 #include <actionlib/server/simple_action_server.h>
-#include <robosub/RouletteAction.h>
 #include <geometry_msgs/Twist.h>
-
+#include <robosub/RouletteAction.h>
 
 typedef actionlib::SimpleActionServer<robosub::RouletteAction> Server;
 
 class Roulette {
  public:
-  Roulette(std::string name)
-      : server_(nh_, name, false), action_name_(name) {
+  Roulette(std::string name) : server_(nh_, name, false), action_name_(name) {
     // Register callback for when a new goal is received
     server_.registerGoalCallback(boost::bind(&Roulette::goalCallback, this));
 
@@ -27,7 +25,8 @@ class Roulette {
 
   void goalCallback() {
     target_ = server_.acceptNewGoal()->target;
-    ROS_INFO("%s: Received new target color goal %d", action_name_.c_str(), target_);
+    ROS_INFO("%s: Received new target color goal %d", action_name_.c_str(),
+             target_);
   }
 
   void preemptCallback() {
