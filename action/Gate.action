@@ -1,0 +1,8 @@
+# Goal
+bool red # True for red, false for black
+---
+# Result
+bool success # Whether the gate was passed through
+---
+# Feedback - Sent at a specified frequency
+bool detected # Whether the die has been detected
