@@ -22,12 +22,9 @@ void MotionController::Start() {
       nh_.createTimer(ros::Duration(kPeriod), &MotionController::Update, this);
 
   // Start subscribers
-  pose_sub_ =
-      nh_.subscribe("/cmd_pos", 1, &MotionController::SetPose, this);
-  twist_sub_ =
-      nh_.subscribe("/cmd_vel", 1, &MotionController::SetTwist, this);
-  kill_sub_ =
-      nh_.subscribe("/arming", 1, &MotionController::Arming, this);
+  pose_sub_ = nh_.subscribe("/cmd_pos", 1, &MotionController::SetPose, this);
+  twist_sub_ = nh_.subscribe("/cmd_vel", 1, &MotionController::SetTwist, this);
+  kill_sub_ = nh_.subscribe("/arming", 1, &MotionController::Arming, this);
 }
 
 void MotionController::SetPose(const geometry_msgs::PoseStamped pos) {
@@ -44,7 +41,7 @@ void MotionController::SetTwist(const geometry_msgs::TwistStamped vel) {
 
   // Set a timeout for 1 second
   vel_timer_ = nh_.createTimer(ros::Duration(1.0),
-                          &MotionController::VelocityTimeout, this, true);
+                               &MotionController::VelocityTimeout, this, true);
 }
 
 void MotionController::Arming(const std_msgs::Bool arm) { DoArming(arm.data); }

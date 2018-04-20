@@ -23,12 +23,14 @@ const std::string kArmingService = "/mavros/cmd/arming";
 
 MavrosRCController::MavrosRCController() {
   // Wait for the mavros node to come up
-  if(!ros::service::waitForService(kModeService)) {
-    throw ros::Exception("Failed to wait for /mavros/set_mode to become available");
+  if (!ros::service::waitForService(kModeService)) {
+    throw ros::Exception(
+        "Failed to wait for /mavros/set_mode to become available");
   }
 
-  if(!ros::service::waitForService(kArmingService)) {
-    throw ros::Exception("Failed to wait for /mavros/cmd/arming to become available");
+  if (!ros::service::waitForService(kArmingService)) {
+    throw ros::Exception(
+        "Failed to wait for /mavros/cmd/arming to become available");
   }
 
   rc_pub_ = nh_.advertise<OverrideRCIn>("/mavros/rc/override", 1);
@@ -41,7 +43,7 @@ MavrosRCController::MavrosRCController() {
   mode_cmd.request.base_mode = 0;
   mode_cmd.request.custom_mode = kModeDepthHold;
 
-  if(!mode_client_.call(mode_cmd)) {
+  if (!mode_client_.call(mode_cmd)) {
     ROS_ERROR("Failed to set mavros mode");
   }
 }

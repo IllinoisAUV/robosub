@@ -13,7 +13,7 @@ inline geometry_msgs::Quaternion Quaternion(double x, double y, double z,
 }
 
 inline geometry_msgs::Quaternion QuaternionRPY(double roll, double pitch,
-                                            double yaw) {
+                                               double yaw) {
   tf::Quaternion quat;
   quat.setEuler(yaw, pitch, roll);
 
