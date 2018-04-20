@@ -39,7 +39,12 @@ add_message_files(
 add_action_files(
   DIRECTORY action
   FILES
+  BaseVision.action
   Dive.action
+  Gate.action
+  HitDie.action
+  Pinger.action
+  Roulette.action
 )
 
 

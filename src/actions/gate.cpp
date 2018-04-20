@@ -8,7 +8,7 @@ typedef actionlib::SimpleActionServer<robosub::GateAction> Server;
 class Gate {
  public:
   Gate(std::string name)
-      : depth_(0.0), server_(nh_, name, false), action_name_(name) {
+      : server_(nh_, name, false), action_name_(name) {
     // Register callback for when a new goal is received
     server_.registerGoalCallback(boost::bind(&Gate::goalCallback, this));
 
@@ -44,7 +44,7 @@ class Gate {
 };
 
 int main(int argc, char** argv) {
-  ros::init(argc, argv, "hitdie_action");
+  ros::init(argc, argv, "gate_action");
 
   Gate action(ros::this_node::getName());
 
