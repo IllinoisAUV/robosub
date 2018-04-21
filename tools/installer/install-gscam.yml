@@ -24,14 +24,19 @@
         dest: ~/gscam_ws/src/gscam
 
     - name: Run catkin_make
-      shell: bash -ic "catkin_make install -DGSTREAMER_VERSION_1_x=On"
+      shell: bash -ic "catkin_make -DGSTREAMER_VERSION_1_x=On"
       args:
         chdir: ~/gscam_ws
-        creates: ~/gscam_ws/build/CMakeCache.txt # Only run if CMakeCache doesn't already exist
 
-    - name: Source gscam setup.bash in bashrc
-      lineinfile:
-        create: yes
-        state: present
-        line: "source ~/gscam_ws/devel/setup.bash"
-        path: ~/.bashrc
+    - name: Run catkin_make install
+      shell: bash -ic "catkin_make install -DGSTREAMER_VERSION_1_x=On -DCMAKE_INSTALL_PREFIX=/opt/ros/kinetic"
+      args:
+        chdir: /home/ubuntu/gscam_ws
+      become: true
+
+    # - name: Source gscam setup.bash in bashrc
+    #   lineinfile:
+    #     create: yes
+    #     state: present
+    #     line: "source ~/gscam_ws/install/setup.bash"
+    #     path: ~/.bashrc

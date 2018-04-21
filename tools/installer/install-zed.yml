@@ -45,12 +45,17 @@
     - name: Run catkin_make
       shell: bash -ic "catkin_make"
       args:
-        chdir: ~/zed_ws
-        creates: ~/zed_ws/build/CMakeCache.txt # Only run if CMakeCache doesn't already exist
+        chdir: /home/ubuntu/zed_ws
 
-    - name: Source zed setup.bash in bashrc
-      lineinfile:
-        create: yes
-        state: present
-        line: "source ~/zed_ws/devel/setup.bash"
-        path: ~/.bashrc
+    - name: Run catkin_make install
+      shell: bash -ic "catkin_make install -DCMAKE_INSTALL_PREFIX=/opt/ros/kinetic"
+      args:
+        chdir: /home/ubuntu/zed_ws
+      become: true
+
+    # - name: Source zed setup.bash in bashrc
+    #   lineinfile:
+    #     create: yes
+    #     state: present
+    #     line: "source ~/zed_ws/install/setup.bash"
+    #     path: ~/.bashrc
