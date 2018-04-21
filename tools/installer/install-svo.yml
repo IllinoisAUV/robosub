@@ -33,14 +33,19 @@
         repo: https://github.com/illinoisauv/fast
 
     - name: Run catkin_make
-      shell: bash -ic "catkin_make"
+      shell: bash -ic "export ARM_ARCHITECTURE=True; catkin_make"
       args:
         chdir: ~/svo_ws
-        creates: ~/svo_ws/build/CMakeCache.txt # Only run if CMakeCache doesn't already exist
 
-    - name: Source svo_ws setup.bash in bashrc
-      lineinfile:
-        create: yes
-        state: present
-        line: "source ~/svo_ws/devel/setup.bash"
-        path: ~/.bashrc
+    - name: Run catkin_make install
+      shell: bash -ic "export ARM_ARCHITECTURE=True; catkin_make install -DCMAKE_INSTALL_PREFIX=/opt/ros/kinetic"
+      args:
+        chdir: /home/ubuntu/svo_ws
+      become: true
+
+    # - name: Source svo_ws setup.bash in bashrc
+    #   lineinfile:
+    #     create: yes
+    #     state: present
+    #     line: "source ~/svo_ws/install/setup.bash"
+    #     path: ~/.bashrc
