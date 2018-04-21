@@ -37,4 +37,7 @@
     <rosparam command="load" file="$(arg pluginlists_yaml)"/>
     <rosparam command="load" file="$(arg config_yaml)"/>
   </node>
+
+  <!-- load ardupilot parameters onto the pixhawk -->
+  <node pkg="mavros" type="mavparam" args="load $(find robosub)/tools/ardupilot/mav.parm" />
 </launch>
