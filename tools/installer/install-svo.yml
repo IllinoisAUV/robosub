@@ -1,0 +1,46 @@
+---
+- hosts: jetson
+  tasks:
+    - name: Create svo workspace
+      file:
+        path: ~/svo_ws/src
+        state: directory
+
+    - name: Install dependencies
+      apt:
+        name: "{{ item }}"
+        state: present
+      become: true
+      with_items:
+        - ros-kinetic-sophus*
+
+    - name: Clone rpg_svo
+      git:
+        clone: yes
+        dest: ~/svo_ws/src/rpg_svo
+        repo: https://github.com/IllinoisAUV/rpg_svo
+
+    - name: Clone rpg_vikit
+      git:
+        clone: yes
+        dest: ~/svo_ws/src/rpg_vikit
+        repo: https://github.com/IllinoisAUV/rpg_vikit
+
+    - name: Clone fast
+      git:
+        clone: yes
+        dest: ~/svo_ws/src/fast
+        repo: https://github.com/illinoisauv/fast
+
+    - name: Run catkin_make
+      shell: bash -ic "catkin_make"
+      args:
+        chdir: ~/svo_ws
+        creates: ~/svo_ws/build/CMakeCache.txt # Only run if CMakeCache doesn't already exist
+
+    - name: Source svo_ws setup.bash in bashrc
+      lineinfile:
+        create: yes
+        state: present
+        line: "source ~/svo_ws/devel/setup.bash"
+        path: ~/.bashrc

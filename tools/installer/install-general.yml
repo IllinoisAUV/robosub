@@ -1,9 +1,15 @@
 ---
 - hosts: jetson
   tasks:
-    - name: Disable apt-daily.service
+    - name: Disable apt-daily.timer
       systemd:
-        name: apt-daily.service
+        name: apt-daily.timer
+        state: stopped
+        enabled: no
+      become: true
+    - name: Disable apt-daily-upgrade.timer
+      systemd:
+        name: apt-daily-upgrade.timer
         state: stopped
         enabled: no
       become: true
