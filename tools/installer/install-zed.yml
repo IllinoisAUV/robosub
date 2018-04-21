@@ -31,13 +31,26 @@
         recurse: yes
       become: true
 
+    - name: Create catkin workspace
+      file:
+        path: ~/zed_ws/src
+        state: directory
+
     - name: Download ros package
       git:
         clone: yes
-        dest: ~/catkin_ws/src/zed-ros-wrapper
+        dest: ~/zed_ws/src/zed-ros-wrapper
         repo: https://github.com/stereolabs/zed-ros-wrapper
 
-    - name: Build and install zed package
-      shell: bash -ic "catkin_make install"
+    - name: Run catkin_make
+      shell: bash -ic "catkin_make"
       args:
-        chdir: ~/catkin_ws
+        chdir: ~/zed_ws
+        creates: ~/zed_ws/build/CMakeCache.txt # Only run if CMakeCache doesn't already exist
+
+    - name: Source zed setup.bash in bashrc
+      lineinfile:
+        create: yes
+        state: present
+        line: "source ~/zed_ws/devel/setup.bash"
+        path: ~/.bashrc
