@@ -20,3 +20,4 @@
 - import_playbook: setup-catkin.yml
 - import_playbook: install-zed.yml
 - import_playbook: install-gscam.yml
+- import_playbook: install-svo.yml
