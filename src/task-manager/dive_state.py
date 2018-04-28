@@ -30,6 +30,8 @@ class Dive_State:
             smach.StateMachine.add(self.state_name, dive_action_,
                                transitions={'succeeded':'succeeded', 'aborted':'aborted', 'preempted':'preempted' },
                                remapping= {'depth_achieved':'userdata_depth'})
+
+        outcome = self.sm.execute()
         return
 
     def result_cb(userdata, status, result):
