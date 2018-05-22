@@ -51,25 +51,26 @@
       stat:
         path: "{{ playbook_dir }}/Linux_for_Tegra_tx1/orbitty.conf"
       register: orbitty
+      when: orbitty is defined
 
     - name: Download Orbitty BSP
       get_url:
         url: 'http://www.connecttech.com/ftp/Drivers/CTI-L4T-V017.tgz'
         dest: "{{ playbook_dir }}/Linux_for_Tegra_tx1/CTI-L4T-V017.tgz"
-      when: not orbitty.stat.exists
+      when: not orbitty.skipped and not orbitty.stat.exists
 
     - name: Unpack Orbitty BSP
       unarchive:
         src: "{{ playbook_dir }}/Linux_for_Tegra_tx1/CTI-L4T-V017.tgz"
         dest: "{{ playbook_dir }}/Linux_for_Tegra_tx1/"
-      when: not orbitty.stat.exists
+      when: not orbitty.skipped and not orbitty.stat.exists
 
     - name: Install Orbitty BSP
       shell: ./install.sh
       args:
         chdir: "{{ playbook_dir }}/Linux_for_Tegra_tx1/CTI-L4T"
       become: true
-      when: not orbitty.stat.exists
+      when: not orbitty.skipped and not orbitty.stat.exists
 
     - name: Setup static ip address
       copy:
@@ -88,6 +89,12 @@
         msg: "Please plug the Jetson in and place it in recovery mode"
       when: recovery.rc != 0
 
-    - name: Flash Linux for Tegra and Orbitty BSP
+    - name: Flash Linux for Tegra
+      shell: "cd {{ playbook_dir }}/Linux_for_Tegra_tx2/ && ./flash.sh jetson-tx1 mmcblk0p1"
+      become: true
+      when: orbitty.skipped
+
+    - name: Flash Linux for Tegra with Orbitty BSP
       shell: "cd {{ playbook_dir }}/Linux_for_Tegra_tx1/ && ./flash.sh orbitty mmcblk0p1"
       become: true
+      when: not orbitty.skipped and not orbitty.stat.exists

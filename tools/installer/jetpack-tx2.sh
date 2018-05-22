@@ -1,4 +1,4 @@
 #!/bin/bash
 
 # Wrapper for the jetpack playbook
-ansible-playbook --ask-become-pass jetpack-tx2.yml
+ansible-playbook --ask-become-pass --extra-vars "$1" jetpack-tx2.yml
