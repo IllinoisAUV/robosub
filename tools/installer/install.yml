@@ -22,3 +22,4 @@
 - import_playbook: install-gscam.yml
 - import_playbook: install-svo.yml
 - import_playbook: install-tensorrt.yml
+- import_playbook: install-hostapd.yml
