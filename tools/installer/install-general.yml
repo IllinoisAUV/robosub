@@ -13,3 +13,9 @@
         state: stopped
         enabled: no
       become: true
+
+    - name: Install resolvconf
+      apt:
+        name: resolvconf
+        state: installed
+      become: true
