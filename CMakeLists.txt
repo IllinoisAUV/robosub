@@ -20,7 +20,11 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   roslaunch
   tf
+  actionlib
+  actionlib_msgs
 )
+
+catkin_python_setup()
 
 # Check all files in the launch folder for common mistakes
 roslaunch_add_file_check(launch)
@@ -32,6 +36,16 @@ add_message_files(
   VisualTarget.msg
 )
 
+add_action_files(
+  DIRECTORY action
+  FILES
+  BaseVision.action
+  Dive.action
+  Gate.action
+  HitDie.action
+  Pinger.action
+  Roulette.action
+)
 
 
 generate_messages(
@@ -39,11 +53,12 @@ generate_messages(
   std_msgs
   mavros_msgs
   sensor_msgs
+  actionlib_msgs
 )
 
 catkin_package(
   INCLUDE_DIRS src
-  CATKIN_DEPENDS roscpp rospy std_msgs mavros mavros_msgs cv_bridge image_transport sensor_msgs tf
+  CATKIN_DEPENDS roscpp rospy std_msgs mavros mavros_msgs cv_bridge image_transport sensor_msgs tf actionlib actionlib_msgs
 )
 
 include_directories(
@@ -71,6 +86,12 @@ add_subdirectory(src/motion)
 add_subdirectory(src/preprocess)
 add_subdirectory(src/utilities)
 add_subdirectory(src/experimental)
+
+# actions defines a set of action servers that can be used executed by the sub
+add_subdirectory(src/actions)
+
+# transform defines a set of nodes that convert one message type to another 
+add_subdirectory(src/transform)
 
 include(cmake/cppcheck.cmake)
 include(cmake/clang-format.cmake)
