@@ -32,7 +32,7 @@ class Sensor_Checks(smach.State):
         if(self.sensor_check_complete):
             rospy.loginfo("Checks_passed")
             return 'Checks_passed'
-
+            
         else:
             rospy.loginfo("Checks_failed")
             return 'Checks_failed'
@@ -40,16 +40,16 @@ class Sensor_Checks(smach.State):
     def listener(self):
         # try to get Imu and pressure sensor value for 10 sec
         time = 0
-        self.sensor_check_complete = self.pressure_sensor_check and self.imu_check
+        self.sensor_check_complete = self.Pressure_sensor_check and self.Imu_check
 
         while( not self.sensor_check_complete and time < self.timeout):
             # @TODO read the topic names from launch file
 
             # checking imu data
-            rospy.Subscriber("/rexrov/imu", Imu, self.imu_callback)
+            rospy.Subscriber("/rexrov/imu", Imu, self.Imucallback)
 
             # checking pressure data
-            rospy.Subscriber("/rexrov/pressure", FluidPressure, self.pressure_callback )
+            rospy.Subscriber("/rexrov/pressure", FluidPressure, self.Pressurecallback )
 
             rospy.spin()
 
@@ -62,9 +62,9 @@ class Sensor_Checks(smach.State):
         return
 
         # imu subscriber callback
-    def imu_callback(self, data):
-        self.imu_check = True
+    def Imu_callback(self, data):
+        self.Imu_check = True
 
         # pressure subscriber callback
-    def pressure_callback:
-        self.pressure_sensor_check = True
+    def Pressure_callback
+        self.Pressure_sensor_check = True

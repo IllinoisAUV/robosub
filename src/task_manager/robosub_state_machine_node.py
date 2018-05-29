@@ -14,15 +14,14 @@ from actionlib_msgs.msg import *
 def main():
     rospy.init_node('Robosub_StateMachine')
 
-    sm_top = smach.StateMachine(outcomes=['Mission_Completed', 'Sensor_Check_Failed', 'Mission_Failed'])
+    sm_top = smach.StateMachine(outcomes=['Mission_Completed', 'Mission_Failed'])
 
     with sm_top:
 
         # sensor check state with 10 sec timeout
         # basic smach state, no action state server
         smach.StateMachine.add('Sensor_Checks', Sensor_Checks(10),
-                               transitions={'Checks_passed':'Dive',
-                               'Checks_failed':'Sensor_Check_Failed'})
+                               transitions={'Checks_passed':'Dive', 'Checks_failed':'Mission_Failed'})
 
         dive_sm = smach.StateMachine(outcomes=['succeeded','aborted','preempted'])
 
@@ -35,9 +34,7 @@ def main():
         depth_achieved = dive_sm.userdata.depth_achieved
 
         smach.StateMachine.add('dive_sm', dive_sm,
-                    transitions={'succeeded':'Mission_Completed',
-                    'aborted': 'Mission_Failed',
-                    'preempted':'Mission_Failed'} )
+                    transitions={'succeeded':'Mission_Completed', 'aborted': 'Mission_Failed', 'preempted':'Mission_Failed'} )
 
     outcome = sm_top.execute()
 
