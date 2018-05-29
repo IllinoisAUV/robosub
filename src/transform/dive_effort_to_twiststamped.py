@@ -5,7 +5,7 @@ from geometry_msgs.msg import TwistStamped
 
 
 
-if __name__ == '__main__':
+def main():
     pub = rospy.Publisher('output', TwistStamped, queue_size=1)
     def callback(msg):
         output = TwistStamped()
