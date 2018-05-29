@@ -53,9 +53,19 @@
         chdir: /home/ubuntu/zed_ws
       become: true
 
-    # - name: Source zed setup.bash in bashrc
-    #   lineinfile:
-    #     create: yes
-    #     state: present
-    #     line: "source ~/zed_ws/install/setup.bash"
-    #     path: ~/.bashrc
+    - name: Run catkin_make install
+      shell: bash -ic "catkin_make install -DCMAKE_INSTALL_PREFIX=/opt/ros/kinetic"
+      args:
+        chdir: /home/ubuntu/zed_ws
+      become: true
+
+    - name: Get calibration file names
+      command: "find zed-calib -type f"
+      register: files_to_copy
+
+    - name: Copy zed calibration files to jetson
+      copy:
+        src: "{{ item }}" 
+        dest: "/usr/local/zed/settings"
+      with_items:
+       - "{{ files_to_copy.stdout_lines }}"
