@@ -6,11 +6,11 @@ import rospy
 import smach
 import smach_ros
 
-from robosub.DiveAction.msg import DiveAction
-from robosub.DiveGoal.msg import DiveGoal
-
 from actionlib import *
 from actionlib_msgs.msg import *
+
+from robosub.msg import DiveAction
+from robosub.msg import DiveGoal
 
 
 class Dive_State:
@@ -18,8 +18,7 @@ class Dive_State:
         self.sm = sm
         self.state_name = name
         self.depth_achieved = depth_achieved
-    class
-
+        tas
     def execute(self, target_depth, timeout):
 
         with self.sm:
