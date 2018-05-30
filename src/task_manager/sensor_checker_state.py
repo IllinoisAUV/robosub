@@ -1,4 +1,8 @@
+#!/usr/bin/env python
 import rospy
+
+import smach
+import smach_ros
 
 from geometry_msgs.msg import Accel
 from sensor_msgs.msg import Imu, MagneticField, NavSatFix, FluidPressure
@@ -19,6 +23,7 @@ class Sensor_Checks(smach.State):
         self.timeout = time_out
         self.done = False
         self.sensor_check_complete = False
+        self.listener()
 
     def execute(self, userdata):
         # do all the checks
@@ -32,7 +37,7 @@ class Sensor_Checks(smach.State):
         if(self.sensor_check_complete):
             rospy.loginfo("Checks_passed")
             return 'Checks_passed'
-            
+
         else:
             rospy.loginfo("Checks_failed")
             return 'Checks_failed'
@@ -40,31 +45,34 @@ class Sensor_Checks(smach.State):
     def listener(self):
         # try to get Imu and pressure sensor value for 10 sec
         time = 0
-        self.sensor_check_complete = self.Pressure_sensor_check and self.Imu_check
 
-        while( not self.sensor_check_complete and time < self.timeout):
+        while( not (self.Pressure_sensor_check and self.Imu_check) and time < self.timeout):
             # @TODO read the topic names from launch file
 
-            # checking imu data
-            rospy.Subscriber("/rexrov/imu", Imu, self.Imucallback)
+            # checking imu ps
+            rospy.Subscriber("/rexrov/imu", Imu, self.Imu_callback)
 
             # checking pressure data
-            rospy.Subscriber("/rexrov/pressure", FluidPressure, self.Pressurecallback )
+            rospy.Subscriber("/rexrov/pressure", FluidPressure, self.Pressure_callback )
 
-            rospy.spin()
-
+            # rospy.spin()
             # sleep for a sec
             rospy.sleep(1)
 
             time += 1
 
+        self.sensor_check_complete = self.Pressure_sensor_check and self.Imu_check
         self.done = True
         return
 
         # imu subscriber callback
     def Imu_callback(self, data):
+        print("IMU message recieved")
         self.Imu_check = True
+        return
 
         # pressure subscriber callback
-    def Pressure_callback
+    def Pressure_callback(self, data):
+        print("pressure message recieved")
         self.Pressure_sensor_check = True
+        return
