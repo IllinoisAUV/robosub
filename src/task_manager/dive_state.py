@@ -14,26 +14,28 @@ from robosub.msg import DiveGoal
 
 
 class Dive_State:
-    def __init__(self, sm, name, depth_achieved):
+    def __init__(self, sm, name):
         self.sm = sm
         self.state_name = name
-        self.depth_achieved = depth_achieved
-        tas
+        self.depth_achieved = None
+
     def execute(self, target_depth, timeout):
+        self.sm.register_input_keys (['action_result'])
+        self.sm.register_output_keys(['action_result'])
 
         with self.sm:
-            dive_action_ = smach_ros.SimpleActionState('Dive_Action', DiveAction,
-                               goal = DiveGoal(goal=target_depth),  preempt_timeout = rospy.Duration(timeout),
-                               result_slots=['depth_achieved'])
+            dive_action_ = smach_ros.SimpleActionState('dive/dive_action',
+                            DiveAction,
+                            goal = DiveGoal(depth=target_depth),
+                            preempt_timeout = rospy.Duration(timeout),
+                            result_cb = self.result_cb )
 
             smach.StateMachine.add(self.state_name, dive_action_,
-                               transitions={'succeeded':'succeeded', 'aborted':'aborted', 'preempted':'preempted' },
-                               remapping= {'depth_achieved':'userdata_depth'})
+                               transitions={'succeeded':'succeeded', 'aborted':'aborted', 'preempted':'preempted' })
 
-        outcome = self.sm.execute()
-        return
+        return self.depth_achieved
 
-    def result_cb(userdata, status, result):
+    def result_cb(userdata, status, res):
         if status == GoalStatus.SUCCEEDED:
-            self.sm.userdata.depth_achieved = result.depth_achieved
-        return
+            # self.sm.userdata.action_result.result = res.result
+            self.depth_achieved = res.result
