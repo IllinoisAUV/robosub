@@ -10,7 +10,13 @@ from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import ModelStates
 from rosgraph_msgs.msg import Clock
 
+import signal
 
+class TimeoutException(Exception):   # Custom exception class
+    pass
+
+def timeout_handler(signum, frame):   # Custom signal handler
+    raise TimeoutException
 
 class Sensor_Checks(smach.State):
     def __init__(self, time_out):
@@ -23,6 +29,8 @@ class Sensor_Checks(smach.State):
         self.timeout = time_out
         self.done = False
         self.sensor_check_complete = False
+        signal.signal(signal.SIGALRM, timeout_handler)
+
         self.listener()
 
     def execute(self, userdata):
@@ -49,13 +57,20 @@ class Sensor_Checks(smach.State):
         while( not (self.Pressure_sensor_check and self.Imu_check) and time < self.timeout):
             # @TODO read the topic names from launch file
 
-            # checking imu ps
-            rospy.Subscriber("/rexrov/imu", Imu, self.Imu_callback)
+            signal.alarm(2)
 
-            # checking pressure data
-            rospy.Subscriber("/rexrov/pressure", FluidPressure, self.Pressure_callback )
+            try:
+                # checking imu ps
+                rospy.Subscriber("/rexrov/imu", Imu, self.Imu_callback)
 
-            # rospy.spin()
+                # checking pressure data
+                rospy.Subscriber("/rexrov/pressure", FluidPressure, self.Pressure_callback )
+            except TimeoutException:
+                continue # continue the while loop if we dont get message for 1 sec
+            else:
+                # Reset the alarm
+                signal.alarm(0)
+
             # sleep for a sec
             rospy.sleep(1)
 
@@ -67,12 +82,12 @@ class Sensor_Checks(smach.State):
 
         # imu subscriber callback
     def Imu_callback(self, data):
-        print("IMU message recieved")
+        # print("IMU message recieved")
         self.Imu_check = True
         return
 
         # pressure subscriber callback
     def Pressure_callback(self, data):
-        print("pressure message recieved")
+        # print("pressure message recieved")
         self.Pressure_sensor_check = True
         return

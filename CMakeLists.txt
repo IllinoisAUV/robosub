@@ -70,7 +70,6 @@ include_directories(
 ## Mark executable scripts (Python etc.) for installation
 install(PROGRAMS
   bin/heartbeat.sh
-  tools/simulation/scripts/state-machine-launch.sh
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -94,6 +93,7 @@ add_subdirectory(src/actions)
 # transform defines a set of nodes that convert one message type to another 
 add_subdirectory(src/transform)
 add_subdirectory(src/task_manager)
+add_subdirectory(src/simulation)
 
 include(cmake/cppcheck.cmake)
 include(cmake/clang-format.cmake)
