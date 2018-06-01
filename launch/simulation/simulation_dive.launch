@@ -31,9 +31,9 @@
   </node>
 
   <!-- Transform pose output to Float64 state for the PID controller -->
-  <node name="dive_pid_input_from_pose" pkg="topic_tools" type="transform" output="$(arg output)" ns="$(arg ns)"
+  <!-- <node name="dive_pid_input_from_pose" pkg="topic_tools" type="transform" output="$(arg output)" ns="$(arg ns)"
     args="/pose $(arg ns)/state std_msgs/Float64 'm.pose.position.z'">
-  </node>
+  </node> -->
 
 
 </launch>

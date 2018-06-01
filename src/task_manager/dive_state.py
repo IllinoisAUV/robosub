@@ -20,8 +20,6 @@ class Dive_State:
         self.depth_achieved = None
 
     def execute(self, target_depth, timeout):
-        self.sm.register_input_keys (['action_result'])
-        self.sm.register_output_keys(['action_result'])
 
         with self.sm:
             dive_action_ = smach_ros.SimpleActionState('dive/dive_action',
@@ -31,11 +29,8 @@ class Dive_State:
                             result_cb = self.result_cb )
 
             smach.StateMachine.add(self.state_name, dive_action_,
-                               transitions={'succeeded':'succeeded', 'aborted':'aborted', 'preempted':'preempted' })
+                               transitions={'succeeded':'Dive_target_achieved', 'aborted':'Dive_action_aborted', 'preempted':'Dive_prevented' })
 
-        return self.depth_achieved
-
-    def result_cb(userdata, status, res):
+    def result_cb(self, userdata, status, res):
         if status == GoalStatus.SUCCEEDED:
-            # self.sm.userdata.action_result.result = res.result
-            self.depth_achieved = res.result
+            self.depth_achieved = res.depth
