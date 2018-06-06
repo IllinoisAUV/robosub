@@ -4,6 +4,7 @@
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/image_encodings.h>
 
+#include <opencv/cv.h>
 #include "robosub/VisualTarget.h"
 
 
@@ -29,6 +30,7 @@ robosub::VisualTarget process(Mat &img) {
 }
 
 void callback(const sensor_msgs::ImageConstPtr &msg) {
+  
   cv_bridge::CvImagePtr cv_ptr;
   try {
     cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
@@ -40,16 +42,20 @@ void callback(const sensor_msgs::ImageConstPtr &msg) {
   robosub::VisualTarget target_ctr;
   target_ctr = process(cv_ptr->image);
   pub.publish(target_ctr);
+  
 }
+
 
 int main(int argc, char **argv) {
   ros::init(argc, argv, "image_processor");
 
   ros::NodeHandle nh;
   image_transport::ImageTransport it(nh);
-
-  sub = it.subscribe("input", 1, callback);
-  pub =nh.advertise<robosub::VisualTarget>("output", 1);
   
+  
+  sub = it.subscribe("videofile/image_raw/", 1, callback);
+  pub =nh.advertise<robosub::VisualTarget>("target", 1);
+  
+  ros::spin();
   return 0;
 }
