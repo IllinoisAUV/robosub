@@ -71,6 +71,7 @@ add_subdirectory(src/motion)
 add_subdirectory(src/preprocess)
 add_subdirectory(src/utilities)
 add_subdirectory(src/experimental)
+add_subdirectory(src/image_processing)
 
 include(cmake/cppcheck.cmake)
 include(cmake/clang-format.cmake)
