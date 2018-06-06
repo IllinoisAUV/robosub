@@ -7,7 +7,6 @@
 #include <opencv/cv.h>
 #include "robosub/VisualTarget.h"
 
-
 using cv::Mat;
 
 ros::Publisher pub;
@@ -19,18 +18,16 @@ robosub::VisualTarget process(Mat &img) {
   cvtColor(img, img, CV_BGR2HSV);
   cvtColor(img, img, CV_HSV2BGR);
 
-  //hard-coded for now, will change later
+  // hard-coded for now, will change later
   robosub::VisualTarget target;
 
   target.x = 10;
   target.y = 50;
 
   return target;
-
 }
 
 void callback(const sensor_msgs::ImageConstPtr &msg) {
-  
   cv_bridge::CvImagePtr cv_ptr;
   try {
     cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BGR8);
@@ -42,20 +39,17 @@ void callback(const sensor_msgs::ImageConstPtr &msg) {
   robosub::VisualTarget target_ctr;
   target_ctr = process(cv_ptr->image);
   pub.publish(target_ctr);
-  
 }
-
 
 int main(int argc, char **argv) {
   ros::init(argc, argv, "image_processor");
 
   ros::NodeHandle nh;
   image_transport::ImageTransport it(nh);
-  
-  
+
   sub = it.subscribe("videofile/image_raw/", 1, callback);
-  pub =nh.advertise<robosub::VisualTarget>("target", 1);
-  
+  pub = nh.advertise<robosub::VisualTarget>("target", 1);
+
   ros::spin();
   return 0;
 }
