@@ -3,7 +3,7 @@
   tasks:
     - name: Check if driver package is downloaded
       stat:
-        path: "{{ playbook_dir }}/Linux_for_Tegra_tx1"
+        path: "{{ playbook_dir }}/Linux_for_Tegra_64_tx1"
       register: drivers
 
     - name: Download driver package
@@ -20,12 +20,12 @@
       when: not drivers.stat.exists
 
     - name: Rename install folder
-      shell: mv Linux_for_Tegra Linux_for_Tegra_tx1
+      shell: mv Linux_for_Tegra Linux_for_Tegra_64_tx1
       ignore_errors: yes
 
     - name: Check if rootfs is downloaded
       stat:
-        path: "{{ playbook_dir }}/Linux_for_Tegra_tx1/rootfs/bin"
+        path: "{{ playbook_dir }}/Linux_for_Tegra_64_tx1/rootfs/bin"
       register: rootfs
 
     - name: Download sample rootfs
@@ -37,45 +37,44 @@
     - name: Unpack rootfs
       unarchive:
         src: ./tx1-rootfs.tar.bz2
-        dest: "{{ playbook_dir }}/Linux_for_Tegra_tx1/rootfs"
+        dest: "{{ playbook_dir }}/Linux_for_Tegra_64_tx1/rootfs"
       become: true
       when: not rootfs.stat.exists
 
     - name: Apply Nvidia binaries
-      shell: "cd {{ playbook_dir }}/Linux_for_Tegra_tx1/ && ./apply_binaries.sh"
+      shell: "cd {{ playbook_dir }}/Linux_for_Tegra_64_tx1/ && ./apply_binaries.sh"
       become: true
       when: not rootfs.stat.exists or not drivers.stat.exists
 
 
     - name: Check if Orbitty BSP is downloaded
       stat:
-        path: "{{ playbook_dir }}/Linux_for_Tegra_tx1/orbitty.conf"
+        path: "{{ playbook_dir }}/Linux_for_Tegra_64_tx1/orbitty.conf"
       register: orbitty
-      when: orbitty is defined
 
     - name: Download Orbitty BSP
       get_url:
         url: 'http://www.connecttech.com/ftp/Drivers/CTI-L4T-V017.tgz'
-        dest: "{{ playbook_dir }}/Linux_for_Tegra_tx1/CTI-L4T-V017.tgz"
-      when: not orbitty.skipped and not orbitty.stat.exists
+        dest: "{{ playbook_dir }}/Linux_for_Tegra_64_tx1/CTI-L4T-V017.tgz"
+      when: not orbitty.stat.exists
 
     - name: Unpack Orbitty BSP
       unarchive:
-        src: "{{ playbook_dir }}/Linux_for_Tegra_tx1/CTI-L4T-V017.tgz"
-        dest: "{{ playbook_dir }}/Linux_for_Tegra_tx1/"
-      when: not orbitty.skipped and not orbitty.stat.exists
+        src: "{{ playbook_dir }}/Linux_for_Tegra_64_tx1/CTI-L4T-V017.tgz"
+        dest: "{{ playbook_dir }}/Linux_for_Tegra_64_tx1/"
+      when: not orbitty.stat.exists
 
     - name: Install Orbitty BSP
       shell: ./install.sh
       args:
-        chdir: "{{ playbook_dir }}/Linux_for_Tegra_tx1/CTI-L4T"
+        chdir: "{{ playbook_dir }}/Linux_for_Tegra_64_tx1/CTI-L4T"
       become: true
-      when: not orbitty.skipped and not orbitty.stat.exists
+      when: not orbitty.stat.exists
 
     - name: Setup static ip address
       copy:
         src: eth0
-        dest: "{{ playbook_dir }}/Linux_for_Tegra_tx1/rootfs/etc/network/interfaces.d/eth0"
+        dest: "{{ playbook_dir }}/Linux_for_Tegra_64_tx1/rootfs/etc/network/interfaces.d/eth0"
       become: true
 
 
@@ -89,12 +88,11 @@
         msg: "Please plug the Jetson in and place it in recovery mode"
       when: recovery.rc != 0
 
-    - name: Flash Linux for Tegra
-      shell: "cd {{ playbook_dir }}/Linux_for_Tegra_tx2/ && ./flash.sh jetson-tx1 mmcblk0p1"
-      become: true
-      when: orbitty.skipped
+    - name: Probe loop module
+      modprobe:
+        name: loop
+        state: present
 
-    - name: Flash Linux for Tegra with Orbitty BSP
-      shell: "cd {{ playbook_dir }}/Linux_for_Tegra_tx1/ && ./flash.sh orbitty mmcblk0p1"
+    - name: Flash Linux for Tegra and Orbitty BSP
+      shell: "cd {{ playbook_dir }}/Linux_for_Tegra_64_tx1/ && ./flash.sh orbitty mmcblk0p1"
       become: true
-      when: not orbitty.skipped and not orbitty.stat.exists
