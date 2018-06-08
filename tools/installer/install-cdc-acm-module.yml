@@ -1,0 +1,31 @@
+# By default, Jetpack does not install the cdc-acm module which is required for the 
+# the pixhawk to be usable via USB
+---
+- hosts: jetson
+  tasks:
+    - name: Check when module is installed
+      stat:
+        path: /lib/modules/4.4.38-tegra/kernel/drivers/usb/class/cdc-acm.ko
+      register: module_installed
+
+    - name: Clone installer
+      git:
+        clone: yes
+        dest: /tmp/installACMModule
+        repo: https://github.com/IllinoisAUV/installACMModule
+        version: vL4T28.1
+      when: not module_installed.stat.exists
+    
+    - name: Run installer
+      command: /tmp/installACMModule/installCDCACM.sh
+      args:
+        chdir: /tmp/installACMModule
+        creates: /lib/modules/4.4.38-tegra/kernel/drivers/usb/class/cdc-acm.ko
+      when: not module_installed.stat.exists
+
+
+    - name: Enable module
+      modprobe:
+        name: cdc-acm
+        state: present
+      become: true

@@ -16,6 +16,7 @@
 - import_playbook: install-ros.yml
 - import_playbook: install-packages.yml
 - import_playbook: install-udev.yml
+- import_playbook: install-cdc-acm-module.yml
 - import_playbook: install-tiscamera.yml
 - import_playbook: setup-catkin.yml
 - import_playbook: install-zed.yml

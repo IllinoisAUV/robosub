@@ -1,1 +1,1 @@
-SUBSYSTEM=="usb", ATTRS{idVendor}=="26ac", ATTRS{idProduct}=="0011", SYMLINK+="ttyPixhawk"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="26ac", ATTRS{idProduct}=="0011", SYMLINK+="ttyPixhawk" MODE="0666"
