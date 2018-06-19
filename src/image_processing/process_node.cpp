@@ -12,21 +12,23 @@ using cv::Mat;
 ros::Publisher pub;
 image_transport::Subscriber sub;
 
+//process img and return center as target
 robosub::VisualTarget process(Mat &img) {
   // img is in BGR
   // Do any processing and place the result in img
   cvtColor(img, img, CV_BGR2HSV);
   cvtColor(img, img, CV_HSV2BGR);
 
-  // hard-coded for now, will change later
+  // TODO: hard-coded for now, will change later
   robosub::VisualTarget target;
 
-  target.x = 10;
-  target.y = 50;
+  target.x = 20;
+  target.y = 60;
 
   return target;
 }
 
+// call process on img to target
 void callback(const sensor_msgs::ImageConstPtr &msg) {
   cv_bridge::CvImagePtr cv_ptr;
   try {
@@ -41,14 +43,25 @@ void callback(const sensor_msgs::ImageConstPtr &msg) {
   pub.publish(target_ctr);
 }
 
+//subscribe and publish target msg
 int main(int argc, char **argv) {
+  std::string input, target;
+
   ros::init(argc, argv, "image_processor");
 
-  ros::NodeHandle nh;
+  if (!ros::param::get("input", input)) {
+    throw ros::Exception("Must specify input image topic");
+  }
+
+  if (!ros::param::get("target", target)) {
+    throw ros::Exception("Must specify input image target");
+  }
+
+  ros::NodeHandle nh("~");
   image_transport::ImageTransport it(nh);
 
-  sub = it.subscribe("videofile/image_raw/", 1, callback);
-  pub = nh.advertise<robosub::VisualTarget>("target", 1);
+  sub = it.subscribe(input, 1, callback);
+  pub = nh.advertise<robosub::VisualTarget>(target, 1);
 
   ros::spin();
   return 0;
