@@ -3,13 +3,11 @@
 import sys
 import rospy
 import cv2
-
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 from robosub.msg import VisualTarget
 
 class image_converter:
-
     
     def __init__(self):
     #publish ans subscribe targets

@@ -1,15 +1,12 @@
 <launch>
-  <arg name="view" default="false" /> 
-
-
   <node name="process_node" pkg="robosub" type="process_node.py">
-  	<param name="target" value="image_target"/>
-  	<param name="input" value="/videofile/image_raw" />
+    <param name="target" value="image_target"/>
+    <param name="input" value="/videofile/image_raw" />
   </node>
 
   <node name="process_node" pkg="robosub" type="process_node">
-  	<param name="target" value="image_target"/>
-  	<param name="input" value="/videofile/image_raw" />
+    <param name="target" value="image_target"/>
+    <param name="input" value="/videofile/image_raw" />
   </node>
 
 </launch>
