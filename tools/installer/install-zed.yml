@@ -31,13 +31,41 @@
         recurse: yes
       become: true
 
+    - name: Create catkin workspace
+      file:
+        path: ~/zed_ws/src
+        state: directory
+
     - name: Download ros package
       git:
         clone: yes
-        dest: ~/catkin_ws/src/zed-ros-wrapper
+        dest: ~/zed_ws/src/zed-ros-wrapper
         repo: https://github.com/stereolabs/zed-ros-wrapper
 
-    - name: Build and install zed package
-      shell: bash -ic "catkin_make install"
+    - name: Run catkin_make
+      shell: bash -ic "catkin_make"
       args:
-        chdir: ~/catkin_ws
+        chdir: /home/ubuntu/zed_ws
+
+    - name: Run catkin_make install
+      shell: bash -ic "catkin_make install -DCMAKE_INSTALL_PREFIX=/opt/ros/kinetic"
+      args:
+        chdir: /home/ubuntu/zed_ws
+      become: true
+
+    - name: Run catkin_make install
+      shell: bash -ic "catkin_make install -DCMAKE_INSTALL_PREFIX=/opt/ros/kinetic"
+      args:
+        chdir: /home/ubuntu/zed_ws
+      become: true
+
+    - name: Get calibration file names
+      command: "find zed-calib -type f"
+      register: files_to_copy
+
+    - name: Copy zed calibration files to jetson
+      copy:
+        src: "{{ item }}" 
+        dest: "/usr/local/zed/settings"
+      with_items:
+       - "{{ files_to_copy.stdout_lines }}"

@@ -1,0 +1,27 @@
+---
+- hosts: jetson
+  tasks:
+    - name: Check if TensorRT is installed
+      command: dpkg-query -l tensorrt*
+      ignore_errors: true
+      register: tensorrt
+
+    - name: Download TensorRT repo deb
+      get_url: 
+        url: "http://developer.download.nvidia.com/devzone/devcenter/mobile/jetpack_l4t/013/linux-x64/nv-gie-repo-ubuntu1604-ga-cuda8.0-trt2.1-20170614_1-1_arm64.deb"
+        dest: /tmp/tensorrt.deb
+      when: tensorrt.rc != 0
+
+    - name: Install TensorRT repo deb
+      apt:
+        deb: /tmp/tensorrt.deb
+      become: true
+      when: tensorrt.rc != 0
+
+    - name: Install TensorRT
+      apt:
+        name: tensorrt-2.1.2
+        state: present
+        update_cache: yes
+      become: true
+      when: tensorrt.rc != 0

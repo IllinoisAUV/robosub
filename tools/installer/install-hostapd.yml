@@ -1,0 +1,75 @@
+---
+- hosts: jetson
+  tasks: 
+    - name: Install hostapd
+      apt: 
+        name: hostapd
+        state: present
+      become: true
+      
+    - name: Install dnsmasq
+      apt: 
+        name: dnsmasq
+        state: present
+      become: true
+      
+    - name: Enable SSID broadcast
+      lineinfile:
+        path: /etc/modprobe.d/bcmdhd.conf
+        line: 'options bcmdhd op_mode=2'
+      become: true
+      register: ssid
+      
+    - name: Tell user to reboot Jetson
+      debug:
+        msg: 'Please reboot the Jetson after installer complete'
+      when: ssid.changed
+      
+    - name: Copy hostapd.conf to Jetson
+      copy: 
+        src: hostapd.conf
+        dest: /etc/hostapd/hostapd.conf
+      become: true
+      
+    - name: Copy dnsmasq.conf to Jetson
+      copy: 
+        src: dnsmasq.conf
+        dest: /etc/dnsmasq.conf
+      become: true
+      
+    - name: Copy NetworkManager.conf to Jetson
+      template: 
+        src: NetworkManager.conf
+        dest: /etc/NetworkManager/NetworkManager.conf
+      become: true
+      
+    - name: Edit network interfaces
+      copy: 
+        src: wlan0
+        dest: /etc/network/interfaces.d/wlan0
+      become: true
+     
+      
+    - name: Enable IP forwarding
+      lineinfile:
+        path: /etc/sysctl.conf
+        line: 'net.ipv4.ip_forward=1'
+      become: true
+
+    - name: Enable NAT
+      lineinfile:
+        path: /etc/rc.local
+        line: 'iptables -t nat -A POSTROUTING -s 192.168.8.0/24 ! -d 192.168.8.0/24 -j MASQUERADE'
+      become: true
+
+    - name: Restart services
+      systemd:
+        name: "{{ item }}"
+        state: restarted
+        enabled: yes
+      become: true
+      with_items: 
+        - networking.service
+        - NetworkManager.service
+        - dnsmasq.service
+    

@@ -1,0 +1,51 @@
+---
+- hosts: jetson
+  tasks:
+    - name: Create svo workspace
+      file:
+        path: ~/svo_ws/src
+        state: directory
+
+    - name: Install dependencies
+      apt:
+        name: "{{ item }}"
+        state: present
+      become: true
+      with_items:
+        - ros-kinetic-sophus*
+
+    - name: Clone rpg_svo
+      git:
+        clone: yes
+        dest: ~/svo_ws/src/rpg_svo
+        repo: https://github.com/IllinoisAUV/rpg_svo
+
+    - name: Clone rpg_vikit
+      git:
+        clone: yes
+        dest: ~/svo_ws/src/rpg_vikit
+        repo: https://github.com/IllinoisAUV/rpg_vikit
+
+    - name: Clone fast
+      git:
+        clone: yes
+        dest: ~/svo_ws/src/fast
+        repo: https://github.com/illinoisauv/fast
+
+    - name: Run catkin_make
+      shell: bash -ic "export ARM_ARCHITECTURE=True; catkin_make"
+      args:
+        chdir: ~/svo_ws
+
+    - name: Run catkin_make install
+      shell: bash -ic "export ARM_ARCHITECTURE=True; catkin_make install -DCMAKE_INSTALL_PREFIX=/opt/ros/kinetic"
+      args:
+        chdir: /home/ubuntu/svo_ws
+      become: true
+
+    # - name: Source svo_ws setup.bash in bashrc
+    #   lineinfile:
+    #     create: yes
+    #     state: present
+    #     line: "source ~/svo_ws/install/setup.bash"
+    #     path: ~/.bashrc
