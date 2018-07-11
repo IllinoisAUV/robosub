@@ -1,0 +1,10 @@
+[Unit]
+Description=Launch roscore on boot
+After=network.target
+
+[Service]
+EnvironmentFile=/etc/default/roscore
+ExecStart=/usr/bin/roscore
+
+[Install]
+WantedBy=multi-user.target

@@ -67,3 +67,23 @@
         line: "source /opt/ros/kinetic/setup.bash"
         path: ~/.bashrc
       become: true
+
+    - name: Install roscore service file
+      copy:
+        src: roscore.service
+        dest: /etc/systemd/system/roscore.service
+      become: true
+
+    - name: Install roscore environment file
+      copy:
+        src: roscore-env
+        dest: /etc/default/roscore
+      become: true
+
+    - name: Enable roscore service
+      systemd:
+        name: roscore.service
+        state: started
+        enabled: yes
+        daemon_reload: true
+      become: true
