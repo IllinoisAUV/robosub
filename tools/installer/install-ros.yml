@@ -87,3 +87,23 @@
         enabled: yes
         daemon_reload: true
       become: true
+
+    - name: Install submarine service file
+      copy:
+        src: submarine.service
+        dest: /etc/systemd/system/submarine.service
+      become: true
+
+    - name: Install submarine environment file
+      copy:
+        src: submarine-env
+        dest: /etc/default/submarine
+      become: true
+
+    - name: Enable submarine service
+      systemd:
+        name: submarine.service
+        state: started
+        enabled: yes
+        daemon_reload: true
+      become: true
