@@ -1,0 +1,11 @@
+# Goal
+uint8 TARGET_RED=0
+uint8 TARGET_BLACK=1
+uint8 TARGET_GREEN=2
+uint8 target # Color to drop balls into
+---
+# Result
+bool success # Whether the task was successful
+---
+# Feedback - Sent at a specified frequency
+bool detected # Whether the roulette table has been detected
