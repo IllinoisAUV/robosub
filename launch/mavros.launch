@@ -3,7 +3,7 @@
 <launch>
   <arg name="sitl" default="false" />
 
-  <arg name="fcu_url" default="/dev/ttyTHS2:115200"/>
+  <arg name="fcu_url" default="/dev/ttyACM0"/>
   <arg name="gcs_url" default="udp://@10.0.0.1:14550"/>
   <arg name="system_id" default="255"/>
   <arg name="component_id" default="240"/>
@@ -11,7 +11,7 @@
   <arg name="tgt_component" default="1"/>
   <arg name="pluginlists_yaml" value="$(find robosub)/launch/mavros_pluginlists.yaml"/>
   <arg name="config_yaml" value="$(find mavros)/launch/apm_config.yaml"/>
-  <arg name="log_output" default="log"/>
+  <arg name="log_output" default="screen"/>
 
   <!-- Launch heartbeat node to kill the sub on connection loss -->
   <node pkg="robosub" type="heartbeat.sh" name="heartbeat" required="true" output="$(arg log_output)" unless="$(arg sitl)"/>
@@ -37,4 +37,7 @@
     <rosparam command="load" file="$(arg pluginlists_yaml)"/>
     <rosparam command="load" file="$(arg config_yaml)"/>
   </node>
+
+  <!-- load ardupilot parameters onto the pixhawk -->
+  <node pkg="mavros" type="mavparam" args="load $(find robosub)/tools/ardupilot/mav.parm" />
 </launch>

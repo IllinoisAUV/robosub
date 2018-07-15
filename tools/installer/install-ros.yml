@@ -59,3 +59,11 @@
         state: present
         line: "source /opt/ros/kinetic/setup.bash"
         path: ~/.bashrc
+
+    - name: Source ros setup.bash in bashrc
+      lineinfile:
+        create: yes
+        state: present
+        line: "source /opt/ros/kinetic/setup.bash"
+        path: ~/.bashrc
+      become: true
