@@ -1,3 +1,0 @@
-<launch>
-  <node pkg="tools/simulation/scripts" type="state-machine-launch.sh" name="state_machine_launch_script" output="screen"/>
-</launch>
