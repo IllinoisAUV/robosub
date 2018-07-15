@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     ros-kinetic-xacro \
     ros-kinetic-gazebo* \
     ros-kinetic-video-stream-opencv \
+    ros-kinetic-pid \
     clang-format \
     pylint
 

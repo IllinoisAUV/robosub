@@ -1,0 +1,10 @@
+# Goal
+uint8 TARGET_RED=0
+uint8 TARGET_BLACK=1
+uint8 target # Target color to go through the gate
+---
+# Result
+bool success # Whether the gate was passed through
+---
+# Feedback - Sent at a specified frequency
+bool detected # Whether the die has been detected

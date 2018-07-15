@@ -1,0 +1,8 @@
+# Goal
+float32 depth # Target depth to dive to. Could be above or below the current depth
+---
+# Result
+float32 depth # The achieved depth
+---
+# Feedback - Sent at a specified frequency
+float32 depth # The current depth

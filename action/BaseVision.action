@@ -1,0 +1,7 @@
+# Goal
+---
+# Result
+bool success # Whether the target was successfully reached
+---
+# Feedback - Sent at a specified frequency
+bool detected # Whether the target has been detected
