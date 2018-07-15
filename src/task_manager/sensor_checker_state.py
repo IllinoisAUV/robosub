@@ -61,10 +61,10 @@ class Sensor_Checks(smach.State):
 
             try:
                 # checking imu ps
-                rospy.Subscriber("/rexrov/imu", Imu, self.Imu_callback)
+                rospy.Subscriber("/sm/imu", Imu, self.Imu_callback)
 
                 # checking pressure data
-                rospy.Subscriber("/rexrov/pressure", FluidPressure, self.Pressure_callback )
+                rospy.Subscriber("/sm/pressure", FluidPressure, self.Pressure_callback )
             except TimeoutException:
                 continue # continue the while loop if we dont get message for 1 sec
             else:

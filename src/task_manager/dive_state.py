@@ -25,11 +25,13 @@ class Dive_State:
             dive_action_ = smach_ros.SimpleActionState('dive/dive_action',
                             DiveAction,
                             goal = DiveGoal(depth=target_depth),
-                            preempt_timeout = rospy.Duration(timeout),
+                            preempt_timeout = timeout,
                             result_cb = self.result_cb )
 
             smach.StateMachine.add(self.state_name, dive_action_,
-                               transitions={'succeeded':'Dive_target_achieved', 'aborted':'Dive_action_aborted', 'preempted':'Dive_prevented' })
+                               transitions={'succeeded':'Dive_target_achieved',
+                               'aborted':'Dive_action_aborted',
+                               'preempted':'Dive_prevented' })
 
     def result_cb(self, userdata, status, res):
         if status == GoalStatus.SUCCEEDED:
