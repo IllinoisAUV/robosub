@@ -59,7 +59,7 @@ def main():
         # target depth and preempted timeout in sec
         # final outcome to return
         # @TODO check if timeout working correctly
-        dive_state_.execute(-5.0, 1.0)
+        dive_state_.execute(-35.0, 10)
 
         smach.StateMachine.add('dive_sm', dive_sm,
                                transitions={'Dive_target_achieved':'Mission_Completed', 'Dive_action_aborted': 'Mission_Failed', 'Dive_prevented':'Mission_Failed'} )

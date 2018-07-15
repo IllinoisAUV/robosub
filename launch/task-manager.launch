@@ -1,0 +1,11 @@
+<launch>
+  <include file="$(find robosub)/launch/simulation/simulation_dive.launch"/>
+
+  <node pkg="robosub" type="robosub_state_machine_node.py" name="task_manager" output="screen">
+    <remap from="/sm/imu" to="/rexrov/imu" />
+    <remap from="/sm/pressure" to="/rexrov/pressure" />
+  </node>
+
+  <node pkg="topic_tools" type="transform" name="odom_to_pose" ns="dive" args="/rexrov/pose_gt pose geometry_msgs/Pose 'm.pose.pose'"/>
+
+</launch>

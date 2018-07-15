@@ -1,5 +1,3 @@
-#include <stdlib.h> /* srand, rand */
-#include <sstream>
 #include "robosub/VisualTarget.h"
 #include "ros/ros.h"
 
@@ -15,18 +13,18 @@ int main(int argc, char **argv) {
 
   ros::Rate loop_rate(10);
 
-  int rand_target;
+  int count = 0;
   while (ros::ok()) {
     robosub::VisualTarget msg;
     rand_target = rand() % 100 + 1;
 
-    // since our images are 480p
-    msg.x = 320 + rand_target;
-    msg.y = 240 - rand_target;
+    msg.x = 10 + count;
+    msg.y = 50 - count;
 
     target_pub.publish(msg);
     ros::spinOnce();
     loop_rate.sleep();
   }
+
   return 0;
 }
