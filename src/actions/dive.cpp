@@ -6,7 +6,7 @@
 #include <cmath>
 #include <string>
 
-#include "helpers/Bool.h"
+#include "constructors/Bool.h"
 
 constexpr double kTolerance = 1.0;
 

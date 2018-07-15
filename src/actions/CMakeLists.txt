@@ -1,4 +1,4 @@
-node(dive dive.cpp ctors)
+node(dive dive.cpp)
 node(hitdie_action hitdie.cpp)
 node(gate_action gate.cpp)
 node(path_action path.cpp)
