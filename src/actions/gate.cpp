@@ -23,7 +23,7 @@ class Gate {
   ~Gate() {}
 
   void goalCallback() {
-    red_ = server_.acceptNewGoal()->red;
+    red_ = server_.acceptNewGoal()->target;
     ROS_INFO("%s: Received new die pips goal %s", action_name_.c_str(),
              red_ ? "red" : "black");
   }
