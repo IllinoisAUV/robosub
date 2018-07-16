@@ -1,0 +1,14 @@
+<launch>
+  <arg name="view" default="false" />
+  <arg name="input" default="/rexrov/rexrov/camera/camera_image" />
+  <arg name="output" default="/rexrov/rexrov/camera/camera_image/image_processed" />
+  <node name="preprocess" pkg="robosub" type="preprocess_node">
+    <remap from="input" to="$(arg input)"/>
+    <remap from="output" to="$(arg output)"/>
+  </node>
+  
+  <node name="viewer" package="image_view" type="image_view" if="$(arg view)">
+    <remap from="image" to="$(arg output)" />
+  </node>
+
+</launch>

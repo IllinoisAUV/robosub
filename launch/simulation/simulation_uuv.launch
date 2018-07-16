@@ -1,0 +1,44 @@
+<launch>
+  <!-- This is the launch file for running the robosub code on the uuv_simulator -->
+  <!-- Since the simulator has its own controller we only need to post the angular velocity messages-->
+  <!-- to the simulator. We dont need to use mavros for the uuv simulator.  -->
+
+  <!-- If you want to generate a ROS bag with the recorded simulated data, set this flag to true -->
+  <arg name="record" default="false"/>
+
+  <!-- Start the a underwater world simulation scenario -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <!-- <arg name="world_name" value="worlds/lake.world"/> -->
+      <arg name="world_name" value="worlds/dice.world"/>
+      <arg name="paused" value="false"/>
+  </include>
+
+  <!-- Add the RexROV vehicle to the simulation (namespace: rexrov) -->
+  <include file="$(find uuv_descriptions)/models/rexrov/launch/upload_rexrov.launch">
+      <arg name="x" default="10"/>
+      <arg name="y" default="-30"/>
+      <arg name="z" default="-38"/>
+      <arg name="yaw" default="135"/>
+  </include>
+
+  <include file="$(find uuv_control_cascaded_pid)/launch/velocity_control.launch">
+      <arg name="uuv_name" value="rexrov"/>
+      <arg name="model_name" value="rexrov"/>
+  </include>
+
+  <!-- Init the preprocess node -->
+  <include file="$(find robosub)/launch/simulation/simulation_preprocess.launch"/>
+  <!-- <include file="$(find robosub)/launch/dive-action.launch"/> -->
+
+  <!-- Start the target target_follower node. This node will post angular velocity messages to -->
+  <!-- to the uuv_simulator -->
+  <node pkg="robosub" type="basic_target_follower_node" name="target_follower" ns="bs">
+    <param name="target_topic" value="/rexrov/target" type="string" />
+    <param name="kSpeed" value="0.40" type="double" />
+    <param name="kAlt" value="0.0010" type="double" />
+    <param name="kYaw" value="0.0005" type="double" />
+
+    <remap from="/robosub/target_twist" to="/rexrov/cmd_vel" />
+  </node>
+
+</launch>
