@@ -13,7 +13,7 @@ from actionlib import *
 from actionlib_msgs.msg import *
 
 
-class Dive_State:
+class Dive_State(object):
     def __init__(self, sm, name, depth_achieved):
         self.sm = sm
         self.state_name = name
