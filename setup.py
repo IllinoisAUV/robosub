@@ -1,9 +1,11 @@
+#!/usr/bin/env python
+
 from distutils.core import setup
 from catkin_pkg.python_setup import generate_distutils_setup
 
 d = generate_distutils_setup(
-    packages=['robosub'],
-    package_dir={'': 'src'}
+    packages=['src'],
+    package_dir={'': '.'}
 )
 
 setup(**d)

@@ -19,5 +19,3 @@ if __name__ == '__main__':
     rospy.init_node('dive_effort_to_twiststamped', anonymous=True)
 
     rospy.spin()
-
-
