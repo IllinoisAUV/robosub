@@ -5,6 +5,8 @@
 #include <tf/tf.h>
 #include <string>
 
+#include <unistd.h>
+
 #include "constructors/Quaternion.h"
 #include "constructors/Vector3.h"
 
@@ -22,6 +24,9 @@ const std::string kModeService = "/mavros/set_mode";
 const std::string kArmingService = "/mavros/cmd/arming";
 
 MavrosRCController::MavrosRCController() {
+
+  usleep(2*1000000); // 2 sec sleep
+
   // Wait for the mavros node to come up
   if (!ros::service::waitForService(kModeService)) {
     throw ros::Exception(
@@ -80,12 +85,12 @@ void MavrosRCController::DoUpdate() {
   OverrideRCIn msg;
 
   // Turn velocity setpoints into pose setpoints
-  tf::Quaternion quat(
-      setpoint_pos_.pose.orientation.x, setpoint_pos_.pose.orientation.y,
-      setpoint_pos_.pose.orientation.z, setpoint_pos_.pose.orientation.w);
-  tf::Matrix3x3 mat(quat);
-  double roll, pitch, yaw;
-  mat.getRPY(roll, pitch, yaw);
+  // tf::Quaternion quat(
+  //     setpoint_pos_.pose.orientation.x, setpoint_pos_.pose.orientation.y,
+  //     setpoint_pos_.pose.orientation.z, setpoint_pos_.pose.orientation.w);
+  // tf::Matrix3x3 mat(quat);
+  double roll = 0, pitch = 0, yaw = 0;
+  // mat.getRPY(roll, pitch, yaw);
 
   roll += roll + setpoint_vel_.twist.angular.x * kPeriod;
   pitch += pitch + setpoint_vel_.twist.angular.y * kPeriod;
