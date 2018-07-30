@@ -54,17 +54,18 @@ class Sensor_Checks(smach.State):
         # try to get Imu and pressure sensor value for 10 sec
         time = 0
 
-        while( not (self.Pressure_sensor_check and self.Imu_check) and time < self.timeout):
-            # @TODO read the topic names from launch file
+        self.sensor_check_complete = (self.pressure_sensor_check and self.imu_check)
+
+        while( not self.sensor_check_complete and time < self.timeout):
 
             signal.alarm(2)
 
             try:
                 # checking imu ps
-                rospy.Subscriber("/sm/imu", Imu, self.Imu_callback)
+                rospy.Subscriber("/sm/imu", Imu, self.imu_callback)
 
                 # checking pressure data
-                rospy.Subscriber("/sm/pressure", FluidPressure, self.Pressure_callback )
+                rospy.Subscriber("/sm/pressure", FluidPressure, self.pressure_callback )
             except TimeoutException:
                 continue # continue the while loop if we dont get message for 1 sec
             else:
@@ -76,18 +77,16 @@ class Sensor_Checks(smach.State):
 
             time += 1
 
-        self.sensor_check_complete = self.Pressure_sensor_check and self.Imu_check
+        self.sensor_check_complete = self.pressure_sensor_check and self.imu_check
         self.done = True
         return
 
         # imu subscriber callback
-    def Imu_callback(self, data):
-        # print("IMU message recieved")
-        self.Imu_check = True
+    def imu_callback(self, data):
+        self.imu_check = True
         return
 
         # pressure subscriber callback
-    def Pressure_callback(self, data):
-        # print("pressure message recieved")
-        self.Pressure_sensor_check = True
+    def pressure_callback(self, data):
+        self.pressure_sensor_check = True
         return
