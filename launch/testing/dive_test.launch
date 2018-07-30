@@ -1,0 +1,46 @@
+<launch>
+  <arg name="output" default="screen" />
+
+  <!-- Namespace to launch all nodes under -->
+  <arg name="ns" default="/dive" />
+  <!-- Topic to publish TwistStamped messages to -->
+  <arg name="/velocity_topic" default="/cmd_vel" />
+
+  <node name="dive_action" pkg="robosub" type="dive" output="$(arg output)" ns="$(arg ns)">
+    <remap from="/pose" to="/pose" />
+  </node>
+
+  <!-- PID Controller for the depth -->
+  <node name="dive_pid" pkg="pid" type="controller" output="$(arg output)" ns="$(arg ns)">
+    <param name="Kp" value="0.5" />
+    <param name="Ki" value="0.0" />
+    <param name="Kd" value="0.1" />
+    <param name="upper_limit" value="1.0" />
+    <param name="lower_limit" value="-1.0" />
+    <param name="max_loop_frequency" value="20.0" />
+    <param name="min_loop_frequency" value="1.0" />
+    <remap from="/setpoint" to="$(arg ns)/setpoint" />
+    <remap from="/pid_enable" to="$(arg ns)/pid_enable" />
+  </node>
+
+  <!-- Transform the control effort of the pid controller to a TwistStamped message to send to the motion controller -->
+  <!-- See https://answers.ros.org/question/261935/using-topic_tools-transform-to-publish-more-complex-types/ -->
+  <node name="dive_pid_output_to_twist" pkg="robosub" type="dive_effort_to_twiststamped.py" output="$(arg output)" ns="$(arg ns)">
+    <remap from="input" to="$(arg ns)/control_effort" />
+    <remap from="output" to="$(arg /velocity_topic)" />
+  </node>
+
+
+  <node pkg="robosub" type="robosub_state_machine_node.py" name="task_manager" output="screen">
+    <remap from="/sm/imu" to="/rexrov/imu" />
+    <remap from="/sm/pressure" to="/rexrov/pressure" />
+  </node>
+
+  <node pkg="topic_tools" type="transform" name="odom_to_pose" ns="dive" args="/rexrov/pose_gt pose geometry_msgs/Pose 'm.pose.pose'"/>
+
+  <!-- Transform pose output to Float64 state for the PID controller -->
+  <!-- <node name="dive_pid_input_from_pose" pkg="topic_tools" type="transform" output="$(arg output)" ns="$(arg ns)"
+    args="/pose $(arg ns)/state std_msgs/Float64 'm.pose.position.z'">
+  </node> -->
+
+</launch>
