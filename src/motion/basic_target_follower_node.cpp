@@ -8,14 +8,8 @@ int main(int argc, char **argv) {
   ros::init(argc, argv, "targetfollower");
   ros::NodeHandle nh("~");
 
-  std::string target_topic;
-  if (!nh.getParam("target_topic", target_topic)) {
-    throw ros::Exception("Must specify target_topic parameter");
-  }
-
-  if (!nh.getParam("target_topic", target_topic)) {
-    throw ros::Exception("Must specify target_topic parameter");
-  }
+  // add remap in the launch file
+  std::string target_topic = "/robosub/visual_target";
 
   float kSpeed = 0.0;
   if (!nh.getParam("kSpeed", kSpeed)) {
