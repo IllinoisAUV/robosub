@@ -4,16 +4,12 @@ services:
   - docker
 
 script:
-  # Build containers separately. Don't timeout if no output is given
-  - travis_wait 30 ./tools/docker/build.sh host
-  - travis_wait 30 ./tools/docker/build.sh jetson
-
+  - docker pull illinoisauv/robosub:latest
   # Check if formatting is required
   - ./build.sh host --make-args clang-format-check
 
   # Run pylint
   - ./build.sh host --make-args pylint
 
-  # Check if the code builds using both toolchains
+  # Check if the code builds
   - ./build.sh host
-  - ./build.sh jetson

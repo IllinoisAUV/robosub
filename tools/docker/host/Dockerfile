@@ -16,9 +16,6 @@ RUN apt-get update && apt-get install -y \
 
 RUN /opt/ros/kinetic/lib/mavros/install_geographiclib_datasets.sh
 
-ADD install-cuda.sh /install-cuda.sh 
-RUN /install-cuda.sh
-
 VOLUME catkin_ws
 WORKDIR /catkin_ws
 CMD ["catkin_make"]
