@@ -2,8 +2,8 @@
 #include <mavros_msgs/CommandBool.h>
 #include <mavros_msgs/OverrideRCIn.h>
 #include <mavros_msgs/SetMode.h>
-#include <tf/tf.h>
 #include <string>
+#include <tf/tf.h>
 
 #include <unistd.h>
 
@@ -25,7 +25,7 @@ const std::string kArmingService = "/mavros/cmd/arming";
 
 MavrosRCController::MavrosRCController() {
 
-  usleep(2*1000000); // 2 sec sleep
+  usleep(2 * 1000000); // 2 sec sleep
 
   // Wait for the mavros node to come up
   if (!ros::service::waitForService(kModeService)) {
@@ -98,14 +98,13 @@ void MavrosRCController::DoUpdate() {
   setpoint_pos_.pose.orientation = QuaternionRPY(roll, pitch, yaw);
 
   // Send target message to ArduPilot
-  msg.channels[1] = angleToPpm(roll);
   msg.channels[0] = angleToPpm(pitch);
-  msg.channels[3] = speedToPpm(setpoint_vel_.twist.angular.z);
-
-  msg.channels[5] = speedToPpm(setpoint_vel_.twist.linear.x);
-  msg.channels[6] = speedToPpm(setpoint_vel_.twist.linear.y);
+  msg.channels[1] = angleToPpm(roll);
   msg.channels[2] = speedToPpm(setpoint_vel_.twist.linear.z);
+  msg.channels[3] = speedToPpm(setpoint_vel_.twist.angular.z);
+  msg.channels[4] = speedToPpm(setpoint_vel_.twist.linear.x);
+  msg.channels[5] = speedToPpm(setpoint_vel_.twist.linear.y);
+  msg.channels[6] = 1500;
 
-  msg.channels[4] = 1500;
   rc_pub_.publish(msg);
 }
