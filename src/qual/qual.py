@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     rate = rospy.Rate(20) # 10hz
     msg_down = Twist()
-    time_end_depth = time.time() + 5
+    time_end_depth = time.time() + 6
 
     # going down for 5 sec
     while time.time() < time_end_depth:
