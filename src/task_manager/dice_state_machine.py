@@ -14,47 +14,62 @@ class dice_state(object):
         self.k_alt = 0.005
         self.k_yaw = 0.005
 
-        self.idx
+        self.idx = None
         self.center_x = None
         self.center_y = None
 
-        self.h = None
-        self.w = None
+        self.h = 720
+        self.w = 1280
+        self.detected = False
+
+    def go_forward(self):
+        while( not self.detected):
+            self.target_follower()
+        return
 
     def callback(self, msg):
-        for i in range(4):
+        self.detected = False
+        for i in range(len(msg.bounding_boxes)):
             if msg.bounding_boxes[i].Class == 'D6':
                 self.idx = i
-        x_min = msg.bounding_boxes[self.idx].xmin
-        x_max = msg.bounding_boxes[self.idx].xmax
+                self.detected = True
+        if self.detected:
+            x_min = msg.bounding_boxes[self.idx].xmin
+            x_max = msg.bounding_boxes[self.idx].xmax
 
-        y_min = msg.bounding_boxes[self.idx].ymin
-        y_max = msg.bounding_boxes[self.idx].ymax
+            y_min = msg.bounding_boxes[self.idx].ymin
+            y_max = msg.bounding_boxes[self.idx].ymax
 
-        self.center_x = (x_max - x_min)/2
-        self.center_y = (y_max - y_min)/2
-        print(self.center_x, self.center_y)
+            self.center_x = (x_max - x_min)/2
+            self.center_y = (y_max - y_min)/2
+            print(self.center_x, self.center_y)
+        self.target_follower()
 
     def target_follower(self):
-
         msg = Twist()
-        d_alt = self.k_alt*(self.h/2 - self.center_y)
-        d_yaw = self.k_yaw*(self.w/2 - self.center_x)
+        if self.detected:
+            d_alt = self.k_alt*(self.center_y - self.h/2)
+            d_yaw = self.k_yaw*(self.center_x - self.w/2)
 
-        msg.linear.x = self.linear_speed_x
-        msg.linear.z = d_alt
-        msg.angular.z = d_yaw
+            msg.linear.x = self.linear_speed
+            msg.linear.z = d_alt
+            msg.angular.z = d_yaw
+        else:
+            msg.linear.x = self.linear_speed
+
         print("Message")
         print(msg)
         self.des_vel_pub.publish(msg)
 
 def main(args):
-  ec = dice_state()
-  rospy.init_node('dice_state', anonymous=True)
-  try:
-    rospy.spin()
-  except KeyboardInterrupt:
-    print("Shutting down")
+    rospy.init_node('dice_state', anonymous=True)
+    ec = dice_state()
+    ec.go_forward()
+
+    try:
+        rospy.spin()
+    except KeyboardInterrupt:
+        print("Shutting down")
 
 if __name__ == '__main__':
     main(sys.argv)
