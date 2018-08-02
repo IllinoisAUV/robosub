@@ -32,13 +32,12 @@
 
   <!-- Start the target target_follower node. This node will post angular velocity messages to -->
   <!-- to the uuv_simulator -->
-  <node pkg="robosub" type="basic_target_follower_node" name="target_follower" ns="bs">
+  <node pkg="robosub" type="basic_target_follower_node" name="target_follower" ns="target_follower">
     <param name="target_topic" value="/rexrov/target" type="string" />
+    <param name="velocity_topic" value="/rexrov/cmd_vel"/>
     <param name="kSpeed" value="0.40" type="double" />
     <param name="kAlt" value="0.0010" type="double" />
     <param name="kYaw" value="0.0005" type="double" />
-
-    <remap from="/robosub/target_twist" to="/rexrov/cmd_vel" />
   </node>
 
 </launch>

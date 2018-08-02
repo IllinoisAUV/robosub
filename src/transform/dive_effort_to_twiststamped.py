@@ -1,17 +1,15 @@
 #!/usr/bin/env python
 import rospy
 from std_msgs.msg import Float64
-from geometry_msgs.msg import TwistStamped
-
-
+from geometry_msgs.msg import Twist
 
 if __name__ == '__main__':
-    pub = rospy.Publisher('output', TwistStamped, queue_size=1)
+    pub = rospy.Publisher('output', Twist, queue_size=1)
     def callback(msg):
-        output = TwistStamped()
-        output.twist.x = 0.0
-        output.twist.y = 0.0
-        output.twist.z = msg.data
+        output = Twist()
+        output.linear.x = 0.0
+        output.linear.y = 0.0
+        output.linear.z = msg.data
 
         pub.publish(output)
 

@@ -24,8 +24,7 @@ const std::string kModeService = "/mavros/set_mode";
 const std::string kArmingService = "/mavros/cmd/arming";
 
 MavrosRCController::MavrosRCController() {
-
-  usleep(2*1000000); // 2 sec sleep
+  usleep(2 * 1000000);  // 2 sec sleep
 
   // Wait for the mavros node to come up
   if (!ros::service::waitForService(kModeService)) {

@@ -1,4 +1,8 @@
+#!/usr/bin/env python
 import rospy
+
+import smach
+import smach_ros
 
 from geometry_msgs.msg import Accel
 from sensor_msgs.msg import Imu, MagneticField, NavSatFix, FluidPressure
@@ -6,7 +10,15 @@ from nav_msgs.msg import Odometry
 from gazebo_msgs.msg import ModelStates
 from rosgraph_msgs.msg import Clock
 
+import signal
 
+class TimeoutException(Exception):   # Custom exception class
+    pass
+
+def timeout_handler(signum, frame):   # Custom signal handler
+    a = signum
+    b = frame
+    raise TimeoutException
 
 class Sensor_Checks(smach.State):
     def __init__(self, time_out):
@@ -19,6 +31,9 @@ class Sensor_Checks(smach.State):
         self.timeout = time_out
         self.done = False
         self.sensor_check_complete = False
+        signal.signal(signal.SIGALRM, timeout_handler)
+
+        self.listener()
 
     def execute(self, userdata):
         # do all the checks
@@ -40,31 +55,40 @@ class Sensor_Checks(smach.State):
     def listener(self):
         # try to get Imu and pressure sensor value for 10 sec
         time = 0
-        self.sensor_check_complete = self.pressure_sensor_check and self.imu_check
+
+        self.sensor_check_complete = (self.pressure_sensor_check and self.imu_check)
 
         while( not self.sensor_check_complete and time < self.timeout):
-            # @TODO read the topic names from launch file
 
-            # checking imu data
-            rospy.Subscriber("/rexrov/imu", Imu, self.imu_callback)
+            signal.alarm(2)
 
-            # checking pressure data
-            rospy.Subscriber("/rexrov/pressure", FluidPressure, self.pressure_callback )
+            try:
+                # checking imu ps
+                rospy.Subscriber("/sm/imu", Imu, self.imu_callback)
 
-            rospy.spin()
+                # checking pressure data
+                rospy.Subscriber("/sm/pressure", FluidPressure, self.pressure_callback )
+            except TimeoutException:
+                continue # continue the while loop if we dont get message for 1 sec
+            else:
+                # Reset the alarm
+                signal.alarm(0)
 
             # sleep for a sec
             rospy.sleep(1)
 
             time += 1
 
+        self.sensor_check_complete = self.pressure_sensor_check and self.imu_check
         self.done = True
         return
 
         # imu subscriber callback
     def imu_callback(self, data):
         self.imu_check = True
+        return
 
         # pressure subscriber callback
-    def pressure_callback:
+    def pressure_callback(self, data):
         self.pressure_sensor_check = True
+        return

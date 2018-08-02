@@ -21,7 +21,8 @@ void BasicTargetFollower::update(const robosub::VisualTarget::ConstPtr& msg) {
   // Adjust the yaw to point at the target
   float dyaw = x_err * kYaw_;
   float dalt = y_err * kAlt_;
-
+  // geometry_msgs::TwistStamped vel = TwistStamped(
+  //     std_msgs::Header(), Twist(Vector3(0, 0, dalt), Vector3(0, 0, dyaw)));
   geometry_msgs::Twist vel =
       Twist(Vector3(kSpeed_, 0, dalt), Vector3(0, 0, dyaw));
 
