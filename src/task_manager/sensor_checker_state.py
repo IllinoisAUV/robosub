@@ -16,6 +16,8 @@ class TimeoutException(Exception):   # Custom exception class
     pass
 
 def timeout_handler(signum, frame):   # Custom signal handler
+    a = signum
+    b = frame
     raise TimeoutException
 
 class Sensor_Checks(smach.State):
