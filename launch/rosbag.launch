@@ -1,0 +1,15 @@
+<launch>
+
+  <arg name="topics" default="
+    /zed/left/image_rect_color
+    /zed/right/image_rect_color
+    /zed/odom
+    /zed/disparity/disparity_image
+    /zed/depth/depth_registered
+    /zed/map
+    /zed/imu/data" />
+  <node pkg="rosbag" name="record" type="record" args="-o /home/ubuntu/bag --bz2
+    $(arg topics)" />
+
+
+</launch>
