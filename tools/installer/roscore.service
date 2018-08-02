@@ -4,7 +4,8 @@ After=network.target
 
 [Service]
 EnvironmentFile=/etc/default/roscore
-ExecStart=/usr/bin/roscore
+ExecStart=/bin/bash -c "source /opt/ros/kinetic/setup.bash; /opt/ros/kinetic/bin/roscore"
+User=ubuntu
 
 [Install]
 WantedBy=multi-user.target
