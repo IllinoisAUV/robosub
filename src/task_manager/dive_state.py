@@ -13,7 +13,7 @@ from robosub.msg import DiveAction
 from robosub.msg import DiveGoal
 
 
-class Dive_State:
+class Dive_State(object):
     def __init__(self, sm, name):
         self.sm = sm
         self.state_name = name
