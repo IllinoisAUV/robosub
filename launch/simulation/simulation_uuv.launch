@@ -9,7 +9,7 @@
   <!-- Start the a underwater world simulation scenario -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
       <!-- <arg name="world_name" value="worlds/lake.world"/> -->
-      <arg name="world_name" value="worlds/dice.world"/>
+      <arg name="world_name" value="worlds/robosub_2018.world"/>
       <arg name="paused" value="false"/>
   </include>
 
