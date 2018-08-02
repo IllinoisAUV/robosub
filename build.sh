@@ -16,8 +16,7 @@ function help() {
     echo ""
     echo "Targets:"
     echo "  host (Default)                  Builds code to be run on host into build/host/"
-    echo "  jetson                          Builds code to be run on jetson into build/jetson/"
-    echo "  download                        Builds code to be run on the jetson and uploads the code to the jetson"
+    echo "  download                        Downloads the code to the jetson"
     echo "  clean                           Cleans build folders in build/"
     echo "  clang-format                    Runs clang format on all C++ code"
     echo ""
@@ -33,15 +32,16 @@ fi
 
 
 DOWNLOAD=
-TARGET=${1:-host}
-if [ "$TARGET" == "download" ]; then
-    DOWNLOAD=Y
-    TARGET=jetson
+TARGET=host
+if [ "$1" == "download" ]; then
+    ssh ubuntu@10.0.0.2 chmod -R u+w /home/ubuntu/catkin_ws/src/robosub
+    rsync -r --delete --update $ROOT_DIR ubuntu@10.0.0.2:~/catkin_ws/src/robosub/
+    ssh ubuntu@10.0.0.2 chmod -R aug-w /home/ubuntu/catkin_ws/src/robosub
+    exit 0
 fi
 
 case $TARGET in
     host);;
-    jetson);;
     clang-format)
         docker run -it -v $(pwd):/catkin_ws/src/robosub -w /catkin_ws/ \
             illinoisauv/robosub:latest catkin_make --make-args clang-format
@@ -71,6 +71,3 @@ $ROOT_DIR/tools/docker/$TARGET/run.sh ${@:2}
 popd
 
 
-if [ ! -z "$DOWNLOAD" ]; then
-    rsync -r --delete --update $ROOT_DIR/build/jetson/ ubuntu@10.0.0.2:~/catkin_ws/
-fi
