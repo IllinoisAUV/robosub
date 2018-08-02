@@ -13,7 +13,7 @@ SCRIPT_DIR=$(dirname $SCRIPT_PATH)
 
 case $1 in 
     host)
-        docker build -t robosub:host $SCRIPT_DIR/host
+        docker build -t illinoisauv/robosub:latest $SCRIPT_DIR/host
         ;;
     jetson)
         docker build -t robosub:jetson $SCRIPT_DIR/jetson

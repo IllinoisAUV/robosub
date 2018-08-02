@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -ex
 
 realpath() {
     [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
@@ -43,7 +43,8 @@ case $TARGET in
     host);;
     jetson);;
     clang-format)
-        docker run -it -v $(pwd):/catkin_ws/src/robosub -w /catkin_ws/ robosub:host catkin_make --make-args clang-format
+        docker run -it -v $(pwd):/catkin_ws/src/robosub -w /catkin_ws/ \
+            illinoisauv/robosub:latest catkin_make --make-args clang-format
         exit 0;
         ;;
     clean)
@@ -58,7 +59,7 @@ esac
 
 # Build necessary docker container
 echo "Building required docker container"
-$ROOT_DIR/tools/docker/build.sh $TARGET
+# $ROOT_DIR/tools/docker/build.sh $TARGET
 
 # Make catkin_ws to build into
 mkdir -p build/$TARGET/src/$(basename $ROOT_DIR)
