@@ -35,7 +35,7 @@ DOWNLOAD=
 TARGET=host
 if [ "$1" == "download" ]; then
     ssh ubuntu@10.0.0.2 chmod -R u+w /home/ubuntu/catkin_ws/src/robosub
-    rsync -r --delete --update $ROOT_DIR ubuntu@10.0.0.2:~/catkin_ws/src/robosub/
+    rsync -r --delete --exclude .git --update $ROOT_DIR ubuntu@10.0.0.2:~/catkin_ws/src/
     ssh ubuntu@10.0.0.2 chmod -R aug-w /home/ubuntu/catkin_ws/src/robosub
     exit 0
 fi
