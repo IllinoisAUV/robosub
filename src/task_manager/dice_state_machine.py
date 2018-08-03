@@ -2,14 +2,17 @@
 import rospy
 import sys
 
-from geometry_msgs.msg import Twist
+from geometry_msgs.msg import TwistStamped
 from darknet_ros_msgs.msg import BoundingBox
 from darknet_ros_msgs.msg import BoundingBoxes
+from std_msgs.msg import Int8
 
 class dice_state(object):
     def __init__(self):
         self.bbox_sub = rospy.Subscriber("/darknet_ros/bounding_boxes",BoundingBoxes,self.callback)
-        self.des_vel_pub = rospy.Publisher("/rexrov/cmd_vel", Twist, queue_size=1)
+        self.des_vel_pub = rospy.Publisher("/rexrov/cmd_vel", TwistStamped, queue_size=1)
+        self.num_sub = rospy.Subscribe("/darknet_ros/found_object",Int8, self.num_callback)
+
         self.linear_speed = 0.4
         self.k_alt = 0.005
         self.k_yaw = 0.005
@@ -21,6 +24,11 @@ class dice_state(object):
         self.h = 720
         self.w = 1280
         self.detected = False
+
+    def num_callback(self, msg):
+        self.detected_any = False
+        if msg.data > 0:
+            self.detected_any = True
 
     def go_forward(self):
         while( not self.detected):
@@ -46,16 +54,17 @@ class dice_state(object):
         self.target_follower()
 
     def target_follower(self):
-        msg = Twist()
-        if self.detected:
+        msg = TwistStamped()
+
+        if self.detected and self.detected_any:
             d_alt = self.k_alt*(self.center_y - self.h/2)
             d_yaw = self.k_yaw*(self.center_x - self.w/2)
 
-            msg.linear.x = self.linear_speed
-            msg.linear.z = d_alt
-            msg.angular.z = d_yaw
+            msg.twist.linear.x = self.linear_speed
+            msg.twist.linear.z = d_alt
+            msg.twist.angular.z = d_yaw
         else:
-            msg.linear.x = self.linear_speed
+            msg.twist.linear.x = self.linear_speed
 
         print("Message")
         print(msg)
