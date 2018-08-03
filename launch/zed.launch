@@ -1,16 +1,26 @@
 <launch>
-    <!-- Odometry coordinate frame -->
-    <arg name="odometry_frame"       default="map" />
-    <arg name="camera_model"          default="0" /> <!-- 0=ZED, 1=ZEDM-->
-    <arg name="serial_number"           default="0" /> 
+    <arg name="svo_file"              default="" />
+
+    <arg name="camera_model"         default="0" />
+    <arg name="verbose"              default="true" />
+    <arg name="resolution"           default="2" />
+    <arg name="frame_rate"           default="30" />
+    <arg name="serial_number"        default="0" />
+
+    <!-- Coordinate frame -->
+    <arg name="pose_frame"           default="map" />
+    <arg name="odometry_frame"       default="odom" />
 
     <group ns="zed">
         <include file="$(find zed_wrapper)/launch/zed_camera.launch">
-            <!-- compliant mode for rviz -->
-            <arg name="odometry_frame"        value="$(arg odometry_frame)" />
+            <arg name="svo_file"            value="$(arg svo_file)" />
+            <arg name="pose_frame"          value="$(arg pose_frame)" />
+            <arg name="odometry_frame"      value="$(arg odometry_frame)" />
             <arg name="camera_model"        value="$(arg camera_model)" />
-            <arg name="serial_number"           default="$(arg serial_number)" /> 
+            <arg name="serial_number"       default="$(arg serial_number)" />
+            <arg name="resolution"          default="$(arg resolution)" />
+            <arg name="frame_rate"          default="$(arg frame_rate)" />
+            <arg name="verbose"             default="$(arg verbose)" />
         </include>
     </group>
-
 </launch>
