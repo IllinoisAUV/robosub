@@ -11,103 +11,62 @@ from std_msgs.msg import Int8
 
 class dice_state(object):
     def __init__(self):
-        # self.bbox_sub = rospy.Subscriber("/darknet_ros/bounding_boxes",BoundingBoxes,self.callback)
+        self.bbox_sub = rospy.Subscriber("/darknet_ros/bounding_boxes",BoundingBoxes,self.callback)
         self.des_vel_pub = rospy.Publisher("/cmd_vel", TwistStamped, queue_size=1)
-        # self.num_sub = rospy.Subscriber("/darknet_ros/found_object",Int8, self.num_callback)
-        self.image_sub = rospy.Subscriber("/zed/rgb/image_rect_color",Image,self.img_callback)
+        self.num_sub = rospy.Subscriber("/darknet_ros/found_object",Int8, self.num_callback)
+        # self.image_suurn_time = self.start_time + selfb = rospy.Subscriber("/zed/rgb/image_rect_color",Image,self.img_callback)
 
-        self.linear_speed = 0.2
-        self.k_alt = 0.0005
-        self.k_yaw = 0.0005
+        self.YAW_TURN_SPEED = -0.2
+        self.GATE_STRAIGHT_TIME = 20.0
+        self.GATE_ALT_TIME = 5.0
+        self.TURN_TIME = 2.0
 
         self.idx = None
         self.center_x = None
         self.center_y = None
+
+        self.start_time = time.time()
+        self.depth_time = self.start_time + self.GATE_ALT_TIME
+        self.forward_time = self.depth_time + self.GATE_STRAIGHT_TIME
+        self.turn_time = self.forward_time + self.TURN_TIME
 
         self.h = 720
         self.w = 1280
         self.detected = False
         self.gate_detected = False
 
-    def extract_init_img(self, cv_frame):
-		gate = cv2.imread('template.png')
-		templ_gray = cv2.cvtColor(gate, cv2.COLOR_BGR2GRAY)
-		frame_gray = cv2.cvtColor(cv_frame, cv2.COLOR_BGR2GRAY)
-		self.h , self.w = frame_gray.shape
-		tl, br = self.tem_match(cv_frame, frame_gray, templ_gray)
-		self.gate_bbox = self.get_bbox(tl, br)
-		# self.yellow_bbox = self.get_bbox(all_tl[self.yellow], all_br[self.yellow])
-		# self.red_bbox = self.get_bbox(all_tl[self.red], all_br[self.red])
+    def go_down():
+        msg = TwistStamped()
+        msg.twist.linear.z = -0.4
+        self.des_vel_pub.publish(msg)
 
-    def get_bbox(self,tl,br):
-    	bbox = (tl[0], tl[1], br[0]-tl[0], br[1]-tl[1])
-    	return bbox
+    def go_straight():
+        msg = TwistStamped()
+        msg.twist.linear.x = 0.4
+        self.des_vel_pub.publish(msg)
 
-    def tem_match(self, orig, src, templ):
-		img = src
-		img2 = img.copy()
-		template = templ
-		w, h = template.shape[::-1]
+    def turn():
+        msg = TwistStamped()
+        msg.angular.z = self.YAW_TURN_SPEED
+        self.des_vel_pub.publish(msg)
 
-		tl = None
-		br = None
-		all_point = None
-
-		point = None
-
-		methods = ['cv2.TM_CCOEFF_NORMED']
-		for meth in methods:
-			img = img2.copy()
-			resize_i = img2.copy()
-			method = eval(meth)
-			orig_res = None
-			for i in range(2):
-				resize_i = cv2.resize(img, None,fx=1/2**(0.5*i), fy=1/2**(0.5*i), interpolation = cv2.INTER_AREA)
-				# Apply template Matching
-				res = cv2.matchTemplate(resize_i, template, method)
-				if i == 0:
-				    orig_res = res
-				threshold = 0.70
-				loc = np.where( res >= threshold)
-				first_point = 0
-				for pt in zip(*loc[::-1]):
-                    self.gate_detected = True
-					point = pt
-					# green
-					if first_point == 0:
-						all_point[0] = pt
-						cv2.rectangle(orig, (pt[0]*int(2**(0.5*i)),pt[1]*int(2**(0.5*i))), ((pt[0] + w), (pt[1] + h)), (0,255,0), 1)
-
-		#yellow
-		tl = (all_point[0][0],all_point[0][1])
-		br = ((all_point[0][0] + w),(all_point[0][1] + h))
-
-		# self.center = center = ((br[0]-tl[0])/2 , (br[1]-tl[1])/2)
-		# cv2.circle(orig,(tl[0] + center[0], tl[1] + center[1]), 1, (0,0,255), 2)
-		cv2.imshow('Matching Result', orig_res)
-		cv2.imshow('Detected Point', orig)
-		cv2.waitKey(10)
-		return tl, br
-
-    def img_callback(self,data):
-        self.gate_detected = True
-        try:
-			cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-        except CvBridgeError as e:
-            print(e)
-
-        self.extract_init_img(cv_image)
-
-        self.gate_center_x = (self.gate_bbox[0] + self.gate_bbox[2])/2
-        self.gate_center_y = (self.gate_bbox[1] + self.gate_bbox[3])/2
-        self.gate_follower()
-        cv2.waitKey(10)
+    def execute():
+        while(True):
+            while(time.time() < self.start_time + self.GATE_ALT_TIME):
+                self.go_down()
+            while (time.time() < self.depth_time + self.GATE_STRAIGHT_TIME):
+                self.go_straight()
+            while(time.time() < self.forward_time + self.TURN_TIME):
+                self.turn()
+            self.DONE = True
+            break
 
     def num_callback(self, msg):
-        self.detected_any = False
-        if msg.data > 0:
-            self.detected_any = True
-        self.target_follower()
+        if(self.DONE):
+            self.detected_any = False
+            if msg.data > 0:
+                self.detected_any = True
+            self.target_follower()
 
     def go_forward(self):
         while( not self.detected):
