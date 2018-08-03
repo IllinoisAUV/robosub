@@ -11,7 +11,7 @@ class dice_state(object):
     def __init__(self):
         self.bbox_sub = rospy.Subscriber("/darknet_ros/bounding_boxes",BoundingBoxes,self.callback)
         self.des_vel_pub = rospy.Publisher("/rexrov/cmd_vel", TwistStamped, queue_size=1)
-        self.num_sub = rospy.Subscribe("/darknet_ros/found_object",Int8, self.num_callback)
+        self.num_sub = rospy.Subscriber("/darknet_ros/found_object",Int8, self.num_callback)
 
         self.linear_speed = 0.4
         self.k_alt = 0.005
@@ -29,6 +29,7 @@ class dice_state(object):
         self.detected_any = False
         if msg.data > 0:
             self.detected_any = True
+        self.target_follower()
 
     def go_forward(self):
         while( not self.detected):
@@ -51,9 +52,9 @@ class dice_state(object):
             self.center_x = (x_max - x_min)/2
             self.center_y = (y_max - y_min)/2
             print(self.center_x, self.center_y)
-        self.target_follower()
+        # self.target_follower()
 
-    def target_follower(self):
+    def target_follower(self, msg=None):
         msg = TwistStamped()
 
         if self.detected and self.detected_any:
