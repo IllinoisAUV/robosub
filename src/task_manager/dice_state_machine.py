@@ -10,12 +10,12 @@ from std_msgs.msg import Int8
 class dice_state(object):
     def __init__(self):
         self.bbox_sub = rospy.Subscriber("/darknet_ros/bounding_boxes",BoundingBoxes,self.callback)
-        self.des_vel_pub = rospy.Publisher("/rexrov/cmd_vel", TwistStamped, queue_size=1)
+        self.des_vel_pub = rospy.Publisher("/cmd_vel", TwistStamped, queue_size=1)
         self.num_sub = rospy.Subscriber("/darknet_ros/found_object",Int8, self.num_callback)
 
-        self.linear_speed = 0.4
-        self.k_alt = 0.005
-        self.k_yaw = 0.005
+        self.linear_speed = 0.2
+        self.k_alt = 0.0002
+        self.k_yaw = 0.0002
 
         self.idx = None
         self.center_x = None
