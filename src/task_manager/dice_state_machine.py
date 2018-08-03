@@ -11,9 +11,9 @@ from std_msgs.msg import Int8
 
 class dice_state(object):
     def __init__(self):
-        self.bbox_sub = rospy.Subscriber("/darknet_ros/bounding_boxes",BoundingBoxes,self.callback)
+        # self.bbox_sub = rospy.Subscriber("/darknet_ros/bounding_boxes",BoundingBoxes,self.callback)
         self.des_vel_pub = rospy.Publisher("/cmd_vel", TwistStamped, queue_size=1)
-        self.num_sub = rospy.Subscriber("/darknet_ros/found_object",Int8, self.num_callback)
+        # self.num_sub = rospy.Subscriber("/darknet_ros/found_object",Int8, self.num_callback)
         self.image_sub = rospy.Subscriber("/zed/rgb/image_rect_color",Image,self.img_callback)
 
         self.linear_speed = 0.2
@@ -71,6 +71,7 @@ class dice_state(object):
 				loc = np.where( res >= threshold)
 				first_point = 0
 				for pt in zip(*loc[::-1]):
+                    self.gate_detected = True
 					point = pt
 					# green
 					if first_point == 0:
@@ -99,7 +100,7 @@ class dice_state(object):
 
         self.gate_center_x = (self.gate_bbox[0] + self.gate_bbox[2])/2
         self.gate_center_y = (self.gate_bbox[1] + self.gate_bbox[3])/2
-
+        self.gate_follower()
         cv2.waitKey(10)
 
     def num_callback(self, msg):
