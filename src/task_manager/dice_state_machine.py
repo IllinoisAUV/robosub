@@ -12,10 +12,11 @@ class dice_state(object):
         self.bbox_sub = rospy.Subscriber("/darknet_ros/bounding_boxes",BoundingBoxes,self.callback)
         self.des_vel_pub = rospy.Publisher("/cmd_vel", TwistStamped, queue_size=1)
         self.num_sub = rospy.Subscriber("/darknet_ros/found_object",Int8, self.num_callback)
+        # self.image_sub = rospy.Subscriber("/zed/rgb/image_rect_color",Image,self.img_callback)
 
         self.linear_speed = 0.2
-        self.k_alt = 0.0002
-        self.k_yaw = 0.0002
+        self.k_alt = 0.0005
+        self.k_yaw = 0.0005
 
         self.idx = None
         self.center_x = None
@@ -49,8 +50,8 @@ class dice_state(object):
             y_min = msg.bounding_boxes[self.idx].ymin
             y_max = msg.bounding_boxes[self.idx].ymax
 
-            self.center_x = (x_max - x_min)/2
-            self.center_y = (y_max - y_min)/2
+            self.center_x = (x_max + x_min)/2
+            self.center_y = (y_max + y_min)/2
             print(self.center_x, self.center_y)
         # self.target_follower()
 
