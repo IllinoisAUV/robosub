@@ -51,15 +51,13 @@ class dice_state(object):
         self.des_vel_pub.publish(msg)
 
     def execute():
-        while(True):
-            while(time.time() < self.start_time + self.GATE_ALT_TIME):
-                self.go_down()
-            while (time.time() < self.depth_time + self.GATE_STRAIGHT_TIME):
-                self.go_straight()
-            while(time.time() < self.forward_time + self.TURN_TIME):
-                self.turn()
-            self.DONE = True
-            break
+        while(time.time() < self.start_time + self.GATE_ALT_TIME):
+            self.go_down()
+        while (time.time() < self.depth_time + self.GATE_STRAIGHT_TIME):
+            self.go_straight()
+        while(time.time() < self.forward_time + self.TURN_TIME):
+            self.turn()
+        self.DONE = True
 
     def num_callback(self, msg):
         if(self.DONE):
@@ -128,7 +126,7 @@ class dice_state(object):
 def main(args):
     rospy.init_node('dice_state', anonymous=True)
     ec = dice_state()
-    ec.go_forward()
+    ec.execute()()
 
     try:
         rospy.spin()
