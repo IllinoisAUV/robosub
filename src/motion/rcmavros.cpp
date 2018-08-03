@@ -72,10 +72,10 @@ uint16_t MavrosRCController::angleToPpm(double angle) {
 
 // Convert a linear speed (0.0-1.0) to RC signal
 uint16_t MavrosRCController::speedToPpm(double speed) {
-  if (speed > 1.0 || speed < -1.0) {
-    ROS_ERROR("Invalid speed requested: %f", speed);
-    return 1500;
-  }
+  // if (speed > 1.0 || speed < -1.0) {
+  //   ROS_ERROR("Invalid speed requested: %f", speed);
+  //   return 1500;
+  // }
   if (speed > 1.0) {
     speed = 1.0;
   }
