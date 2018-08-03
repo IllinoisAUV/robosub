@@ -24,7 +24,7 @@ const std::string kModeService = "/mavros/set_mode";
 const std::string kArmingService = "/mavros/cmd/arming";
 
 MavrosRCController::MavrosRCController() {
-  usleep(2 * 1000000); // 2 sec sleep
+  usleep(5 * 1000000); // 2 sec sleep
 
   // Wait for the mavros node to come up
   if (!ros::service::waitForService(kModeService)) {
@@ -75,6 +75,12 @@ uint16_t MavrosRCController::speedToPpm(double speed) {
   if (speed > 1.0 || speed < -1.0) {
     ROS_ERROR("Invalid speed requested: %f", speed);
     return 1500;
+  }
+  if (speed > 1.0) {
+    speed = 1.0;
+  }
+  if (speed < -1.0) {
+    speed = -1.0;
   }
   return 1500 + speed * 500.0;
 }

@@ -17,7 +17,10 @@ trap "sudo /home/ubuntu/jetson_clocks.sh --restore" EXIT
 
 # Add all necessary launch files here
 roslaunch robosub motion.launch &
+sleep 5
 roslaunch robosub zed.launch &
 # roslaunch robosub bottom-camera.launch &
+#sleep 5
+#roslaunch darknet_ros darknet_ros.launch &
 
 wait
