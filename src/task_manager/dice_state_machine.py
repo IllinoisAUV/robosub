@@ -90,10 +90,10 @@ class dice_state(object):
 
     def img_callback(self,data):
         self.gate_detected = True
-		try:
+        try:
 			cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
-		except CvBridgeError as e:
-			print(e)
+        except CvBridgeError as e:
+            print(e)
 
         self.extract_init_img(cv_image)
 
