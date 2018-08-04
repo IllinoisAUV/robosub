@@ -8,21 +8,31 @@ import time
 from geometry_msgs.msg import TwistStamped
 from darknet_ros_msgs.msg import BoundingBox
 from darknet_ros_msgs.msg import BoundingBoxes
-from std_msgs.msg import Int8
+from std_msgs.msg import Int8, Float32
 
 class dice_state(object):
     def __init__(self):
         self.bbox_sub = rospy.Subscriber("/darknet_ros/bounding_boxes",BoundingBoxes,self.callback)
         self.des_vel_pub = rospy.Publisher("/cmd_vel", TwistStamped, queue_size=1)
         self.num_sub = rospy.Subscriber("/darknet_ros/found_object",Int8, self.num_callback)
+        self.jerk_sub= rospy.Subscriber("/jerk", Float32, self.jerk_callback )
         # self.image_suurn_time = self.start_time + selfb = rospy.Subscriber("/zed/rgb/image_rect_color",Image,self.img_callback)
 
         self.YAW_TURN_SPEED = 0.2
         self.GATE_STRAIGHT_TIME = 27.0
+
+        self.FORWARD_TIME = 10.0
+
         self.GATE_ALT_TIME = 7.0
         self.TURN_TIME = 0.7
+        self.TURN_180_TIME = 1.5
+
+        self.GO_DOWN_2_TIME = 2.0
+
         self.linear_speed = 0.2
-        self.DONE = False
+        self.INIT_MOVT_DONE = False
+
+        self.JERK_THRESH = 1.5
 
         self.idx = None
         self.center_x = None
@@ -37,6 +47,8 @@ class dice_state(object):
         self.k_yaw = 0.001
         self.DONE = False
 
+        self.state = 1
+
         self.h = 720
         self.w = 1280
         self.detected = False
@@ -50,6 +62,11 @@ class dice_state(object):
     def go_straight(self):
         msg = TwistStamped()
         msg.twist.linear.x = 0.4
+        self.des_vel_pub.publish(msg)
+
+    def go_backward(self):
+        msg = TwistStamped()
+        msg.twist.linear.x = -0.4
         self.des_vel_pub.publish(msg)
 
     def turn(self):
@@ -77,27 +94,57 @@ class dice_state(object):
                 print("Turning")
             self.turn()
             i += 1
-        self.DONE = True
+
+        self.INIT_MOVT_DONE = True
+
+    def execute_2(self):
+
+        print("Dice Hit")
+        self.INIT_MOVT_DONE = False
+
+        forward_time_2 = time.time() + self.FORWARD_TIME_2
+
+        while(time.time() < forward_time_2 and not rospy.is_shutdown()):
+            if i % 1000 == 0:
+                print("Forward 2")
+            self.go_forward()
+            i += 1
+
+        turn_180 = time.time() + self.TURN_180_TIME
+
+        while(time.time() < turn_180  and not rospy.is_shutdown() ):
+            if i % 1000 == 0:
+                print("Turing 180")
+            self.turn()
+
+        go_down_2 = time.time() + self.GO_DOWN_2_TIME
+
+        while(time.time() < go_down_2  and not rospy.is_shutdown() ):
+            if i % 1000 == 0:
+                print("Go down 2")
+            self.go_down()()
+
+        self.INIT_MOVT_DONE = True
+        self.state = 2
 
     def num_callback(self, msg):
-        if(self.DONE):
+        if(self.INIT_MOVT_DONE):
             self.detected_any = False
             if msg.data > 0:
                 self.detected_any = True
             print("num_callback target_follower")
             self.target_follower()
 
-    def go_forward(self):
-        print("Go forward")
-        while( not self.detected):
-            print("go_forward target_follower")
-            self.target_follower()
-        return
-
     def callback(self, msg):
+        target_dice = ''
+        if self.state == 1:
+            target_dice = 'D6'
+        elif self.state == 2:
+            target_dice = 'D5'
+
         self.detected = False
         for i in range(len(msg.bounding_boxes)):
-            if msg.bounding_boxes[i].Class == 'D6':
+            if msg.bounding_boxes[i].Class == target_dice:
                 self.idx = i
                 self.detected = True
         if self.detected:
@@ -112,7 +159,14 @@ class dice_state(object):
             print(self.center_x, self.center_y)
         # self.target_follower()
 
-    def target_follower(self, msg=None):
+    def jerk_callback(self, msg):
+        jerk = msg.data
+        if jerk > self.JERK_THRESH and not self.dice_hit:
+            self.dice_hit = True
+            self.execute_2()
+
+
+    def target_follower(self):
         msg = TwistStamped()
 
         if self.detected and self.detected_any:
@@ -132,8 +186,9 @@ class dice_state(object):
 def main(args):
     rospy.init_node('dice_state', anonymous=True)
     ds = dice_state()
-    ds.DONE = True
+    ds.INIT_MOVT_DONE = True
     # ds.execute()
+    # ds.execute_2()
     print("Starting gate")
 
     try:
