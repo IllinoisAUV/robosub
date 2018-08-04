@@ -20,7 +20,14 @@ roslaunch robosub motion.launch &
 sleep 5
 roslaunch robosub zed.launch &
 # roslaunch robosub bottom-camera.launch &
-#sleep 5
-#roslaunch darknet_ros darknet_ros.launch &
+sleep 5
+roslaunch darknet_ros darknet_ros.launch &
+sleep 5
+rostopic pub /arming std_msgs/Bool "data: true" &
+sleep 5
+
+rosbag record -o ~/auto_run /zed/rgb/image_rect_color /mavros/imu/data &
+
+python ~/catkin_ws/src/robosub/src/task_manager/dice_state_machine.py &
 
 wait
