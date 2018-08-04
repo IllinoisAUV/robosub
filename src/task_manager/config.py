@@ -12,3 +12,8 @@ class Config(object):
 
     dice_yaw_speed = 0.2
     dice_yaw_time = 0.7
+
+    gate_depth_speed = -0.4
+    gate_depth_time = 7
+    gate_forward_speed = 0.2
+    gate_forward_time = 27.0
