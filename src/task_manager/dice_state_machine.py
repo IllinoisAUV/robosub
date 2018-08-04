@@ -102,8 +102,14 @@ class dice_state(object):
         print("Dice Hit")
         self.INIT_MOVT_DONE = False
 
-        forward_time_2 = time.time() + self.FORWARD_TIME_2
 
+        while(time.time() < forward_time_2 and not rospy.is_shutdown()):
+            if i % 1000 == 0:
+                print("Forward 2")
+            self.go_forward()
+            i += 1
+
+        forward_time_2 = time.time() + self.FORWARD_TIME_2
         while(time.time() < forward_time_2 and not rospy.is_shutdown()):
             if i % 1000 == 0:
                 print("Forward 2")
