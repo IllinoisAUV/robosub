@@ -3,6 +3,7 @@ import rospy
 import sys
 
 import cv2
+import time
 
 from geometry_msgs.msg import TwistStamped
 from darknet_ros_msgs.msg import BoundingBox
@@ -35,22 +36,22 @@ class dice_state(object):
         self.detected = False
         self.gate_detected = False
 
-    def go_down():
+    def go_down(self):
         msg = TwistStamped()
         msg.twist.linear.z = -0.4
         self.des_vel_pub.publish(msg)
 
-    def go_straight():
+    def go_straight(self):
         msg = TwistStamped()
         msg.twist.linear.x = 0.4
         self.des_vel_pub.publish(msg)
 
-    def turn():
+    def turn(self):
         msg = TwistStamped()
-        msg.angular.z = self.YAW_TURN_SPEED
+        msg.twist.angular.z = self.YAW_TURN_SPEED
         self.des_vel_pub.publish(msg)
 
-    def execute():
+    def execute(self):
         while(time.time() < self.start_time + self.GATE_ALT_TIME):
             self.go_down()
         while (time.time() < self.depth_time + self.GATE_STRAIGHT_TIME):
@@ -125,8 +126,8 @@ class dice_state(object):
 
 def main(args):
     rospy.init_node('dice_state', anonymous=True)
-    ec = dice_state()
-    ec.execute()()
+    ds = dice_state()
+    ds.execute()
 
     try:
         rospy.spin()
