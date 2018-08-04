@@ -17,10 +17,12 @@ class dice_state(object):
         self.num_sub = rospy.Subscriber("/darknet_ros/found_object",Int8, self.num_callback)
         # self.image_suurn_time = self.start_time + selfb = rospy.Subscriber("/zed/rgb/image_rect_color",Image,self.img_callback)
 
-        self.YAW_TURN_SPEED = -0.2
-        self.GATE_STRAIGHT_TIME = 20.0
-        self.GATE_ALT_TIME = 5.0
-        self.TURN_TIME = 2.0
+        self.YAW_TURN_SPEED = 0.2
+        self.GATE_STRAIGHT_TIME = 27.0
+        self.GATE_ALT_TIME = 7.0
+        self.TURN_TIME = 0.7
+        self.linear_speed = 0.2
+        self.DONE = False
 
         self.idx = None
         self.center_x = None
@@ -30,6 +32,10 @@ class dice_state(object):
         self.depth_time = self.start_time + self.GATE_ALT_TIME
         self.forward_time = self.depth_time + self.GATE_STRAIGHT_TIME
         self.turn_time = self.forward_time + self.TURN_TIME
+
+        self.k_alt = 0.003
+        self.k_yaw = 0.001
+        self.DONE = False
 
         self.h = 720
         self.w = 1280
@@ -52,12 +58,25 @@ class dice_state(object):
         self.des_vel_pub.publish(msg)
 
     def execute(self):
-        while(time.time() < self.start_time + self.GATE_ALT_TIME):
+        i = 0
+        while(time.time() < self.start_time + self.GATE_ALT_TIME and not
+                rospy.is_shutdown()):
+            if i % 1000 == 0:
+                print("Diving")
             self.go_down()
-        while (time.time() < self.depth_time + self.GATE_STRAIGHT_TIME):
+            i += 1
+        while (time.time() < self.depth_time + self.GATE_STRAIGHT_TIME and not
+                rospy.is_shutdown()):
+            if i % 1000 == 0:
+                print("Going straight")
             self.go_straight()
-        while(time.time() < self.forward_time + self.TURN_TIME):
+            i += 1
+        while(time.time() < self.forward_time + self.TURN_TIME and not
+                rospy.is_shutdown()):
+            if i % 1000 == 0:
+                print("Turning")
             self.turn()
+            i += 1
         self.DONE = True
 
     def num_callback(self, msg):
@@ -65,10 +84,13 @@ class dice_state(object):
             self.detected_any = False
             if msg.data > 0:
                 self.detected_any = True
+            print("num_callback target_follower")
             self.target_follower()
 
     def go_forward(self):
+        print("Go forward")
         while( not self.detected):
+            print("go_forward target_follower")
             self.target_follower()
         return
 
@@ -90,23 +112,6 @@ class dice_state(object):
             print(self.center_x, self.center_y)
         # self.target_follower()
 
-    def gate_follower(self, msg=None):
-        msg = TwistStamped()
-
-        if self.gate_detected:
-            d_alt = self.k_alt*(self.gate_center_y - self.h/2)
-            d_yaw = self.k_yaw*(self.gate_center_x - self.w/2)
-
-            msg.twist.linear.x = self.linear_speed
-            msg.twist.linear.z = d_alt
-            msg.twist.angular.z = d_yaw
-        else:
-            msg.twist.linear.x = self.linear_speed
-
-        print("Gate Servoing:")
-        print(msg)
-        self.des_vel_pub.publish(msg)
-
     def target_follower(self, msg=None):
         msg = TwistStamped()
 
@@ -120,14 +125,16 @@ class dice_state(object):
         else:
             msg.twist.linear.x = self.linear_speed
 
-        print("Dice Message")
+        print("Target following")
         print(msg)
         self.des_vel_pub.publish(msg)
 
 def main(args):
     rospy.init_node('dice_state', anonymous=True)
     ds = dice_state()
-    ds.execute()
+    ds.DONE = True
+    # ds.execute()
+    print("Starting gate")
 
     try:
         rospy.spin()
