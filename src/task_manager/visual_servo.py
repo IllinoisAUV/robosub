@@ -3,6 +3,9 @@ import rospy
 
 from config import Config
 from mover import Mover
+from task import Task
+
+from darknet_ros_msgs.msg import BoundingBoxes
 
 class VisualServo(Task):
     timeout = rospy.Duration(0.5)
@@ -17,7 +20,7 @@ class VisualServo(Task):
         self.dims = image_dims
 
         # Time out the visual servoing
-        self.timer = rospy.Timer(self.timeout, self.timeout, oneshot=True)
+        self.timer = rospy.Timer(self.timeout, self.timeout_callback, oneshot=True)
 
         # Start in the timed out state
         self.timed_out = True
@@ -35,7 +38,7 @@ class VisualServo(Task):
         self.timer.shutdown()
         self.timer = rospy.Timer(rospy.Duration(0.5), self.timeout)
 
-    def timeout(self):
+    def timeout_callback(self, event):
         self.timed_out = True
         self.timer.shutdown()
 
@@ -59,6 +62,7 @@ class VisualServo(Task):
 
 class DarknetVisualServo(VisualServo):
     def __init__(self, bbox_topic, image_dims, label):
+        super(DarknetVisualServo, self).__init__(image_dims)
         self.bbox_sub = rospy.Subscriber(bbox_topic, BoundingBoxes, self.callback)
         self.label = label
 
