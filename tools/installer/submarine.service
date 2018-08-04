@@ -1,10 +1,11 @@
 [Unit]
 Description=Launch the submarine on boot
-After=network.target roscore.service
+After=roscore.service
 
 [Service]
 EnvironmentFile=/etc/default/roscore
 ExecStart=/home/ubuntu/catkin_ws/src/robosub/start-sub.sh
+User=ubuntu
 
 [Install]
 WantedBy=multi-user.target

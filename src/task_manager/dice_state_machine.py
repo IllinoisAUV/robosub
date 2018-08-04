@@ -1,0 +1,211 @@
+import sys
+import cv2
+import time
+
+import roslib
+import rospy
+
+from geometry_msgs.msg import Twist
+from darknet_ros_msgs.msg import BoundingBox
+from darknet_ros_msgs.msg import BoundingBoxes
+from std_msgs.msg import Int8, Float32
+
+class dice_state(object):
+    def __init__(self):
+        self.bbox_sub = rospy.Subscriber("/darknet_ros/bounding_boxes",BoundingBoxes,self.callback)
+        self.des_vel_pub = rospy.Publisher("/rexrov/cmd_vel", Twist, queue_size=1)
+        self.num_sub = rospy.Subscriber("/darknet_ros/found_object",Int8, self.num_callback)
+        self.jerk_sub= rospy.Subscriber("/jerk", Float32, self.jerk_callback )
+        # self.image_suurn_time = self.start_time + selfb = rospy.Subscriber("/zed/rgb/image_rect_color",Image,self.img_callback)
+
+        self.GATE_ALT_TIME = 13.0
+        self.GATE_STRAIGHT_TIME = 40.0
+        self.TURN_TIME = 0.2
+
+        self.FORWARD_TIME_2 = 10.0
+
+        self.YAW_TURN_SPEED = -0.4
+
+        self.TURN_180_TIME = 1.5
+        self.UP_TIME = 3.0
+        self.GO_DOWN_2_TIME = 2.0
+
+        self.INIT_MOVT_DONE = False
+
+        self.JERK_THRESH = 1.5
+
+        self.linear_speed = 0.4
+
+        self.dice_hit = False
+
+        self.idx = None
+        self.center_x = None
+        self.center_y = None
+
+        self.start_time = time.time()
+        self.depth_time = self.start_time + self.GATE_ALT_TIME
+        self.forward_time = self.depth_time + self.GATE_STRAIGHT_TIME
+        self.turn_time = self.forward_time + self.TURN_TIME
+
+        self.k_alt = 0.004
+        self.k_yaw = 0.004
+
+        self.DONE = False
+
+        self.state = 1
+
+        self.h = 720
+        self.w = 1280
+        self.detected = False
+        self.gate_detected = False
+
+        self.detected_6_frames_thresh = 300
+        self.detected_6_frame = 0
+
+    def go_down(self):
+        msg = Twist()
+        msg.linear.z = -0.4
+        self.des_vel_pub.publish(msg)
+
+    def go_straight(self):
+        msg = Twist()
+        msg.linear.x = 0.4
+        self.des_vel_pub.publish(msg)
+
+    def go_backward(self):
+        msg = Twist()
+        msg.linear.x = -0.4
+        self.des_vel_pub.publish(msg)
+
+    def turn(self):
+        msg = Twist()
+        msg.angular.z = self.YAW_TURN_SPEED
+        self.des_vel_pub.publish(msg)
+
+    def execute(self):
+        i = 0
+        while(time.time() < self.start_time + self.GATE_ALT_TIME and not rospy.is_shutdown()):
+            if i % 1000 == 0:
+                print("Diving")
+            self.go_down()
+            i += 1
+        while (time.time() < self.depth_time + self.GATE_STRAIGHT_TIME and not rospy.is_shutdown()):
+            if i % 1000 == 0:
+                print("Going straight")
+            self.go_straight()
+            i += 1
+        # while(time.time() < self.forward_time + self.TURN_TIME and not rospy.is_shutdown()):
+        #     if i % 1000 == 0:
+        #         print("Turning")
+        #     self.turn()
+        #     i += 1
+
+        self.INIT_MOVT_DONE = True
+
+    def execute_2(self):
+
+        print("Dice Hit")
+        self.INIT_MOVT_DONE = False
+
+        up_time = time.time() + self.UP_TIME
+        while(time.time() < forward_time_2 and not rospy.is_shutdown()):
+            if i % 1000 == 0:
+                print("Forward 2")
+            self.go_forward()
+            i += 1
+
+        forward_time_2 = time.time() + self.FORWARD_TIME_2
+        while(time.time() < forward_time_2 and not rospy.is_shutdown()):
+            if i % 1000 == 0:
+                print("Forward 2")
+            self.go_forward()
+            i += 1
+
+        turn_180 = time.time() + self.TURN_180_TIME
+
+        while(time.time() < turn_180  and not rospy.is_shutdown() ):
+            if i % 1000 == 0:
+                print("Turing 180")
+            self.turn()
+
+        go_down_2 = time.time() + self.GO_DOWN_2_TIME
+
+        while(time.time() < go_down_2  and not rospy.is_shutdown() ):
+            if i % 1000 == 0:
+                print("Go down 2")
+            self.go_down()()
+
+        self.INIT_MOVT_DONE = True
+        self.state = 2
+
+    def num_callback(self, msg):
+        if(self.INIT_MOVT_DONE):
+            self.detected_any = False
+            if msg.data > 0:
+                self.detected_any = True
+            print("num_callback target_follower")
+            self.target_follower()
+
+    def callback(self, msg):
+        target_dice = ''
+        if self.state == 1:
+            target_dice = 'D6'
+        elif self.state == 2:
+            target_dice = 'D5'
+
+        self.detected = False
+        for i in range(len(msg.bounding_boxes)):
+            if msg.bounding_boxes[i].Class == target_dice:
+                self.idx = i
+                self.detected = True
+        if self.detected:
+            x_min = msg.bounding_boxes[self.idx].xmin
+            x_max = msg.bounding_boxes[self.idx].xmax
+
+            y_min = msg.bounding_boxes[self.idx].ymin
+            y_max = msg.bounding_boxes[self.idx].ymax
+
+            self.center_x = (x_max + x_min)/2
+            self.center_y = (y_max + y_min)/2
+            print(self.center_x, self.center_y)
+        # self.target_follower()
+
+    def jerk_callback(self, msg):
+        jerk = msg.data
+        if jerk > self.JERK_THRESH and not self.dice_hit:
+            self.dice_hit = True
+            self.execute_2()
+
+
+    def target_follower(self):
+        msg = Twist()
+
+        if self.detected and self.detected_any:
+            d_alt = self.k_alt*(self.center_y - self.h/2)
+            d_yaw = self.k_yaw*(self.center_x - self.w/2)
+
+            msg.linear.x = self.linear_speed
+            msg.linear.z = -d_alt
+            msg.angular.z = -d_yaw
+        else:
+            msg.linear.x = self.linear_speed
+
+        print("Target following")
+        print(msg)
+        self.des_vel_pub.publish(msg)
+
+def main(args):
+    rospy.init_node('dice_state', anonymous=True)
+    ds = dice_state()
+    # ds.INIT_MOVT_DONE = True
+    ds.execute()
+    # ds.execute_2()
+    print("Starting gate")
+
+    try:
+        rospy.spin()
+    except KeyboardInterrupt:
+        print("Shutting down")
+
+if __name__ == '__main__':
+    main(sys.argv)
