@@ -2,7 +2,7 @@
 uint8 pips # Target dice to hit
 ---
 # Result
-bool success # Whether the dice was successfully sent
+bool success # Whether the dice was successfully hit
 ---
 # Feedback - Sent at a specified frequency
-bool detected # Whether the dice has been detected
+uint8 num_detected # how many dice has been detected
