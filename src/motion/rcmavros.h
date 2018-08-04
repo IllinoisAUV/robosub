@@ -8,10 +8,10 @@
 
 // MotionController that uses mavros and RCOverride to control the sub
 class MavrosRCController : public MotionController {
- public:
+public:
   MavrosRCController();
 
- private:
+private:
   // Timer callback from MotionController
   virtual void DoUpdate() override;
   virtual void DoArming(bool arm) override;
@@ -19,8 +19,9 @@ class MavrosRCController : public MotionController {
 
   ros::ServiceClient arming_client_;
   ros::ServiceClient mode_client_;
+  ros::ServiceClient stream_rate_client_;
 
   uint16_t angleToPpm(double angle);
   uint16_t speedToPpm(double speed);
 };
-#endif  // MAVROS_H
+#endif // MAVROS_H

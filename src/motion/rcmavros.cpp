@@ -2,6 +2,7 @@
 #include <mavros_msgs/CommandBool.h>
 #include <mavros_msgs/OverrideRCIn.h>
 #include <mavros_msgs/SetMode.h>
+#include <mavros_msgs/StreamRate.h>
 #include <string>
 #include <tf/tf.h>
 
@@ -15,6 +16,7 @@ using std_msgs::Bool;
 using mavros_msgs::CommandBool;
 using mavros_msgs::OverrideRCIn;
 using mavros_msgs::SetMode;
+using mavros_msgs::StreamRate;
 
 const std::string kModeDepthHold = "ALT_HOLD";
 const std::string kModeManual = "MANUAL";
@@ -22,6 +24,7 @@ const std::string kModeStabilize = "STABILIZE";
 
 const std::string kModeService = "/mavros/set_mode";
 const std::string kArmingService = "/mavros/cmd/arming";
+const std::string kStreamRateService = "/mavros/set_stream_rate";
 
 MavrosRCController::MavrosRCController() {
   usleep(5 * 1000000); // 2 sec sleep
@@ -37,11 +40,17 @@ MavrosRCController::MavrosRCController() {
         "Failed to wait for /mavros/cmd/arming to become available");
   }
 
+  if (!ros::service::waitForService(kStreamRateService)) {
+    throw ros::Exception(
+        "Failed to wait for /mavros/set_stream_rate to become available");
+  }
+
   rc_pub_ = nh_.advertise<OverrideRCIn>("/mavros/rc/override", 1);
 
   // Service clients for arming and changing the mode of the sub
   arming_client_ = nh_.serviceClient<CommandBool>(kArmingService);
   mode_client_ = nh_.serviceClient<SetMode>(kModeService);
+  stream_rate_client_ = nh_.serviceClient<StreamRate>(kStreamRateService);
 
   SetMode mode_cmd;
   mode_cmd.request.base_mode = 0;
@@ -49,6 +58,16 @@ MavrosRCController::MavrosRCController() {
 
   if (!mode_client_.call(mode_cmd)) {
     ROS_ERROR("Failed to set mavros mode");
+  }
+
+  StreamRate stream_rate_cmd;
+  stream_rate_cmd.request.stream_id =
+      mavros_msgs::StreamRateRequest::STREAM_ALL;
+  stream_rate_cmd.request.message_rate = 100;
+  stream_rate_cmd.request.on_off = true;
+
+  if (!stream_rate_client_.call(stream_rate_cmd)) {
+    ROS_ERROR("Failed to set mavros stream rate");
   }
 }
 
