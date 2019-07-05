@@ -86,6 +86,7 @@ add_subdirectory(src/motion)
 add_subdirectory(src/preprocess)
 add_subdirectory(src/utilities)
 add_subdirectory(src/experimental)
+add_subdirectory(src/image_processing)
 
 # actions defines a set of action servers that can be used executed by the sub
 add_subdirectory(src/actions)
